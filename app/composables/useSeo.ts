@@ -21,7 +21,6 @@ export function useSiteSeo() {
     ogLocale: 'fr_FR',
     ogType: 'website',
     ogUrl: canonicalUrl,
-    twitterCard: 'summary_large_image',
   })
 }
 
@@ -53,7 +52,6 @@ export function usePageSeo(seo: PageSeo) {
     ogImageHeight: 630,
     ogImageType: 'image/jpeg',
     ogImageAlt: () => toValue(seo.shareImageAlt) ?? SITE_NAME,
-    twitterImage: shareImageUrl,
     robots: () => (toValue(seo.noindex) ? 'noindex, follow' : 'index, follow, max-image-preview:large'),
   })
 
