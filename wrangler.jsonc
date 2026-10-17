@@ -15,5 +15,6 @@
   ],
   "workers_dev": true,
   "dev": { "host": "localhost" },
+  "vars": { "NUXT_PUBLIC_CLOUDFLARE_ANALYTICS_TOKEN": "c62cb03df93349a7828f898f10f028df" },
   "preview_urls": false,
 }
