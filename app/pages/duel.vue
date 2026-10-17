@@ -10,7 +10,7 @@ const shareLink = useShareLink()
 const absoluteUrl = useAbsoluteUrl()
 const { recordDiscovery } = usePokedex()
 const trackEvent = useTrackEvent()
-rememberCurrentPath('/duel')
+rememberCurrentPath('challenges')
 
 const duelQuery = computed(() => parseDuelQuery(route.query))
 const hasBothPokemon = computed(() => !!duelQuery.value.pokemonIdA && !!duelQuery.value.pokemonIdB)
@@ -145,6 +145,7 @@ usePageSeo({
 
 <template>
   <div>
+    <ChallengeSwitch />
     <div v-if="hasResult" class="hero duel-heading">
       <h1>Duel d'anniversaires</h1>
     </div>
@@ -248,9 +249,6 @@ usePageSeo({
         </button>
       </div>
       <p class="field-hint">Seuls les Pokémon apparaissent dans le lien du duel, jamais vos dates.</p>
-      <p class="field-hint">
-        Vous êtes plus de deux&nbsp;? <NuxtLink to="/tournoi" class="text-link">Lance un tournoi</NuxtLink>.
-      </p>
     </form>
   </div>
 </template>

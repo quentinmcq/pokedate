@@ -3,8 +3,8 @@
 .toast {
   position: fixed;
   left: 50%;
-  bottom: space(6);
-  transform: translate(-50%, calc(100% + 40px));
+  bottom: calc(#{space(6)} + var(--bottom-nav-space));
+  transform: translate(-50%, calc(100% + 40px + var(--bottom-nav-space)));
   background: color('text');
   color: color('on-light');
   padding: space(3) space(5);

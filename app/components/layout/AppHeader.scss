@@ -42,7 +42,7 @@
   border-radius: radius('pill');
   border: 1px solid color('line');
 
-  a {
+  &__link {
     display: flex;
     align-items: center;
     gap: 6px;
@@ -67,10 +67,58 @@
     }
   }
 
-  @include bp(phone) {
-    a {
-      padding: 7px 10px;
-      font-size: font-size('sm');
+  &__icon {
+    flex-shrink: 0;
+  }
+
+  @include bp(tablet) {
+    &__link {
+      padding: space(2) space(3);
+    }
+  }
+
+  @include bp(small) {
+    position: fixed;
+    inset: auto 0 0;
+    z-index: z('header');
+    justify-content: space-around;
+    gap: 0;
+    padding: space(1) space(2) calc(#{space(1)} + env(safe-area-inset-bottom));
+    border: 0;
+    border-top: 1px solid color('line');
+    border-radius: 0;
+    background: color-mix(in srgb, var(--color-surface-1) 92%, transparent);
+    backdrop-filter: blur(14px);
+
+    &__link {
+      flex: 1;
+      flex-direction: column;
+      justify-content: center;
+      gap: 2px;
+      min-height: 56px;
+      padding: space(1);
+      border-radius: radius('lg');
+      font-size: font-size('2xs');
+
+      &.is-active {
+        background: transparent;
+        color: color('highlight');
+      }
+    }
+
+    &__link {
+      position: relative;
+    }
+
+    &__icon {
+      font-size: 1.35rem;
+    }
+
+    .pill {
+      position: absolute;
+      top: 4px;
+      left: calc(50% + 6px);
+      font-size: 0.6rem;
     }
   }
 }

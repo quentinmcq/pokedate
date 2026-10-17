@@ -27,7 +27,7 @@ export default defineNuxtConfig({
     head: {
       htmlAttrs: { lang: 'fr' },
       meta: [
-        { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+        { name: 'viewport', content: 'width=device-width, initial-scale=1, viewport-fit=cover' },
         { name: 'theme-color', content: '#14162b' },
         { name: 'apple-mobile-web-app-title', content: 'PokéDate' },
         { name: 'color-scheme', content: 'dark' },

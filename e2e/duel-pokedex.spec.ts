@@ -115,6 +115,23 @@ test.describe('Pokédex', () => {
   })
 })
 
+test.describe('Navigation', () => {
+  test('l’onglet Défis réunit le duel et le tournoi', async ({ page }) => {
+    await gotoHydrated(page, '/')
+    const mainNav = page.getByRole('navigation', { name: 'Navigation principale' })
+    await expect(mainNav.getByRole('link')).toHaveText([/Mon Pokémon/, /Défis/, /Pokédex/, /Tirages/])
+    await mainNav.getByRole('link', { name: 'Défis' }).click()
+    await expect(page).toHaveURL('/duel')
+    await page.getByRole('navigation', { name: 'Type de défi' }).getByRole('link', { name: 'Tournoi' }).click()
+    await expect(page).toHaveURL('/tournoi')
+    await expect(mainNav.getByRole('link', { name: 'Défis' })).toHaveAttribute('aria-current', 'page')
+    await mainNav.getByRole('link', { name: /Pokédex/ }).click()
+    await expect(page).toHaveURL('/pokedex')
+    await mainNav.getByRole('link', { name: 'Défis' }).click()
+    await expect(page).toHaveURL('/tournoi')
+  })
+})
+
 test.describe('Tournoi', () => {
   test('classe 3 joueurs sans mettre leurs dates dans le lien', async ({ page }) => {
     await gotoHydrated(page, '/tournoi')

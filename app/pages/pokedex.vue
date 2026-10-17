@@ -68,6 +68,9 @@ usePageSeo({
             · {{ shinyCount }} shiny <Icon name="lucide:sparkles" aria-hidden="true"
           /></template>
         </p>
+        <p class="dex-browse">
+          <NuxtLink to="/pokemon" class="text-link">Parcourir les 1025 Pokémon</NuxtLink>
+        </p>
         <label class="toggle"
           ><input v-model="showOnlyDiscovered" type="checkbox" /> Afficher seulement les découverts</label
         >

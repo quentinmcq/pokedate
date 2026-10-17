@@ -9,7 +9,7 @@ const absoluteUrl = useAbsoluteUrl()
 const { portfolioUrl } = useRuntimeConfig().public
 const { recordDiscovery } = usePokedex()
 const trackEvent = useTrackEvent()
-rememberCurrentPath('/')
+rememberCurrentPath('home')
 
 const RANDOM_DATE_START = new Date(1950, 0, 1).getTime()
 
