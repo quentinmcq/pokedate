@@ -1,0 +1,9 @@
+@use '../../assets/scss/abstracts/functions' as *;
+
+.install-fade-enter-active {
+  transition: opacity duration('medium') ease('standard');
+}
+
+.install-fade-enter-from {
+  opacity: 0;
+}

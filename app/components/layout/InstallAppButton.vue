@@ -34,7 +34,11 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <button v-if="installPrompt" class="btn btn--ghost btn--sm" type="button" @click="installApp">
-    <Icon name="lucide:smartphone" aria-hidden="true" /> Installer l'appli
-  </button>
+  <Transition name="install-fade">
+    <button v-if="installPrompt" class="btn btn--ghost btn--sm" type="button" @click="installApp">
+      <Icon name="lucide:smartphone" aria-hidden="true" /> Installer l'appli
+    </button>
+  </Transition>
 </template>
+
+<style scoped lang="scss" src="./InstallAppButton.scss" />
