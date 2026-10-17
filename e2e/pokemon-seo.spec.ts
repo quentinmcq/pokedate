@@ -91,6 +91,16 @@ test.describe('Référencement', { tag: '@server' }, () => {
     expect(types).toEqual(expect.arrayContaining(['WebSite', 'WebApplication', 'FAQPage']))
   })
 
+  test('le site est installable comme une appli', async ({ page, request }) => {
+    await gotoHydrated(page, '/')
+    await expect(page.locator('link[rel="manifest"]')).toHaveAttribute('href', '/manifest.webmanifest')
+    const response = await request.get('/manifest.webmanifest')
+    expect(response.headers()['content-type']).toContain('manifest+json')
+    const manifest = await response.json()
+    expect(manifest).toMatchObject({ name: 'PokéDate', start_url: '/', display: 'standalone' })
+    for (const icon of manifest.icons) expect((await request.get(icon.src)).headers()['content-type']).toBe('image/png')
+  })
+
   test('sitemap et robots.txt sont servis', async ({ request }) => {
     const sitemap = await request.get('/sitemap.xml')
     expect(sitemap.headers()['content-type']).toContain('application/xml')

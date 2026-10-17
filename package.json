@@ -16,6 +16,7 @@
     "check": "bun run lint && bun run fmt:check && bun run typecheck && bun run test:unit",
     "data": "bun scripts/fetch-pokemon.ts",
     "sprites": "bun scripts/fetch-sprites.ts",
+    "icons": "bun scripts/app-icons.ts",
     "share-image": "bun scripts/default-share-image.ts",
     "test": "bun run test:unit && bun run test:e2e",
     "test:unit": "vitest run",

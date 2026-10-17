@@ -29,9 +29,14 @@ export default defineNuxtConfig({
       meta: [
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
         { name: 'theme-color', content: '#14162b' },
+        { name: 'apple-mobile-web-app-title', content: 'PokéDate' },
         { name: 'color-scheme', content: 'dark' },
       ],
-      link: [{ rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' }],
+      link: [
+        { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' },
+        { rel: 'manifest', href: '/manifest.webmanifest' },
+        { rel: 'apple-touch-icon', href: '/icons/apple-touch-icon.png' },
+      ],
     },
     pageTransition: { name: 'page', mode: 'out-in' },
   },

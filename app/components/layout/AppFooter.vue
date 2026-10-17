@@ -12,6 +12,7 @@ const { portfolioUrl } = useRuntimeConfig().public
         <NuxtLink to="/pokemon">Les 1025 Pokémon</NuxtLink>
         <NuxtLink to="/mentions-legales">Mentions légales</NuxtLink>
       </nav>
+      <InstallAppButton />
       <p class="site-footer__author">
         Fait avec <Icon name="lucide:heart" class="site-footer__heart" aria-label="amour" /> par
         <a :href="portfolioUrl" target="_blank" rel="noopener">Quentin Macq</a>
