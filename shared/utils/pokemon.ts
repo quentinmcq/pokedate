@@ -201,7 +201,6 @@ export const formatNumber = (value: number, maxDecimals = 1) =>
 export const padNumber = (value: number | string, length = 2) => String(value).padStart(length, '0')
 
 const AVERAGE_HUMAN_HEIGHT_METERS = 1.7
-const BAGUETTE_WEIGHT_KG = 0.25
 
 export function describeHeight(heightMeters: number) {
   if (heightMeters <= 0.3) return 'Tient dans ta poche'
@@ -209,12 +208,6 @@ export function describeHeight(heightMeters: number) {
   if (heightMeters < 1.4) return "T'arrive à peu près à la taille"
   if (heightMeters <= 2) return 'À peu près ta hauteur'
   return `${formatNumber(heightMeters / AVERAGE_HUMAN_HEIGHT_METERS)}× ta taille`
-}
-
-export function describeWeight(weightKg: number) {
-  if (weightKg < BAGUETTE_WEIGHT_KG) return "Plus léger qu'une baguette"
-  const baguettes = Math.round(weightKg / BAGUETTE_WEIGHT_KG)
-  return `≈ ${formatNumber(baguettes, 0)} baguette${baguettes > 1 ? 's' : ''}`
 }
 
 export const slugify = (text: string) =>

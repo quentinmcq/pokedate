@@ -4,7 +4,6 @@ import {
   TYPE_KEYS,
   defensiveMatchups,
   describeHeight,
-  describeWeight,
   formatMultiplier,
   pokemonPath,
   slugify,
@@ -94,15 +93,9 @@ describe('adresses des fiches', () => {
   })
 })
 
-describe('comparaisons amusantes', () => {
+describe('describeHeight', () => {
   it('compare la taille à un humain', () => {
     expect(describeHeight(0.2)).toContain('poche')
     expect(describeHeight(3.4)).toContain('2× ta taille')
-  })
-
-  it('compte le poids en baguettes', () => {
-    expect(describeWeight(0.1)).toContain('Plus léger')
-    expect(describeWeight(0.3)).toBe('≈ 1 baguette')
-    expect(describeWeight(6.5)).toBe('≈ 26 baguettes')
   })
 })

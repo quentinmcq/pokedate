@@ -198,10 +198,7 @@ function sharePokemon() {
         </div>
         <div class="mon-card__fact">
           <dt>Poids</dt>
-          <dd>
-            {{ formatNumber(pokemon.weightKg) }} kg
-            <span class="mon-card__hint">{{ describeWeight(pokemon.weightKg) }}</span>
-          </dd>
+          <dd>{{ formatNumber(pokemon.weightKg) }} kg</dd>
         </div>
         <div class="mon-card__fact mon-card__fact--wide">
           <dt>Talents</dt>
