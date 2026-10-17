@@ -1,0 +1,25 @@
+@use 'variables' as *;
+
+@media (max-width: $bp-phone) {
+  .date-field {
+    gap: 5px;
+  }
+  .date-field input {
+    width: 62px;
+    height: 64px;
+    font-size: 1.6rem;
+  }
+  .date-field .y input {
+    width: 104px;
+  }
+  .date-field .sep {
+    font-size: 1.5rem;
+  }
+  .tabs a {
+    padding: 7px 10px;
+    font-size: 0.9rem;
+  }
+  .stage {
+    min-height: 280px;
+  }
+}
