@@ -58,7 +58,12 @@ usePageSeo({
         <p class="draws__text">
           <b>{{ draw.nickname }}</b> a tiré
           <NuxtLink :to="pokemonPath({ id: draw.pokemonId, name: draw.pokemonName })">{{ draw.pokemonName }}</NuxtLink>
-          <span v-if="draw.shiny" class="draws__shiny"> <Icon name="lucide:sparkles" aria-hidden="true" /> shiny</span>
+          <span v-if="draw.shiny" class="draws__shiny"> <Icon name="lucide:sparkles" aria-hidden="true" /> shiny</span
+          ><template v-if="draw.bonusPokemon"
+            >, avec
+            <NuxtLink :to="pokemonPath(draw.bonusPokemon)">{{ draw.bonusPokemon.name }}</NuxtLink>
+            en bonus</template
+          >
         </p>
         <time class="draws__time" :datetime="draw.createdAt">{{ drawnAt(draw) }}</time>
       </li>

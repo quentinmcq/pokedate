@@ -1,7 +1,12 @@
 <script setup lang="ts">
 import type { PublicDraw } from '#shared/types/pokemon'
 
-const props = defineProps<{ pokemonId: number; pokemonName: string; shiny: boolean }>()
+import type { PokemonSummary } from '#shared/types/pokemon'
+
+const props = withDefaults(
+  defineProps<{ pokemonId: number; pokemonName: string; shiny: boolean; bonusPokemon?: PokemonSummary | null }>(),
+  { bonusPokemon: null },
+)
 
 const NICKNAME_STORAGE_KEY = 'pokedate.nickname'
 const trackEvent = useTrackEvent()
@@ -33,7 +38,12 @@ async function publish() {
   try {
     await $fetch<PublicDraw>('/api/draws', {
       method: 'POST',
-      body: { pokemonId: props.pokemonId, shiny: props.shiny, nickname: check.nickname },
+      body: {
+        pokemonId: props.pokemonId,
+        shiny: props.shiny,
+        bonusPokemonId: props.bonusPokemon?.id ?? null,
+        nickname: check.nickname,
+      },
     })
     rememberNickname(check.nickname)
     trackEvent('publish')
@@ -71,7 +81,8 @@ async function publish() {
     </form>
     <p id="publish-error" class="field-error" role="alert">{{ errorMessage }}</p>
     <p id="publish-note" class="publish__note">
-      Ton pseudo, ce Pokémon et l'heure seront visibles par tous pendant 7 jours au plus. Ta date n'est jamais envoyée.
+      Ton pseudo, {{ bonusPokemon ? `${pokemonName}, ${bonusPokemon.name} en bonus` : 'ce Pokémon' }} et l'heure seront
+      visibles par tous pendant 7 jours au plus. Ta date n'est jamais envoyée.
     </p>
   </section>
 </template>

@@ -162,6 +162,7 @@ usePageSeo({
         :pokemon-id="pokemon.id"
         :pokemon-name="pokemon.name"
         :shiny="isShiny"
+        :bonus-pokemon="mirrorPokemon ? { id: mirrorPokemon.id, name: mirrorPokemon.name } : null"
       />
       <HighlightBanner
         v-if="mirrorPokemon"

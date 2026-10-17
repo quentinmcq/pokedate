@@ -12,13 +12,17 @@ interface DrawRow {
   shiny: number
   nickname: string
   created_at: number
+  bonus_pokemon_id: number | null
 }
+
+const pokemonName = (id: number) => findPokemon(id)?.name ?? `#${id}`
 
 const toPublicDraw = (row: DrawRow): PublicDraw => ({
   id: row.id,
   pokemonId: row.pokemon_id,
-  pokemonName: findPokemon(row.pokemon_id)?.name ?? `#${row.pokemon_id}`,
+  pokemonName: pokemonName(row.pokemon_id),
   shiny: row.shiny === 1,
+  bonusPokemon: row.bonus_pokemon_id ? { id: row.bonus_pokemon_id, name: pokemonName(row.bonus_pokemon_id) } : null,
   nickname: row.nickname,
   createdAt: new Date(row.created_at).toISOString(),
 })
@@ -46,12 +50,14 @@ const pruneStatement = (db: D1Database, now: number) =>
 
 export async function publishDraw(
   db: D1Database,
-  draw: { pokemonId: number; shiny: boolean; nickname: string },
+  draw: { pokemonId: number; shiny: boolean; bonusPokemonId: number | null; nickname: string },
   now = Date.now(),
 ) {
   const row = await db
-    .prepare('INSERT INTO draws (pokemon_id, shiny, nickname, created_at) VALUES (?, ?, ?, ?) RETURNING *')
-    .bind(draw.pokemonId, draw.shiny ? 1 : 0, draw.nickname, now)
+    .prepare(
+      'INSERT INTO draws (pokemon_id, shiny, bonus_pokemon_id, nickname, created_at) VALUES (?, ?, ?, ?, ?) RETURNING *',
+    )
+    .bind(draw.pokemonId, draw.shiny ? 1 : 0, draw.bonusPokemonId, draw.nickname, now)
     .first<DrawRow>()
   await pruneStatement(db, now).run()
   if (!row) throw new Error('Draw insertion returned no row')

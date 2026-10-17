@@ -80,6 +80,7 @@ export interface PublicDraw {
   pokemonId: number
   pokemonName: string
   shiny: boolean
+  bonusPokemon: PokemonSummary | null
   nickname: string
   createdAt: string
 }
