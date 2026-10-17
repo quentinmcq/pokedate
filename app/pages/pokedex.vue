@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const { discoveries, discoveredCount, shinyCount } = usePokedex()
+const { discoveries, discoveredCount, shinyCount, isLoaded } = usePokedex()
 const { resetAccent } = usePageAccent()
 resetAccent()
 
@@ -10,6 +10,7 @@ const totalCount = computed(() => entries.value?.length ?? POKEMON_COUNT)
 const visibleEntries = computed(() =>
   (entries.value ?? []).filter((entry) => !showOnlyDiscovered.value || discoveries.value[entry.id]),
 )
+const isEmpty = computed(() => isLoaded.value && discoveredCount.value === 0)
 const completionPercent = computed(() => (discoveredCount.value / totalCount.value) * 100)
 
 usePageSeo({
@@ -25,38 +26,44 @@ usePageSeo({
       <h1>Ton Pokédex</h1>
       <p class="lead">
         Chaque Pokémon révélé (le tien, ceux de tes potes, les duels…) est enregistré ici, dans ton navigateur.
-        Saurez-vous les attraper tous&nbsp;?
+        Attrape-les tous&nbsp;!
       </p>
-      <div
-        class="progress"
-        role="progressbar"
-        aria-label="Progression du Pokédex"
-        :aria-valuenow="discoveredCount"
-        aria-valuemin="0"
-        :aria-valuemax="totalCount"
-        :aria-valuetext="`${discoveredCount} Pokémon découverts sur ${totalCount}`"
-      >
-        <div class="progress__fill" :style="{ width: `${completionPercent}%` }" />
-      </div>
-      <p class="dex-stats">
-        {{ discoveredCount }} / {{ totalCount }} découverts ({{ formatNumber(completionPercent) }} %)<template
-          v-if="shinyCount"
+      <template v-if="!isEmpty">
+        <div
+          class="progress"
+          role="progressbar"
+          aria-label="Progression du Pokédex"
+          :aria-valuenow="discoveredCount"
+          aria-valuemin="0"
+          :aria-valuemax="totalCount"
+          :aria-valuetext="`${discoveredCount} Pokémon découverts sur ${totalCount}`"
         >
-          · {{ shinyCount }} shiny <Icon name="lucide:sparkles" aria-hidden="true"
-        /></template>
-      </p>
-      <label class="toggle"
-        ><input v-model="showOnlyDiscovered" type="checkbox" /> Afficher seulement les découverts</label
+          <div class="progress__fill" :style="{ width: `${completionPercent}%` }" />
+        </div>
+        <p class="dex-stats">
+          {{ discoveredCount }} / {{ totalCount }} découverts ({{ formatNumber(completionPercent) }} %)<template
+            v-if="shinyCount"
+          >
+            · {{ shinyCount }} shiny <Icon name="lucide:sparkles" aria-hidden="true"
+          /></template>
+        </p>
+        <label class="toggle"
+          ><input v-model="showOnlyDiscovered" type="checkbox" /> Afficher seulement les découverts</label
+        >
+      </template>
+    </div>
+
+    <div v-if="isEmpty" class="empty-state">
+      <PokeBall :size="56" />
+      <p>Ton Pokédex est vide. Révèle le Pokémon de ta date pour commencer ta collection.</p>
+      <NuxtLink to="/" class="btn btn--primary"
+        ><Icon name="lucide:sparkles" aria-hidden="true" /> Révéler mon premier Pokémon</NuxtLink
       >
     </div>
 
-    <ul class="dex-grid">
+    <ul v-else class="dex-grid">
       <li v-for="entry in visibleEntries" :key="entry.id">
         <PokemonTile :pokemon="entry" :discovered="!!discoveries[entry.id]" :shiny="discoveries[entry.id]?.shiny" />
-      </li>
-      <li v-if="!visibleEntries.length" class="empty-state">
-        Ton Pokédex est vide.
-        <NuxtLink to="/" class="text-link">Révèle ton premier Pokémon !</NuxtLink>
       </li>
     </ul>
   </div>

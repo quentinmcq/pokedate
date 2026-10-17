@@ -71,7 +71,16 @@ test.describe('Pokédex', () => {
     await expect(page).toHaveURL('/pokemon/706-muplodocus')
   })
 
+  test('un Pokédex vide invite à révéler son premier Pokémon', async ({ page }) => {
+    await gotoHydrated(page, '/pokedex')
+    await expect(page.getByRole('progressbar')).toHaveCount(0)
+    await expect(page.getByLabel('Afficher seulement les découverts')).toHaveCount(0)
+    await page.getByRole('link', { name: 'Révéler mon premier Pokémon' }).click()
+    await expect(page).toHaveURL('/')
+  })
+
   test('peut afficher les 1025 cases', async ({ page }) => {
+    await revealDate(page, '17', '10', '2026')
     await gotoHydrated(page, '/pokedex')
     await page.getByLabel('Afficher seulement les découverts').uncheck()
     await expect(page.locator('.dex-grid > li')).toHaveCount(1025)

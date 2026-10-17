@@ -57,5 +57,5 @@ export function usePokedex() {
     return isNew
   }
 
-  return { discoveries, discoveredCount, shinyCount, loadDiscoveries, recordDiscovery }
+  return { discoveries, discoveredCount, shinyCount, isLoaded, loadDiscoveries, recordDiscovery }
 }
