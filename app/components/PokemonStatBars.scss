@@ -1,0 +1,59 @@
+@use '../assets/scss/abstracts/functions' as *;
+
+.stat-bars {
+  display: grid;
+  grid-template-columns: auto 3ch 1fr;
+  gap: 7px 10px;
+  align-items: center;
+  font-size: font-size('sm');
+  margin: 0;
+
+  dt {
+    color: color('text-muted');
+    font-weight: weight('semibold');
+  }
+  dd {
+    margin: 0;
+    display: contents;
+  }
+
+  &__val {
+    font-family: var(--font-mono), monospace;
+    font-weight: weight('bold');
+    text-align: right;
+  }
+
+  &__track {
+    height: 9px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 99px;
+    overflow: hidden;
+  }
+
+  &__fill {
+    display: block;
+    height: 100%;
+    border-radius: 99px;
+    width: 0;
+    transition: width 1s ease('out');
+    background: linear-gradient(90deg, var(--accent), color-mix(in srgb, var(--accent) 50%, #fff));
+
+    &--best {
+      background: linear-gradient(90deg, var(--color-highlight), var(--color-highlight-soft));
+    }
+  }
+
+  &__total {
+    display: flex;
+    justify-content: space-between;
+    border-top: 1px dashed color('line');
+    padding-top: space(2);
+    margin: space(2) 0 0;
+    font-weight: weight('bold');
+    font-size: font-size('sm');
+
+    span:last-child {
+      font-family: var(--font-mono), monospace;
+    }
+  }
+}

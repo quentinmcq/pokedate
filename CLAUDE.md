@@ -32,6 +32,10 @@ Nuxt 4 rendu côté serveur sur Cloudflare Workers, Bun, SCSS, Nuxt Icon (Lucide
 - `generated/` (hors dépôt) : images, cris et aperçus produits par `bun run sprites`, copiés dans le build.
 - Design system dans `app/assets/scss/abstracts` : utiliser les fonctions `color()`, `space()`, `radius()`…
   plutôt que des valeurs en dur.
+- Styles : un fichier `.scss` à côté de chaque `.vue` (`PokemonCard.vue` + `PokemonCard.scss`), chargé en
+  `<style scoped lang="scss" src="./PokemonCard.scss">`. N'importer que les modules utilisés
+  (`abstracts/tokens`, `abstracts/functions`, `abstracts/mixins`). Le global (`app/assets/scss/base`) est
+  réservé au reset, à la typographie et aux briques partagées.
 
 ## Points de vigilance
 

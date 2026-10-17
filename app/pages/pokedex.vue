@@ -62,35 +62,4 @@ usePageSeo({
   </div>
 </template>
 
-<style scoped lang="scss">
-@use '../assets/scss/abstracts/functions' as *;
-
-.progress {
-  height: 14px;
-  max-width: 520px;
-  margin: 0 auto;
-  background: color('surface-1');
-  border: 1px solid color('line');
-  border-radius: 99px;
-  overflow: hidden;
-
-  &__fill {
-    height: 100%;
-    width: 0;
-    background: linear-gradient(90deg, var(--color-brand), var(--color-highlight));
-    transition: width 0.8s;
-  }
-}
-
-.dex-stats {
-  color: color('text-muted');
-  font-family: var(--font-mono), monospace;
-}
-
-.empty-state {
-  grid-column: 1 / -1;
-  text-align: center;
-  color: color('text-muted');
-  padding: 30px;
-}
-</style>
+<style scoped lang="scss" src="./pokedex.scss" />

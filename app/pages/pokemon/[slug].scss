@@ -1,0 +1,70 @@
+@use '../../assets/scss/abstracts/tokens' as *;
+@use '../../assets/scss/abstracts/functions' as *;
+@use '../../assets/scss/abstracts/mixins' as *;
+
+.breadcrumb {
+  font-size: font-size('sm');
+  color: color('text-muted');
+  margin: space(4) 0 space(5);
+
+  ol {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: space(2);
+    padding: 0;
+    margin: 0;
+  }
+
+  li + li::before {
+    content: '›';
+    margin-right: space(2);
+    color: color('text-subtle');
+  }
+
+  a {
+    color: color('text-muted');
+  }
+}
+
+.pager {
+  display: flex;
+  justify-content: space-between;
+  gap: space(3);
+  margin-top: space(6);
+
+  a {
+    display: flex;
+    align-items: center;
+    gap: space(2);
+    @include surface(2);
+    border-radius: radius('pill');
+    padding: space(2) space(4) space(2) space(2);
+    text-decoration: none;
+    font-weight: weight('semibold');
+    min-height: $tap-target;
+    transition: border-color duration('base');
+
+    &:hover {
+      border-color: color('highlight');
+    }
+
+    img {
+      width: 40px;
+      height: 40px;
+      image-rendering: pixelated;
+    }
+
+    span {
+      color: color('text-muted');
+      font-family: var(--font-mono), monospace;
+      font-size: font-size('xs');
+    }
+  }
+
+  &__next {
+    margin-left: auto;
+    flex-direction: row-reverse;
+    padding: space(2) space(2) space(2) space(4) !important;
+  }
+}

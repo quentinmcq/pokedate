@@ -47,21 +47,4 @@ usePageSeo({
   </div>
 </template>
 
-<style scoped lang="scss">
-@use '../../assets/scss/abstracts/functions' as *;
-
-.gen-block {
-  margin-top: space(10);
-
-  h2 {
-    font-size: font-size('xl');
-    margin: 0 0 space(2);
-
-    small {
-      color: color('text-muted');
-      font-weight: weight('regular');
-      font-size: font-size('md');
-    }
-  }
-}
-</style>
+<style scoped lang="scss" src="./index.scss" />

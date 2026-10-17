@@ -1,0 +1,42 @@
+@use '../assets/scss/abstracts/functions' as *;
+
+.legal {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: space(8) 0 space(4);
+  line-height: 1.6;
+  color: color('text-muted');
+
+  h1 {
+    color: color('text');
+    margin-bottom: space(8);
+  }
+
+  h2 {
+    color: color('text');
+    font-size: font-size('xl');
+    margin: space(8) 0 space(3);
+  }
+
+  p,
+  ul {
+    margin: 0 0 space(3);
+  }
+
+  ul {
+    padding-left: space(5);
+  }
+
+  li + li {
+    margin-top: space(2);
+  }
+
+  address {
+    font-style: normal;
+  }
+
+  a {
+    color: color('highlight');
+    text-underline-offset: 3px;
+  }
+}
