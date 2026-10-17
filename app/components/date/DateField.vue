@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import type { DateFieldValue } from '#shared/types/pokemon'
+import type { DateFieldKey } from '#shared/utils/date'
 
 const props = defineProps<{
   compact?: boolean
   legend?: string
   errorId?: string
-  invalid?: boolean
+  invalidPart?: DateFieldKey | null
   fieldNames?: Record<keyof DateFieldValue, string>
 }>()
 const date = defineModel<DateFieldValue>({ required: true })
@@ -47,6 +48,9 @@ function onPaste(event: ClipboardEvent) {
   focusPart(DATE_PARTS.length - 1)
 }
 
+const focusInvalidPart = (key: DateFieldKey) => focusPart(DATE_PARTS.findIndex((part) => part.key === key))
+defineExpose({ focusInvalidPart })
+
 const selectContent = (event: FocusEvent) => (event.target as HTMLInputElement).select()
 
 const readInput = (index: number) => inputs.value?.[index]?.value ?? ''
@@ -84,7 +88,7 @@ onMounted(() => {
           :maxlength="part.maxLength"
           :placeholder="part.placeholder"
           :value.attr="date[part.key]"
-          :aria-invalid="props.invalid || undefined"
+          :aria-invalid="props.invalidPart === part.key || undefined"
           :aria-describedby="props.errorId"
           required
           @input="onInput(part, index, $event)"

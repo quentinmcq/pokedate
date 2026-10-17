@@ -70,6 +70,8 @@ describe('mirrorPokemonIdForDate', () => {
   })
 })
 
+const errorFor = (day: string, month: string, year: string) => parseDateFieldValue({ day, month, year })
+
 describe('parseDateFieldValue', () => {
   it('accepte une date valide', () => {
     expect(parseDateFieldValue({ day: '17', month: '10', year: '2026' })).toEqual({
@@ -79,25 +81,43 @@ describe('parseDateFieldValue', () => {
     expect(parseDateFieldValue({ day: ' 1', month: '2 ', year: '2024' })).toMatchObject({ ok: true })
   })
 
-  it('refuse une date incomplète', () => {
-    expect(parseDateFieldValue({ day: '', month: '10', year: '2026' })).toMatchObject({ ok: false })
+  it('dit quelle partie manque', () => {
+    expect(errorFor('', '10', '2026')).toEqual({ ok: false, error: 'Il manque le jour.', invalidPart: 'day' })
+    expect(errorFor('17', '10', '')).toEqual({ ok: false, error: "Il manque l'année.", invalidPart: 'year' })
   })
 
   it('exige une année à 4 chiffres', () => {
-    expect(parseDateFieldValue({ day: '17', month: '10', year: '26' })).toEqual({
+    expect(errorFor('17', '10', '26')).toEqual({
       ok: false,
       error: expect.stringContaining('4 chiffres'),
+      invalidPart: 'year',
     })
   })
 
-  it('refuse les jours qui n’existent pas', () => {
-    expect(parseDateFieldValue({ day: '31', month: '02', year: '2026' })).toEqual({
-      ok: false,
-      error: expect.stringContaining("n'existe pas"),
+  it('accuse la bonne partie de la date', () => {
+    expect(errorFor('20', '09', '0000')).toMatchObject({
+      error: expect.stringContaining("L'an 0"),
+      invalidPart: 'year',
     })
-    expect(parseDateFieldValue({ day: '29', month: '02', year: '2023' })).toMatchObject({ ok: false })
-    expect(parseDateFieldValue({ day: '29', month: '02', year: '2024' })).toMatchObject({ ok: true })
-    expect(parseDateFieldValue({ day: '12', month: '13', year: '2024' })).toMatchObject({ ok: false })
+    expect(errorFor('12', '13', '2024')).toMatchObject({
+      error: expect.stringContaining('mois 13'),
+      invalidPart: 'month',
+    })
+    expect(errorFor('32', '01', '2024')).toMatchObject({
+      error: expect.stringContaining('jour 32'),
+      invalidPart: 'day',
+    })
+    expect(errorFor('31', '02', '2026')).toMatchObject({
+      error: "Le 31/02 n'existe pas… même chez les Pokémon.",
+      invalidPart: 'day',
+    })
+  })
+
+  it('explique le 29 février d’une année non bissextile', () => {
+    expect(errorFor('29', '02', '2023')).toMatchObject({ error: expect.stringContaining("2023 n'est pas bissextile") })
+    expect(errorFor('29', '02', '2024')).toMatchObject({ ok: true })
+    expect(errorFor('29', '02', '1900')).toMatchObject({ ok: false })
+    expect(errorFor('29', '02', '2000')).toMatchObject({ ok: true })
   })
 })
 

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { DateFieldValue } from '#shared/types/pokemon'
+import type { DateFieldKey } from '#shared/utils/date'
 import type { AttackSummary, DuelSide } from '#shared/utils/duel'
 
 const route = useRoute()
@@ -17,6 +18,10 @@ const dateB = ref<DateFieldValue>(emptyDateFieldValue())
 const playerNameInputA = ref(duelQuery.value.playerNameA)
 const playerNameInputB = ref(duelQuery.value.playerNameB)
 const formError = ref('')
+const invalidDatePartA = ref<DateFieldKey | null>(null)
+const invalidDatePartB = ref<DateFieldKey | null>(null)
+const dateFieldA = useTemplateRef('dateFieldA')
+const dateFieldB = useTemplateRef('dateFieldB')
 const resultSection = useTemplateRef<HTMLElement>('resultSection')
 
 const prefilledDate = parseIsoDate(route.query.a)
@@ -91,8 +96,16 @@ onMounted(celebrate)
 async function startDuel() {
   const parsedA = parseDateFieldValue(dateA.value)
   const parsedB = parseDateFieldValue(dateB.value)
-  if (!parsedA.ok) return (formError.value = `Joueur 1 : ${parsedA.error}`)
-  if (!parsedB.ok) return (formError.value = `Joueur 2 : ${parsedB.error}`)
+  invalidDatePartA.value = parsedA.ok ? null : parsedA.invalidPart
+  invalidDatePartB.value = parsedA.ok && !parsedB.ok ? parsedB.invalidPart : null
+  if (!parsedA.ok) {
+    formError.value = `${cleanPlayerName(playerNameInputA.value) || 'Joueur 1'} : ${parsedA.error}`
+    return dateFieldA.value?.focusInvalidPart(parsedA.invalidPart)
+  }
+  if (!parsedB.ok) {
+    formError.value = `${cleanPlayerName(playerNameInputB.value) || 'Joueur 2'} : ${parsedB.error}`
+    return dateFieldB.value?.focusInvalidPart(parsedB.invalidPart)
+  }
   formError.value = ''
 
   await router.push({
@@ -203,7 +216,14 @@ usePageSeo({
             placeholder="Ton prénom"
             :maxlength="PLAYER_NAME_MAX_LENGTH"
           />
-          <DateField v-model="dateA" compact legend="Date du joueur 1" error-id="duel-error" />
+          <DateField
+            ref="dateFieldA"
+            v-model="dateA"
+            compact
+            legend="Date du joueur 1"
+            error-id="duel-error"
+            :invalid-part="invalidDatePartA"
+          />
         </div>
         <span class="vs-badge" aria-hidden="true">VS</span>
         <div class="duel-form__side">
@@ -215,7 +235,14 @@ usePageSeo({
             placeholder="Son prénom"
             :maxlength="PLAYER_NAME_MAX_LENGTH"
           />
-          <DateField v-model="dateB" compact legend="Date du joueur 2" error-id="duel-error" />
+          <DateField
+            ref="dateFieldB"
+            v-model="dateB"
+            compact
+            legend="Date du joueur 2"
+            error-id="duel-error"
+            :invalid-part="invalidDatePartB"
+          />
         </div>
       </div>
       <p id="duel-error" class="field-error" role="alert">{{ formError }}</p>

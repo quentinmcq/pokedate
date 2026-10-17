@@ -37,20 +37,53 @@ export function isValidCalendarDate({ day, month, year }: CalendarDate) {
   return month >= 1 && month <= 12 && day >= 1 && probe.getUTCDate() === day && probe.getUTCMonth() === month - 1
 }
 
-export type DateParseResult = { ok: true; date: CalendarDate } | { ok: false; error: string }
+export type DateFieldKey = keyof DateFieldValue
+
+export type DateParseResult = { ok: true; date: CalendarDate } | { ok: false; error: string; invalidPart: DateFieldKey }
+
+const MISSING_PART_ERRORS: Record<DateFieldKey, string> = {
+  day: 'Il manque le jour.',
+  month: 'Il manque le mois.',
+  year: "Il manque l'année.",
+}
+
+const MONTHS_IN_YEAR = 12
+const MAX_DAYS_IN_MONTH = 31
+
+const isLeapYear = (year: number) => (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0
 
 export function parseDateFieldValue(value: DateFieldValue): DateParseResult {
-  const day = value.day.trim()
-  const month = value.month.trim()
-  const year = value.year.trim()
-  if (!day || !month || !year) return { ok: false, error: 'Il manque un morceau de la date.' }
-  if (year.length !== 4) return { ok: false, error: "L'année s'écrit avec 4 chiffres (ex. 1995)." }
+  const parts = { day: value.day.trim(), month: value.month.trim(), year: value.year.trim() }
+  const missingPart = (['day', 'month', 'year'] as const).find((part) => !parts[part])
+  if (missingPart) return { ok: false, error: MISSING_PART_ERRORS[missingPart], invalidPart: missingPart }
+  if (parts.year.length !== 4)
+    return { ok: false, error: "L'année s'écrit avec 4 chiffres (ex. 1995).", invalidPart: 'year' }
 
-  const date = { day: Number(day), month: Number(month), year: Number(year) }
+  const date = { day: Number(parts.day), month: Number(parts.month), year: Number(parts.year) }
+  if (date.year < 1) return { ok: false, error: "L'an 0 n'existe pas… même chez les Pokémon.", invalidPart: 'year' }
+  if (date.month < 1 || date.month > MONTHS_IN_YEAR)
+    return {
+      ok: false,
+      error: `Le mois ${padNumber(date.month)} n'existe pas : choisis entre 01 et 12.`,
+      invalidPart: 'month',
+    }
+  if (date.day < 1 || date.day > MAX_DAYS_IN_MONTH)
+    return {
+      ok: false,
+      error: `Le jour ${padNumber(date.day)} n'existe pas : choisis entre 01 et 31.`,
+      invalidPart: 'day',
+    }
+  if (date.day === 29 && date.month === 2 && !isLeapYear(date.year))
+    return {
+      ok: false,
+      error: `${date.year} n'est pas bissextile : pas de 29 février cette année-là.`,
+      invalidPart: 'day',
+    }
   if (!isValidCalendarDate(date))
     return {
       ok: false,
       error: `Le ${padNumber(date.day)}/${padNumber(date.month)} n'existe pas… même chez les Pokémon.`,
+      invalidPart: 'day',
     }
   return { ok: true, date }
 }

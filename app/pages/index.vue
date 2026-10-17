@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { CalendarDate, DateFieldValue } from '#shared/types/pokemon'
+import type { DateFieldKey } from '#shared/utils/date'
 
 const route = useRoute()
 const router = useRouter()
@@ -12,6 +13,8 @@ const RANDOM_DATE_START = new Date(1950, 0, 1).getTime()
 
 const dateInput = ref<DateFieldValue>(emptyDateFieldValue())
 const formError = ref('')
+const invalidDatePart = ref<DateFieldKey | null>(null)
+const dateField = useTemplateRef('dateField')
 const revealCount = ref(0)
 const resultSection = useTemplateRef<HTMLElement>('resultSection')
 
@@ -45,6 +48,7 @@ watchEffect(() => !pokemon.value && resetAccent())
 
 async function revealPokemonFor(date: CalendarDate) {
   formError.value = ''
+  invalidDatePart.value = null
   revealCount.value++
   await router.push({ query: { date: toIsoDate(date) } })
   await nextTick()
@@ -54,8 +58,10 @@ async function revealPokemonFor(date: CalendarDate) {
 
 function submitDate() {
   const parsed = parseDateFieldValue(dateInput.value)
-  if (parsed.ok) revealPokemonFor(parsed.date)
-  else formError.value = parsed.error
+  if (parsed.ok) return revealPokemonFor(parsed.date)
+  formError.value = parsed.error
+  invalidDatePart.value = parsed.invalidPart
+  dateField.value?.focusInvalidPart(parsed.invalidPart)
 }
 
 const revealToday = () => revealPokemonFor(todayAsCalendarDate())
@@ -113,10 +119,11 @@ usePageSeo({
         avec ta date de naissance&nbsp;!
       </p>
       <DateField
+        ref="dateField"
         v-model="dateInput"
         legend="Ta date"
         error-id="date-error"
-        :invalid="!!formError"
+        :invalid-part="invalidDatePart"
         :field-names="DATE_FIELD_NAMES"
       />
       <p id="date-error" class="field-error" role="alert">{{ formError }}</p>

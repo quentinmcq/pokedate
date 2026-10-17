@@ -59,13 +59,12 @@ describe('DateField', () => {
     expect(model.value).toEqual({ day: '17', month: '10', year: '2026' })
   })
 
-  it('signale une erreur aux lecteurs d’écran', async () => {
+  it('signale aux lecteurs d’écran la seule partie fausse de la date', async () => {
     const wrapper = await mountSuspended(DateField, {
-      props: { modelValue: { day: '', month: '', year: '' }, invalid: true, errorId: 'date-error' },
+      props: { modelValue: { day: '20', month: '09', year: '0000' }, invalidPart: 'year', errorId: 'date-error' },
     })
-    for (const input of wrapper.findAll('input')) {
-      expect(input.attributes('aria-invalid')).toBe('true')
-      expect(input.attributes('aria-describedby')).toBe('date-error')
-    }
+    const inputs = wrapper.findAll('input')
+    expect(inputs.map((input) => input.attributes('aria-invalid'))).toEqual([undefined, undefined, 'true'])
+    for (const input of inputs) expect(input.attributes('aria-describedby')).toBe('date-error')
   })
 })

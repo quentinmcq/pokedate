@@ -24,6 +24,16 @@ test.describe('Mon Pokémon', () => {
     await expect(page.getByLabel('Jour')).toHaveAttribute('aria-invalid', 'true')
   })
 
+  test('accuse la partie fausse de la date', async ({ page }) => {
+    await gotoHydrated(page, '/')
+    await fillDate(page, '.hero', '20', '09', '0000')
+    await page.getByRole('button', { name: 'Révéler mon Pokémon' }).click()
+    await expect(page.getByRole('alert')).toHaveText("L'an 0 n'existe pas… même chez les Pokémon.")
+    await expect(page.getByLabel('Année')).toHaveAttribute('aria-invalid', 'true')
+    await expect(page.getByLabel('Jour')).not.toHaveAttribute('aria-invalid')
+    await expect(page.getByLabel('Année')).toBeFocused()
+  })
+
   test('demande une année à 4 chiffres', async ({ page }) => {
     await gotoHydrated(page, '/')
     await fillDate(page, '.hero', '17', '10', '26')
