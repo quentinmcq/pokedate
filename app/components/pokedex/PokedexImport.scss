@@ -1,0 +1,35 @@
+@use '../../assets/scss/abstracts/functions' as *;
+@use '../../assets/scss/abstracts/mixins' as *;
+
+.import {
+  display: flex;
+  gap: space(4);
+  align-items: flex-start;
+  max-width: 720px;
+  margin: space(6) auto 0;
+  padding: space(5);
+  border: 1px solid color('highlight');
+  border-radius: radius('xl');
+  background: color-mix(in srgb, var(--color-highlight) 10%, var(--color-surface-2));
+  text-align: left;
+
+  &__icon {
+    flex-shrink: 0;
+    font-size: font-size('2xl');
+    color: color('highlight');
+  }
+
+  &__title {
+    margin: 0 0 space(1);
+    font-size: font-size('lg');
+  }
+
+  p {
+    margin: 0 0 space(3);
+    color: color('text-muted');
+  }
+
+  .actions {
+    justify-content: flex-start;
+  }
+}

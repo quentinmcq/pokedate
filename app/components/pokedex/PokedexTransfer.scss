@@ -1,0 +1,50 @@
+@use '../../assets/scss/abstracts/functions' as *;
+@use '../../assets/scss/abstracts/mixins' as *;
+
+.transfer {
+  @include surface(2);
+  max-width: 720px;
+  margin: space(10) auto 0;
+  padding: space(5) space(6);
+  border-radius: radius('xl');
+  text-align: center;
+
+  @include bp(phone) {
+    padding: space(5);
+  }
+
+  &__title {
+    margin: 0 0 space(2);
+    font-size: font-size('xl');
+  }
+
+  p {
+    margin: 0 0 space(4);
+    color: color('text-muted');
+    line-height: 1.55;
+  }
+
+  &__panel {
+    display: flex;
+    align-items: center;
+    gap: space(6);
+    text-align: left;
+
+    @include bp(small) {
+      flex-direction: column;
+      text-align: center;
+    }
+  }
+
+  &__note {
+    font-size: font-size('sm');
+  }
+
+  .actions {
+    justify-content: flex-start;
+
+    @include bp(small) {
+      justify-content: center;
+    }
+  }
+}

@@ -1,0 +1,8 @@
+@use '../../assets/scss/abstracts/functions' as *;
+
+.qr-code {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  border-radius: radius('md');
+}

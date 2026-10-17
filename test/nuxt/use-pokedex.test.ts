@@ -91,6 +91,24 @@ describe('usePokedex', () => {
     expect([seenCount.value, caughtCount.value, shinyCount.value]).toEqual([3, 2, 1])
   })
 
+  it('ajoute un Pokédex transféré sans rien perdre de l’actuel', () => {
+    const { recordDiscovery, importDiscoveries, discoveries } = usePokedex()
+    recordDiscovery(25, { caught: true, shiny: true })
+    recordDiscovery(133)
+    const newlyCaught = importDiscoveries({
+      25: { caught: true, shiny: false },
+      133: { caught: true, shiny: false },
+      7: { caught: false, shiny: false },
+    })
+    expect(newlyCaught).toBe(1)
+    expect(discoveries.value).toEqual({
+      25: { caught: true, shiny: true },
+      133: { caught: true, shiny: false },
+      7: { caught: false, shiny: false },
+    })
+    expect(JSON.parse(localStorage.getItem('pokedate.dex')!)).toEqual(discoveries.value)
+  })
+
   it('survit à un localStorage corrompu', () => {
     localStorage.setItem('pokedate.dex', '{pas du json')
     const { recordDiscovery, caughtCount } = usePokedex()

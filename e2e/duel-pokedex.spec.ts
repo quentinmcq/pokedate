@@ -87,6 +87,26 @@ test.describe('Pokédex', () => {
     await expect(page.locator('.dex-cell--seen')).toContainText('Pikachu')
   })
 
+  test('transfère le Pokédex vers un autre appareil', async ({ page, browser, baseURL }) => {
+    await revealDate(page, '17', '10', '2026')
+    await gotoHydrated(page, '/pokedex')
+    await page.getByRole('button', { name: 'Transférer mon Pokédex' }).click()
+    await expect(page.getByRole('img', { name: /QR code/ })).toBeVisible()
+    const copied = await readSharedLink(page)
+    await page.getByRole('button', { name: 'Copier le lien' }).click()
+    const transferLink = await copied()
+    expect(transferLink).toMatch(/\/pokedex#transfert=1\.[\w-]+$/)
+
+    const otherDevice = await browser.newContext({ baseURL })
+    const otherPage = await otherDevice.newPage()
+    await gotoHydrated(otherPage, transferLink.replace(/^https?:\/\/[^/]+/, ''))
+    await expect(otherPage.getByRole('region', { name: "Un Pokédex t'attend" })).toContainText('1 Pokémon attrapé')
+    await otherPage.getByRole('button', { name: 'Ajouter à mon Pokédex' }).click()
+    await expect(otherPage.locator('.dex-stats')).toContainText('1 / 1025 attrapés')
+    await expect(otherPage).toHaveURL(/\/pokedex$/)
+    await otherDevice.close()
+  })
+
   test('peut afficher les 1025 cases', async ({ page }) => {
     await revealDate(page, '17', '10', '2026')
     await gotoHydrated(page, '/pokedex')

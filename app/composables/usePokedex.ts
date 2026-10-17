@@ -76,6 +76,24 @@ export function usePokedex() {
     return isNew
   }
 
+  function importDiscoveries(incoming: Discoveries) {
+    loadDiscoveries()
+    let newlyCaught = 0
+    const merged = { ...discoveries.value }
+    for (const [key, discovery] of Object.entries(sanitizeDiscoveries(incoming))) {
+      const id = Number(key)
+      const previous = merged[id]
+      if (discovery.caught && !previous?.caught) newlyCaught++
+      merged[id] = {
+        caught: discovery.caught || (previous?.caught ?? false),
+        shiny: discovery.shiny || (previous?.shiny ?? false),
+      }
+    }
+    discoveries.value = merged
+    writeStoredDiscoveries(merged)
+    return newlyCaught
+  }
+
   return {
     discoveries,
     seenCount,
@@ -85,5 +103,6 @@ export function usePokedex() {
     discoveryStateOf,
     loadDiscoveries,
     recordDiscovery,
+    importDiscoveries,
   }
 }
