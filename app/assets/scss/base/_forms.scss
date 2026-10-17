@@ -1,0 +1,51 @@
+@use '../abstracts/tokens' as *;
+@use '../abstracts/functions' as *;
+
+.field-error {
+  color: color('error');
+  min-height: 1.3em;
+  margin: space(3) 0 space(1);
+  font-weight: weight('semibold');
+}
+
+.field-hint {
+  color: color('text-subtle');
+  font-size: font-size('sm');
+  margin: space(3) 0 0;
+}
+
+.text-input {
+  width: 100%;
+  max-width: 230px;
+  text-align: center;
+  background: transparent;
+  border: 0;
+  border-bottom: 2px dashed color('line');
+  padding: space(2);
+  font-weight: weight('bold');
+  font-size: font-size('lg');
+  outline: none;
+
+  &::placeholder {
+    color: color('placeholder');
+  }
+  &:focus {
+    border-bottom-color: color('highlight');
+  }
+}
+
+.toggle {
+  display: inline-flex;
+  gap: space(2);
+  align-items: center;
+  color: color('text-muted');
+  cursor: pointer;
+  font-size: font-size('sm');
+  min-height: $tap-target;
+
+  input {
+    width: 18px;
+    height: 18px;
+    accent-color: color('highlight');
+  }
+}

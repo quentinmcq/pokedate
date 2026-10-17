@@ -22,7 +22,7 @@ const submittedWithoutJavaScript = parseDateFieldValue({
   month: String(route.query[DATE_FIELD_NAMES.month] ?? ''),
   year: String(route.query[DATE_FIELD_NAMES.year] ?? ''),
 })
-// Before hydration the form is submitted natively (GET ?jour=…&mois=…&annee=…): show the result anyway.
+
 if (submittedWithoutJavaScript.ok)
   await navigateTo({ query: { date: toIsoDate(submittedWithoutJavaScript.date) } }, { replace: true })
 
@@ -138,16 +138,16 @@ usePageSeo({
         :shiny="isShiny"
         animate
       />
-      <NuxtLink v-if="mirrorPokemon" class="banner" :to="pokemonPath(mirrorPokemon)">
-        <img :src="artworkUrl(mirrorPokemon.id)" alt="" width="64" height="64" loading="lazy" />
-        <div>
-          <b><Icon name="lucide:moon-star" aria-hidden="true" /> Date miroir ! Le jour et le mois sont identiques.</b>
-          <span
-            >Un Pokémon rare surgit : <strong>{{ mirrorPokemon.name }}</strong
-            >. Touche pour le découvrir.</span
-          >
-        </div>
-      </NuxtLink>
+      <HighlightBanner
+        v-if="mirrorPokemon"
+        :to="pokemonPath(mirrorPokemon)"
+        :image-src="artworkUrl(mirrorPokemon.id)"
+        icon="lucide:moon-star"
+        title="Date miroir ! Le jour et le mois sont identiques."
+      >
+        Un Pokémon rare surgit : <strong>{{ mirrorPokemon.name }}</strong
+        >. Touche pour le découvrir.
+      </HighlightBanner>
     </section>
 
     <section class="section" aria-labelledby="how-it-works">
@@ -178,3 +178,130 @@ usePageSeo({
     </section>
   </div>
 </template>
+
+<style scoped lang="scss">
+@use '../assets/scss/abstracts/functions' as *;
+@use '../assets/scss/abstracts/mixins' as *;
+
+.result:focus {
+  outline: none;
+}
+
+.section {
+  margin-top: space(16);
+
+  &__title {
+    font-size: font-size('2xl');
+    margin: 0 0 space(5);
+    text-align: center;
+  }
+}
+
+.steps {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: space(4);
+  counter-reset: step;
+
+  li {
+    @include surface(2);
+    border-radius: radius('lg');
+    padding: space(5);
+    counter-increment: step;
+    line-height: 1.5;
+    color: color('text-muted');
+
+    &::before {
+      content: counter(step);
+      display: grid;
+      place-items: center;
+      width: 34px;
+      height: 34px;
+      margin-bottom: space(3);
+      border-radius: 50%;
+      background: color('highlight');
+      color: color('on-light');
+      font-family: var(--font-mono), monospace;
+      font-weight: weight('bold');
+    }
+
+    strong {
+      display: block;
+      color: color('text');
+      font-size: font-size('lg');
+      margin-bottom: space(1);
+    }
+  }
+}
+
+.faq {
+  max-width: 720px;
+  margin: 0 auto;
+  display: grid;
+  gap: space(3);
+
+  details {
+    @include surface(2);
+    border-radius: radius('lg');
+    padding: 0 space(5);
+    interpolate-size: allow-keywords;
+    transition: border-color duration('base');
+
+    &:hover {
+      border-color: color('text-subtle');
+    }
+
+    &::details-content {
+      block-size: 0;
+      opacity: 0;
+      overflow: hidden;
+      transition:
+        block-size duration('medium') ease('standard'),
+        opacity duration('medium') ease('standard'),
+        content-visibility duration('medium') allow-discrete;
+    }
+
+    &[open]::details-content {
+      block-size: auto;
+      opacity: 1;
+    }
+
+    &[open] summary::after {
+      transform: rotate(45deg);
+    }
+  }
+
+  summary {
+    cursor: pointer;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    list-style: none;
+    padding: space(4) 0;
+    font-weight: weight('bold');
+    display: flex;
+    justify-content: space-between;
+    gap: space(4);
+    @include focus-ring;
+
+    &::-webkit-details-marker {
+      display: none;
+    }
+    &::after {
+      content: '+';
+      font-size: font-size('xl');
+      line-height: 1;
+      color: color('highlight');
+      transition: transform duration('medium') ease('standard');
+    }
+  }
+
+  p {
+    margin: 0 0 space(4);
+    color: color('text-muted');
+    line-height: 1.6;
+  }
+}
+</style>

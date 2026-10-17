@@ -34,3 +34,111 @@ defineProps<{
     </div>
   </div>
 </template>
+
+<style scoped lang="scss">
+@use '../assets/scss/abstracts/functions' as *;
+
+.fighter {
+  --accent: #888;
+  position: relative;
+  text-align: center;
+  padding: 18px 14px;
+  border-radius: radius('xl');
+  overflow: hidden;
+  background: linear-gradient(
+    170deg,
+    color-mix(in srgb, var(--accent) 35%, var(--color-surface-2)),
+    var(--color-surface-2) 70%
+  );
+  border: 2px solid color-mix(in srgb, var(--accent) 45%, var(--color-line));
+  transition:
+    transform 0.4s,
+    opacity 0.4s,
+    filter 0.4s;
+
+  img {
+    width: 160px;
+    height: 160px;
+    object-fit: contain;
+    filter: drop-shadow(0 12px 16px rgba(0, 0, 0, 0.4));
+  }
+
+  &--left img {
+    animation: lunge-l 1s ease-in-out 2;
+  }
+  &--right img {
+    transform: scaleX(-1);
+    animation: lunge-r 1s ease-in-out 2;
+  }
+
+  &__player {
+    color: color('text-muted');
+    font-size: 0.85rem;
+    font-weight: weight('semibold');
+  }
+
+  &__name {
+    margin: 2px 0 space(2);
+    font-size: font-size('xl');
+
+    small {
+      margin-left: space(1);
+      color: color('text-muted');
+      font-size: font-size('sm');
+    }
+  }
+
+  .chip-list {
+    justify-content: center;
+  }
+
+  &__power {
+    font-family: var(--font-mono), monospace;
+    margin-top: 10px;
+    font-size: 0.85rem;
+    color: color('text-muted');
+
+    b {
+      color: color('text');
+      font-size: 1.15rem;
+    }
+  }
+
+  &--win {
+    transform: scale(1.03);
+    border-color: color('highlight');
+    box-shadow: 0 0 50px -10px var(--color-highlight);
+  }
+
+  &--lose {
+    border-color: color('line');
+    box-shadow: none;
+
+    img {
+      opacity: 0.5;
+      filter: grayscale(0.8) drop-shadow(0 12px 16px rgba(0, 0, 0, 0.4));
+    }
+  }
+
+  &__shiny {
+    color: color('highlight');
+  }
+
+  &__crown {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 1.8rem;
+    animation: pop 0.5s;
+  }
+}
+
+.fighter__name a {
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+</style>

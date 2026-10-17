@@ -49,8 +49,6 @@ function onPaste(event: ClipboardEvent) {
 
 const selectContent = (event: FocusEvent) => (event.target as HTMLInputElement).select()
 
-// Inputs are bound by attribute so hydration never wipes what was typed before it; the
-// DOM is then kept in sync by hand when the value changes programmatically (paste, prefill).
 const readInput = (index: number) => inputs.value?.[index]?.value ?? ''
 
 function syncInputsWith(value: DateFieldValue) {
@@ -98,3 +96,95 @@ onMounted(() => {
     </template>
   </fieldset>
 </template>
+
+<style scoped lang="scss">
+@use '../assets/scss/abstracts/functions' as *;
+@use '../assets/scss/abstracts/mixins' as *;
+
+.date-field {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: space(2);
+  border: 0;
+  margin: 0;
+  padding: 0;
+
+  &__part {
+    display: flex;
+    flex-direction: column;
+    gap: space(2);
+    @include eyebrow;
+  }
+
+  &__input {
+    width: 78px;
+    height: 74px;
+    text-align: center;
+    font-family: var(--font-mono), monospace;
+    font-size: font-size('2xl');
+    font-weight: weight('bold');
+    background: color('surface-1');
+    border: 2px solid color('line');
+    border-radius: radius('lg');
+    outline: none;
+    transition:
+      border-color duration('base'),
+      transform duration('base');
+
+    &::placeholder {
+      color: color('placeholder');
+    }
+    &:focus-visible,
+    &:focus {
+      border-color: color('highlight');
+      transform: translateY(-2px);
+    }
+    &[aria-invalid='true'] {
+      border-color: color('error');
+    }
+  }
+
+  &__part--year &__input {
+    width: 132px;
+  }
+
+  &__sep {
+    font-family: var(--font-mono), monospace;
+    font-size: font-size('2xl');
+    color: color('placeholder');
+    padding-bottom: 14px;
+  }
+
+  &--compact {
+    .date-field__input {
+      width: 56px;
+      height: 56px;
+      font-size: 1.35rem;
+      border-radius: radius('md');
+    }
+    .date-field__part--year .date-field__input {
+      width: 92px;
+    }
+    .date-field__sep {
+      font-size: 1.3rem;
+      padding-bottom: 12px;
+    }
+  }
+
+  @include bp(phone) {
+    gap: space(1);
+
+    &__input {
+      width: 62px;
+      height: 64px;
+      font-size: 1.6rem;
+    }
+    &__part--year &__input {
+      width: 104px;
+    }
+    &__sep {
+      font-size: font-size('xl');
+    }
+  }
+}
+</style>

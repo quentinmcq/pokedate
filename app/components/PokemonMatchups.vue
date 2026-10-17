@@ -27,3 +27,18 @@ const groups = computed(() =>
     </div>
   </div>
 </template>
+
+<style scoped lang="scss">
+@use '../assets/scss/abstracts/functions' as *;
+
+.matchups {
+  display: grid;
+  gap: 10px;
+
+  &__label {
+    font-size: font-size('xs');
+    color: color('text-muted');
+    width: 100%;
+  }
+}
+</style>

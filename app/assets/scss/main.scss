@@ -2,20 +2,6 @@
 @use 'base/reset';
 @use 'base/typography';
 @use 'base/animations';
-
-@use 'components/button';
-@use 'components/date-field';
-@use 'components/chip';
-@use 'components/formula';
-@use 'components/pokemon-card';
-@use 'components/misc';
-
-@use 'layout/header';
-@use 'layout/page';
-@use 'layout/footer';
-
-@use 'pages/home';
-@use 'pages/duel';
-@use 'pages/pokedex';
-@use 'pages/pokemon';
-@use 'pages/legal';
+@use 'base/layout';
+@use 'base/buttons';
+@use 'base/forms';

@@ -1,0 +1,22 @@
+@use '../abstracts/functions' as *;
+
+.hero {
+  text-align: center;
+  padding: space(8) 0 space(2);
+}
+
+.chip-list {
+  display: flex;
+  gap: space(2);
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.dex-grid {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+  gap: 10px;
+  margin: space(5) 0 0;
+}

@@ -52,11 +52,7 @@ usePageSeo({
 
     <ul class="dex-grid">
       <li v-for="entry in visibleEntries" :key="entry.id">
-        <PokemonTile v-if="discoveries[entry.id]" :pokemon="entry" :shiny="discoveries[entry.id]?.shiny" />
-        <div v-else class="dex-cell dex-cell--unknown">
-          <span class="dex-cell__unknown" aria-hidden="true">?</span>
-          <span><span class="visually-hidden">Pas encore découvert : </span>#{{ padNumber(entry.id, 4) }}</span>
-        </div>
+        <PokemonTile :pokemon="entry" :discovered="!!discoveries[entry.id]" :shiny="discoveries[entry.id]?.shiny" />
       </li>
       <li v-if="!visibleEntries.length" class="empty-state">
         Ton Pokédex est vide.
@@ -65,3 +61,36 @@ usePageSeo({
     </ul>
   </div>
 </template>
+
+<style scoped lang="scss">
+@use '../assets/scss/abstracts/functions' as *;
+
+.progress {
+  height: 14px;
+  max-width: 520px;
+  margin: 0 auto;
+  background: color('surface-1');
+  border: 1px solid color('line');
+  border-radius: 99px;
+  overflow: hidden;
+
+  &__fill {
+    height: 100%;
+    width: 0;
+    background: linear-gradient(90deg, var(--color-brand), var(--color-highlight));
+    transition: width 0.8s;
+  }
+}
+
+.dex-stats {
+  color: color('text-muted');
+  font-family: var(--font-mono), monospace;
+}
+
+.empty-state {
+  grid-column: 1 / -1;
+  text-align: center;
+  color: color('text-muted');
+  padding: 30px;
+}
+</style>

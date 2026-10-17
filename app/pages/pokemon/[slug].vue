@@ -1,5 +1,4 @@
 <script setup lang="ts">
-// One page instance per Pokémon, so `pokemon` below can be a plain constant.
 definePageMeta({ key: (route) => route.path })
 
 const route = useRoute()
@@ -53,16 +52,16 @@ usePageSeo({
       </ol>
     </nav>
 
-    <NuxtLink v-if="isSharedLink" class="banner banner--top" to="/">
-      <img :src="spriteUrl(pokemon.id)" alt="" width="64" height="64" />
-      <div>
-        <b
-          ><Icon name="lucide:party-popper" aria-hidden="true" /> Un·e ami·e est tombé·e sur {{ pokemon.name }} avec sa
-          date&nbsp;!</b
-        >
-        <span>Et toi, quel Pokémon se cache dans ta date ? Touche pour le découvrir.</span>
-      </div>
-    </NuxtLink>
+    <HighlightBanner
+      v-if="isSharedLink"
+      to="/"
+      :image-src="spriteUrl(pokemon.id)"
+      icon="lucide:party-popper"
+      :title="`Un·e ami·e est tombé·e sur ${pokemon.name} avec sa date !`"
+      placement="top"
+    >
+      Et toi, quel Pokémon se cache dans ta date ? Touche pour le découvrir.
+    </HighlightBanner>
 
     <PokemonCard :pokemon="pokemon" :shiny="isShinyRequested" heading-level="h1" />
 
@@ -78,3 +77,76 @@ usePageSeo({
     </nav>
   </div>
 </template>
+
+<style scoped lang="scss">
+@use '../../assets/scss/abstracts/tokens' as *;
+@use '../../assets/scss/abstracts/functions' as *;
+@use '../../assets/scss/abstracts/mixins' as *;
+
+.breadcrumb {
+  font-size: font-size('sm');
+  color: color('text-muted');
+  margin: space(4) 0 space(5);
+
+  ol {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: space(2);
+    padding: 0;
+    margin: 0;
+  }
+
+  li + li::before {
+    content: '›';
+    margin-right: space(2);
+    color: color('text-subtle');
+  }
+
+  a {
+    color: color('text-muted');
+  }
+}
+
+.pager {
+  display: flex;
+  justify-content: space-between;
+  gap: space(3);
+  margin-top: space(6);
+
+  a {
+    display: flex;
+    align-items: center;
+    gap: space(2);
+    @include surface(2);
+    border-radius: radius('pill');
+    padding: space(2) space(4) space(2) space(2);
+    text-decoration: none;
+    font-weight: weight('semibold');
+    min-height: $tap-target;
+    transition: border-color duration('base');
+
+    &:hover {
+      border-color: color('highlight');
+    }
+
+    img {
+      width: 40px;
+      height: 40px;
+      image-rendering: pixelated;
+    }
+
+    span {
+      color: color('text-muted');
+      font-family: var(--font-mono), monospace;
+      font-size: font-size('xs');
+    }
+  }
+
+  &__next {
+    margin-left: auto;
+    flex-direction: row-reverse;
+    padding: space(2) space(2) space(2) space(4) !important;
+  }
+}
+</style>

@@ -1,4 +1,4 @@
-@use '../abstracts' as *;
+@use '../abstracts/functions' as *;
 
 h1 {
   font-size: font-size('display');

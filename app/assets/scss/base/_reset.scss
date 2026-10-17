@@ -1,4 +1,5 @@
-@use '../abstracts' as *;
+@use '../abstracts/functions' as *;
+@use '../abstracts/mixins' as *;
 
 *,
 *::before,
@@ -17,7 +18,7 @@ body {
   min-height: 100dvh;
   display: flex;
   flex-direction: column;
-  font-family: var(--font-display);
+  font-family: var(--font-display), sans-serif;
   color: color('text');
   background:
     radial-gradient(900px 500px at 85% -10%, color-mix(in srgb, var(--accent) 35%, transparent), transparent 70%),
