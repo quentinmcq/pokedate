@@ -19,7 +19,7 @@ bun run dev
 | `bun run check`    | Lint, formatage, types et tests unitaires          |
 | `bun run test:e2e` | Tests Playwright sur le build Cloudflare           |
 | `bun run preview`  | Build servi par `wrangler dev`                     |
-| `bun run deploy`   | Vérifications puis mise en ligne (Cloudflare)      |
+| `bun run deploy`   | Mise en ligne manuelle (sinon automatique via CI)  |
 | `bun run data`     | Régénère `server/data/pokemon.json` depuis PokeAPI |
 
 ## Mesure d'audience
@@ -30,12 +30,13 @@ sur le domaine de `siteUrl` et seulement si le jeton du site est défini, dans l
 
 ## Qualité
 
-| Quand        | Quoi                                    |
-| ------------ | --------------------------------------- |
-| Commit       | Formatage et lint des fichiers modifiés |
-| Push         | Types et tests unitaires                |
-| Pull request | Tout, plus les tests Playwright (CI)    |
-| Chaque lundi | Mises à jour des dépendances (Renovate) |
+| Quand            | Quoi                                    |
+| ---------------- | --------------------------------------- |
+| Commit           | Formatage et lint des fichiers modifiés |
+| Push             | Types et tests unitaires                |
+| Pull request     | Tout, plus les tests Playwright (CI)    |
+| Merge sur `main` | Tout, puis déploiement sur Cloudflare   |
+| Chaque lundi     | Mises à jour des dépendances (Renovate) |
 
 ## Stack
 

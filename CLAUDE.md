@@ -8,7 +8,8 @@ Nuxt 4 rendu côté serveur sur Cloudflare Workers, Bun, SCSS, Nuxt Icon (Lucide
 - `bun run dev` : développement (nécessite `bun run sprites` une première fois)
 - `bun run check` : lint, formatage, types, tests unitaires — à lancer avant chaque commit
 - `bun run test:e2e` : build + tests Playwright (ordinateur et mobile)
-- `bun run deploy` : uniquement sur demande explicite, il met le site public à jour
+- Déploiement : automatique à chaque push sur `main`, une fois la CI verte (job `deploy` de `ci.yml`).
+  `bun run deploy` (manuel) seulement sur demande explicite.
 
 ## Conventions
 
