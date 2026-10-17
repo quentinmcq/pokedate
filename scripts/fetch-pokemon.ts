@@ -54,18 +54,16 @@ const responseCache = new Map<string, unknown>()
 
 async function fetchJson<T>(url: string): Promise<T> {
   if (responseCache.has(url)) return responseCache.get(url) as T
-  for (let attempt = 1; ; attempt++) {
-    try {
-      const response = await fetch(url)
-      if (!response.ok) throw new Error(`${response.status} ${url}`)
+  for (let attempt = 1; attempt <= REQUEST_ATTEMPTS; attempt++) {
+    const response = await fetch(url).catch(() => null)
+    if (response?.ok) {
       const json = (await response.json()) as T
       responseCache.set(url, json)
       return json
-    } catch (error) {
-      if (attempt === REQUEST_ATTEMPTS) throw error
-      await new Promise((resolve) => setTimeout(resolve, 800 * attempt))
     }
+    if (attempt < REQUEST_ATTEMPTS) await new Promise((resolve) => setTimeout(resolve, 800 * attempt))
   }
+  throw new Error(`Échec après ${REQUEST_ATTEMPTS} tentatives : ${url}`)
 }
 
 async function mapInParallel<Item, Result>(items: Item[], mapItem: (item: Item) => Promise<Result>) {

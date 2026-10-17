@@ -1,4 +1,4 @@
-import type { TypeKey } from '../../shared/types/pokemon'
+import type { TypeKey } from '#shared/types/pokemon'
 
 export interface StoredPokemon {
   id: number

@@ -135,7 +135,7 @@ export default defineNuxtConfig({
         '../test/unit/**/*',
         '../scripts/**/*',
       ],
-      compilerOptions: { types: ['node'] },
+      compilerOptions: { types: ['node'], paths: { '#shared': ['../shared'], '#shared/*': ['../shared/*'] } },
     },
   },
 
