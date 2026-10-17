@@ -1,84 +1,76 @@
 <script setup lang="ts">
+definePageMeta({ key: (route) => route.path })
+
 const route = useRoute()
-const siteUrl = useSiteUrl()
+const absoluteUrl = useAbsoluteUrl()
 
-// /pokemon/706-muplodocus (ou l'ancienne forme /pokemon/706)
-const slug = computed(() => String(route.params.slug ?? ''))
-const id = computed(() => {
-  const m = /^(\d{1,4})(?:-[a-z0-9-]*)?$/.exec(slug.value)
-  return m ? Number(m[1]) : null
-})
+const POKEMON_SLUG_PATTERN = /^(\d{1,4})(?:-[a-z0-9-]*)?$/
 
-const { data: pokemon } = await usePokemon(id)
-if (!pokemon.value)
+const pokemonIdFromSlug = (slug: unknown) => {
+  const match = POKEMON_SLUG_PATTERN.exec(typeof slug === 'string' ? slug : '')
+  return match ? Number(match[1]) : null
+}
+
+const { data } = await usePokemonDetail(pokemonIdFromSlug(route.params.slug))
+const pokemon = data.value
+if (!pokemon)
   throw createError({ statusCode: 404, statusMessage: "Ce Pokémon n'existe pas (encore ?)", fatal: import.meta.client })
 
-// Une seule adresse par Pokémon : redirection permanente vers le chemin canonique
-const canonicalPath = pokemonPath(pokemon.value)
+const canonicalPath = pokemonPath(pokemon)
 if (route.path !== canonicalPath) await navigateTo({ path: canonicalPath, query: route.query }, { redirectCode: 301 })
 
-// Le shiny vient de l'URL : appliqué après l'hydratation pour que le rendu serveur reste stable
-const shiny = ref(false)
-onMounted(() => (shiny.value = route.query.shiny === '1'))
-const fromShare = computed(() => route.query.partage === '1')
-
-const typesText = computed(() => (pokemon.value ? pokemon.value.types.map((t) => TYPES[t][0]).join(' et ') : ''))
-const description = computed(() => {
-  const p = pokemon.value!
-  const intro = `${p.fr} (n° ${p.id}), ${p.genus.toLowerCase()} de type ${typesText.value}, génération ${GENS[p.gen]?.[0]}. `
-  const text = intro + (p.descEn ? '' : p.desc)
-  return text.length > 158 ? `${text.slice(0, 155).trimEnd()}…` : text
-})
+const isShinyRequested = ref(false)
+onMounted(() => (isShinyRequested.value = route.query.shiny === '1'))
+const isSharedLink = route.query.partage === '1'
 
 usePageSeo({
-  title: () => `${pokemon.value!.fr} (n° ${pokemon.value!.id}) : types, stats, faiblesses et évolutions`,
-  ogTitle: () =>
-    fromShare.value
-      ? `Un ami est tombé sur ${pokemon.value!.fr} avec sa date ! Et toi ?`
-      : `${pokemon.value!.fr}, n° ${pokemon.value!.id}`,
-  description,
-  image: () => `/sprites/og/${pokemon.value!.id}.jpg`,
-  imageAlt: () => pokemon.value!.fr,
-  jsonLd: () => ({
+  title: `${pokemon.name} (n° ${pokemon.id}) : types, stats, faiblesses et évolutions`,
+  shareTitle: isSharedLink
+    ? `Un ami est tombé sur ${pokemon.name} avec sa date ! Et toi ?`
+    : `${pokemon.name}, n° ${pokemon.id}`,
+  description: pokemonMetaDescription(pokemon),
+  shareImagePath: shareImagePath(pokemon.id),
+  shareImageAlt: pokemon.name,
+  structuredData: {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
     itemListElement: [
-      { '@type': 'ListItem', position: 1, name: 'Accueil', item: siteUrl('/') },
-      { '@type': 'ListItem', position: 2, name: 'Pokémon', item: siteUrl('/pokemon') },
-      { '@type': 'ListItem', position: 3, name: pokemon.value!.fr, item: siteUrl(canonicalPath) },
+      { '@type': 'ListItem', position: 1, name: 'Accueil', item: absoluteUrl('/') },
+      { '@type': 'ListItem', position: 2, name: 'Pokémon', item: absoluteUrl('/pokemon') },
+      { '@type': 'ListItem', position: 3, name: pokemon.name, item: absoluteUrl(canonicalPath) },
     ],
-  }),
+  },
 })
 </script>
 
 <template>
-  <div v-if="pokemon">
+  <div>
     <nav class="breadcrumb" aria-label="Fil d'Ariane">
       <ol>
         <li><NuxtLink to="/">Accueil</NuxtLink></li>
         <li><NuxtLink to="/pokemon">Pokémon</NuxtLink></li>
-        <li aria-current="page">{{ pokemon.fr }}</li>
+        <li aria-current="page">{{ pokemon.name }}</li>
       </ol>
     </nav>
 
-    <NuxtLink v-if="fromShare" class="banner banner--top" to="/">
-      <img :src="miniUrl(pokemon.id)" alt="" width="64" height="64" />
+    <NuxtLink v-if="isSharedLink" class="banner banner--top" to="/">
+      <img :src="spriteUrl(pokemon.id)" alt="" width="64" height="64" />
       <div>
-        <b>🎉 Un·e ami·e est tombé·e sur {{ pokemon.fr }} avec sa date&nbsp;!</b>
+        <b>🎉 Un·e ami·e est tombé·e sur {{ pokemon.name }} avec sa date&nbsp;!</b>
         <span>Et toi, quel Pokémon se cache dans ta date ? Touche pour le découvrir.</span>
       </div>
     </NuxtLink>
 
-    <PokemonCard :key="pokemon.id" :pokemon="pokemon" :shiny="shiny" heading-level="h1" />
+    <PokemonCard :pokemon="pokemon" :shiny="isShinyRequested" heading-level="h1" />
 
     <nav class="pager" aria-label="Pokémon voisins">
-      <NuxtLink v-if="pokemon.prev" :to="pokemonPath(pokemon.prev)" rel="prev">
-        <img :src="miniUrl(pokemon.prev.id)" alt="" width="40" height="40" loading="lazy" />
-        <span>← #{{ pokemon.prev.id }}</span> {{ pokemon.prev.fr }}
+      <NuxtLink v-if="pokemon.previous" :to="pokemonPath(pokemon.previous)" rel="prev">
+        <img :src="spriteUrl(pokemon.previous.id)" alt="" width="40" height="40" loading="lazy" />
+        <span>← #{{ pokemon.previous.id }}</span> {{ pokemon.previous.name }}
       </NuxtLink>
       <NuxtLink v-if="pokemon.next" class="pager__next" :to="pokemonPath(pokemon.next)" rel="next">
-        <img :src="miniUrl(pokemon.next.id)" alt="" width="40" height="40" loading="lazy" />
-        <span>#{{ pokemon.next.id }} →</span> {{ pokemon.next.fr }}
+        <img :src="spriteUrl(pokemon.next.id)" alt="" width="40" height="40" loading="lazy" />
+        <span>#{{ pokemon.next.id }} →</span> {{ pokemon.next.name }}
       </NuxtLink>
     </nav>
   </div>

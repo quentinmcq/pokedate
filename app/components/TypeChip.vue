@@ -1,16 +1,17 @@
 <script setup lang="ts">
 import type { TypeKey } from '#shared/types/pokemon'
 
-defineProps<{ type: TypeKey; small?: boolean; mult?: number }>()
+const props = defineProps<{ type: TypeKey; small?: boolean; multiplier?: number }>()
+const typeStyle = computed(() => POKEMON_TYPES[props.type])
 </script>
 
 <template>
   <span
     class="type-chip"
     :class="{ 'type-chip--sm': small }"
-    :style="{ '--c': TYPES[type][1], '--ink': TYPES[type][3] }"
+    :style="{ '--c': typeStyle.color, '--ink': typeStyle.textColor }"
   >
-    <span aria-hidden="true">{{ TYPES[type][2] }}</span> {{ TYPES[type][0]
-    }}<span v-if="mult !== undefined" class="type-chip__mult">{{ multLabel(mult) }}</span>
+    <span aria-hidden="true">{{ typeStyle.emoji }}</span> {{ typeStyle.label
+    }}<span v-if="multiplier !== undefined" class="type-chip__mult">{{ formatMultiplier(multiplier) }}</span>
   </span>
 </template>

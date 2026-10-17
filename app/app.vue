@@ -1,9 +1,9 @@
 <script setup lang="ts">
-const { accent } = useAccent()
+const { accent } = usePageAccent()
 const { toast } = useToast()
 
 useHead({
-  htmlAttrs: { style: computed(() => `--accent:${accent.value[0]};--accent-2:${accent.value[1]}`) },
+  htmlAttrs: { style: computed(() => `--accent:${accent.value.primary};--accent-2:${accent.value.secondary}`) },
 })
 useSiteSeo()
 </script>
@@ -17,5 +17,7 @@ useSiteSeo()
     <NuxtPage />
   </main>
   <AppFooter />
-  <div class="toast" :class="{ 'toast--visible': toast.visible }" role="status" aria-live="polite">{{ toast.msg }}</div>
+  <div class="toast" :class="{ 'toast--visible': toast.visible }" role="status" aria-live="polite">
+    {{ toast.message }}
+  </div>
 </template>

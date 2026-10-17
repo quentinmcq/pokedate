@@ -1,14 +1,16 @@
 <script setup lang="ts">
-const { dex, count, shinyCount } = useDex()
-const { resetAccent } = useAccent()
+const { discoveries, discoveredCount, shinyCount } = usePokedex()
+const { resetAccent } = usePageAccent()
 resetAccent()
 
-const { data: list } = await useDexList()
-const onlyFound = ref(true)
+const { data: entries } = await usePokedexEntries()
+const showOnlyDiscovered = ref(true)
 
-const total = computed(() => list.value?.length ?? MAX_POKEMON)
-const shown = computed(() => (list.value ?? []).filter((p) => !onlyFound.value || dex.value[p.id]))
-const percent = computed(() => formatNumber((count.value / total.value) * 100))
+const totalCount = computed(() => entries.value?.length ?? POKEMON_COUNT)
+const visibleEntries = computed(() =>
+  (entries.value ?? []).filter((entry) => !showOnlyDiscovered.value || discoveries.value[entry.id]),
+)
+const completionPercent = computed(() => (discoveredCount.value / totalCount.value) * 100)
 
 usePageSeo({
   title: 'Mon Pokédex',
@@ -29,39 +31,34 @@ usePageSeo({
         class="progress"
         role="progressbar"
         aria-label="Progression du Pokédex"
-        :aria-valuenow="count"
+        :aria-valuenow="discoveredCount"
         aria-valuemin="0"
-        :aria-valuemax="total"
-        :aria-valuetext="`${count} Pokémon découverts sur ${total}`"
+        :aria-valuemax="totalCount"
+        :aria-valuetext="`${discoveredCount} Pokémon découverts sur ${totalCount}`"
       >
-        <div class="progress__fill" :style="{ width: `${(count / total) * 100}%` }" />
+        <div class="progress__fill" :style="{ width: `${completionPercent}%` }" />
       </div>
       <p class="dex-stats">
-        {{ count }} / {{ total }} découverts ({{ percent }} %)<template v-if="shinyCount">
+        {{ discoveredCount }} / {{ totalCount }} découverts ({{ formatNumber(completionPercent) }} %)<template
+          v-if="shinyCount"
+        >
           · {{ shinyCount }} shiny ✨</template
         >
       </p>
-      <label class="toggle"><input v-model="onlyFound" type="checkbox" /> Afficher seulement les découverts</label>
+      <label class="toggle"
+        ><input v-model="showOnlyDiscovered" type="checkbox" /> Afficher seulement les découverts</label
+      >
     </div>
 
     <ul class="dex-grid">
-      <li v-for="p in shown" :key="p.id">
-        <NuxtLink
-          v-if="dex[p.id]"
-          class="dex-cell"
-          :class="{ 'dex-cell--shiny': dex[p.id]!.s }"
-          :to="{ path: pokemonPath(p), query: dex[p.id]!.s ? { shiny: '1' } : {} }"
-        >
-          <img loading="lazy" decoding="async" :src="miniUrl(p.id, !!dex[p.id]!.s)" alt="" width="72" height="72" />
-          <b>{{ p.fr }}</b>
-          <span>#{{ padNumber(p.id, 4) }}</span>
-        </NuxtLink>
+      <li v-for="entry in visibleEntries" :key="entry.id">
+        <PokemonTile v-if="discoveries[entry.id]" :pokemon="entry" :shiny="discoveries[entry.id]?.shiny" />
         <div v-else class="dex-cell dex-cell--unknown">
           <span class="dex-cell__unknown" aria-hidden="true">?</span>
-          <span><span class="visually-hidden">Pas encore découvert : </span>#{{ padNumber(p.id, 4) }}</span>
+          <span><span class="visually-hidden">Pas encore découvert : </span>#{{ padNumber(entry.id, 4) }}</span>
         </div>
       </li>
-      <li v-if="!shown.length" class="empty-state">
+      <li v-if="!visibleEntries.length" class="empty-state">
         Ton Pokédex est vide.
         <NuxtLink to="/" class="text-link">Révèle ton premier Pokémon !</NuxtLink>
       </li>

@@ -1,62 +1,66 @@
-export function useSiteUrl() {
+const SITE_NAME = 'PokéDate'
+const DEFAULT_TITLE = 'PokéDate · Quel Pokémon se cache dans ta date ?'
+const DEFAULT_SHARE_IMAGE = '/og-default.jpg'
+
+export function useAbsoluteUrl() {
   const { siteUrl } = useRuntimeConfig().public
   return (path = '/') => new URL(path, siteUrl).href
 }
 
 export function useSiteSeo() {
   const route = useRoute()
-  const siteUrl = useSiteUrl()
-  const canonical = computed(() => siteUrl(route.path))
+  const absoluteUrl = useAbsoluteUrl()
+  const canonicalUrl = computed(() => absoluteUrl(route.path))
 
   useHead({
-    titleTemplate: (title) => (title ? `${title} · PokéDate` : 'PokéDate · Quel Pokémon se cache dans ta date ?'),
-    link: [{ rel: 'canonical', href: canonical }],
+    titleTemplate: (title) => (title ? `${title} · ${SITE_NAME}` : DEFAULT_TITLE),
+    link: [{ rel: 'canonical', href: canonicalUrl }],
   })
   useSeoMeta({
-    ogSiteName: 'PokéDate',
+    ogSiteName: SITE_NAME,
     ogLocale: 'fr_FR',
     ogType: 'website',
-    ogUrl: canonical,
+    ogUrl: canonicalUrl,
     twitterCard: 'summary_large_image',
   })
 }
 
+type JsonLd = Record<string, unknown>
+
 interface PageSeo {
   title: MaybeRefOrGetter<string | undefined>
-  ogTitle?: MaybeRefOrGetter<string | undefined>
+  shareTitle?: MaybeRefOrGetter<string | undefined>
   description: MaybeRefOrGetter<string>
-  image?: MaybeRefOrGetter<string | undefined>
-  imageAlt?: MaybeRefOrGetter<string | undefined>
+  shareImagePath?: MaybeRefOrGetter<string | undefined>
+  shareImageAlt?: MaybeRefOrGetter<string | undefined>
   noindex?: MaybeRefOrGetter<boolean>
-  jsonLd?: MaybeRefOrGetter<Record<string, unknown> | Record<string, unknown>[] | undefined>
+  structuredData?: MaybeRefOrGetter<JsonLd | JsonLd[] | undefined>
 }
 
+const serializeJsonLd = (data: JsonLd | JsonLd[]) => JSON.stringify(data).replace(/</g, '\\u003c')
+
 export function usePageSeo(seo: PageSeo) {
-  const siteUrl = useSiteUrl()
-  const image = computed(() => {
-    const path = toValue(seo.image)
-    return path ? siteUrl(path) : siteUrl('/og-default.jpg')
-  })
+  const absoluteUrl = useAbsoluteUrl()
+  const shareImageUrl = computed(() => absoluteUrl(toValue(seo.shareImagePath) ?? DEFAULT_SHARE_IMAGE))
 
   useSeoMeta({
     title: () => toValue(seo.title),
-    ogTitle: () => toValue(seo.ogTitle) ?? toValue(seo.title) ?? 'PokéDate · Quel Pokémon se cache dans ta date ?',
+    ogTitle: () => toValue(seo.shareTitle) ?? toValue(seo.title) ?? DEFAULT_TITLE,
     description: () => toValue(seo.description),
     ogDescription: () => toValue(seo.description),
-    ogImage: image,
+    ogImage: shareImageUrl,
     ogImageWidth: 1200,
     ogImageHeight: 630,
     ogImageType: 'image/jpeg',
-    ogImageAlt: () => toValue(seo.imageAlt) ?? 'PokéDate',
-    twitterImage: image,
+    ogImageAlt: () => toValue(seo.shareImageAlt) ?? SITE_NAME,
+    twitterImage: shareImageUrl,
     robots: () => (toValue(seo.noindex) ? 'noindex, follow' : 'index, follow, max-image-preview:large'),
   })
 
   useHead({
     script: computed(() => {
-      const data = toValue(seo.jsonLd)
-      if (!data) return []
-      return [{ type: 'application/ld+json', innerHTML: JSON.stringify(data).replace(/</g, '\\u003c') }]
+      const structuredData = toValue(seo.structuredData)
+      return structuredData ? [{ type: 'application/ld+json', innerHTML: serializeJsonLd(structuredData) }] : []
     }),
   })
 }
