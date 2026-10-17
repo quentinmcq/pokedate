@@ -8,7 +8,6 @@
     "directory": "./.output/public",
     "binding": "ASSETS",
   },
-  // No invocation logs: request URLs may contain birth dates and player names.
   "observability": { "enabled": true, "logs": { "enabled": true, "invocation_logs": false } },
   "workers_dev": true,
   "preview_urls": false,

@@ -2,7 +2,6 @@ import type { LocationQuery } from 'vue-router'
 
 export const PLAYER_NAME_MAX_LENGTH = 20
 
-// Short keys keep shared links compact. Birth dates are never part of a duel URL.
 const QUERY_KEYS = {
   pokemonIdA: 'pa',
   pokemonIdB: 'pb',
