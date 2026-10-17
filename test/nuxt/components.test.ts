@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import { mountSuspended } from '@nuxt/test-utils/runtime'
-import TypeChip from '~/components/TypeChip.vue'
-import DateFormula from '~/components/DateFormula.vue'
-import AppFooter from '~/components/AppFooter.vue'
+import TypeChip from '~/components/pokemon/TypeChip.vue'
+import DateFormula from '~/components/date/DateFormula.vue'
+import AppFooter from '~/components/layout/AppFooter.vue'
 
 describe('TypeChip', () => {
   it('affiche le nom français et les couleurs du type', async () => {

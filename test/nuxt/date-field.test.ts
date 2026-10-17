@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { nextTick } from 'vue'
-import DateField from '~/components/DateField.vue'
+import DateField from '~/components/date/DateField.vue'
 import type { DateFieldValue } from '#shared/types/pokemon'
 
 async function mountField(initial: DateFieldValue = { day: '', month: '', year: '' }) {

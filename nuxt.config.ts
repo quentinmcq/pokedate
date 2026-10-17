@@ -11,6 +11,8 @@ export default defineNuxtConfig({
 
   modules: ['@nuxt/fonts', '@nuxt/icon', 'nuxt-security'],
 
+  components: [{ path: '~/components', pathPrefix: false }],
+
   css: ['~/assets/scss/main.scss'],
 
   runtimeConfig: {
