@@ -41,9 +41,6 @@ const sparkles = ref<{ id: number; left: number; top: number; delay: number }[]>
 
 const primaryType = computed(() => props.pokemon.types[0])
 const generation = computed(() => generationOf(props.pokemon.generation))
-const personality = computed(
-  () => `${TYPE_PERSONALITY[primaryType.value]} ${STAT_SUPERPOWER[strongestStat(props.pokemon.stats)]}`,
-)
 const hasEvolutions = computed(() => props.pokemon.evolutionStages.flat().length > 1)
 
 function reveal() {
@@ -176,18 +173,10 @@ function sharePokemon() {
           <NuxtLink v-if="date" class="btn btn--ghost btn--sm" :to="{ path: '/duel', query: { a: toIsoDate(date) } }"
             ><Icon name="lucide:swords" aria-hidden="true" /> Défier un ami</NuxtLink
           >
-          <NuxtLink v-if="date" class="btn btn--ghost btn--sm mon-card__sheet-link" :to="pokemonPath(pokemon)"
-            >Voir sa fiche</NuxtLink
-          >
         </div>
       </header>
 
-      <div class="mon-card__summary">
-        <p class="mon-card__desc">{{ pokemon.description }}</p>
-        <p class="mon-card__horoscope">
-          <strong>Si tu étais {{ pokemon.name }}…</strong> {{ personality }}
-        </p>
-      </div>
+      <p class="mon-card__summary">{{ pokemon.description }}</p>
 
       <dl class="mon-card__facts">
         <div class="mon-card__fact">

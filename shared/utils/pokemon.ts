@@ -165,36 +165,6 @@ export const GENERATIONS: Generation[] = [
 
 export const generationOf = (generationNumber: number) => GENERATIONS[generationNumber - 1]
 
-export const TYPE_PERSONALITY: Record<TypeKey, string> = {
-  normal: "Fiable et adaptable, tu t'entends avec absolument tout le monde.",
-  fire: "Tempérament de feu : tu t'enflammes vite, pour le meilleur.",
-  water: "Calme en surface, profond à l'intérieur.",
-  electric: 'Toujours à 100 % de batterie (sauf le lundi matin).',
-  grass: 'Zen et patient, tu as la main verte… et le cœur aussi.',
-  ice: 'Cool en toutes circonstances. Un peu glacial au réveil.',
-  fighting: 'Jamais sans ton échauffement : aucun défi ne te fait peur.',
-  poison: 'Un humour piquant que tes potes adorent (à petite dose).',
-  ground: "Les pieds sur terre : c'est toi le pilier du groupe.",
-  flying: "Tête en l'air, mais toujours une longueur d'avance.",
-  psychic: "Tu sais déjà ce que tes amis vont dire. C'est un peu inquiétant.",
-  bug: 'Petit mais travailleur, tu brilles en équipe.',
-  rock: 'Solide comme un roc… et têtu comme une pierre.',
-  ghost: 'Mystérieux, tu quittes les soirées sans prévenir personne.',
-  dragon: 'Charisme légendaire. Et tu le sais.',
-  dark: 'Un côté obscur… surtout avant le premier café.',
-  steel: "Volonté d'acier et routine millimétrée.",
-  fairy: 'Tu mets des paillettes dans la vie des autres.',
-}
-
-export const STAT_SUPERPOWER: Record<StatKey, string> = {
-  hp: "Ton super-pouvoir : l'endurance, tu tiens jusqu'au bout de la nuit.",
-  attack: "Ton super-pouvoir : foncer. Réfléchir, c'est pour après.",
-  defense: "Ton super-pouvoir : rien ne t'atteint, surtout pas les critiques.",
-  specialAttack: 'Ton super-pouvoir : une imagination qui déborde.',
-  specialDefense: "Ton super-pouvoir : la sagesse, tes conseils valent de l'or.",
-  speed: 'Ton super-pouvoir : la vitesse. Toujours premier arrivé au buffet.',
-}
-
 export const formatNumber = (value: number, maxDecimals = 1) =>
   value.toLocaleString('fr-FR', { maximumFractionDigits: maxDecimals })
 
