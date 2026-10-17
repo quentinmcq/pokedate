@@ -8,6 +8,7 @@ dist
 
 # Cloudflare
 .wrangler
+.data
 .dev.vars
 
 # Misc
