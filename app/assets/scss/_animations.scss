@@ -1,0 +1,77 @@
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+}
+@keyframes pop {
+  0% {
+    transform: scale(0.3);
+    opacity: 0;
+  }
+  70% {
+    transform: scale(1.15);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+@keyframes shake {
+  0%,
+  100% {
+    transform: rotate(0);
+  }
+  10%,
+  40%,
+  70% {
+    transform: rotate(-22deg);
+  }
+  25%,
+  55%,
+  85% {
+    transform: rotate(22deg);
+  }
+}
+@keyframes wobble {
+  30% {
+    transform: rotate(-20deg);
+  }
+  60% {
+    transform: rotate(15deg);
+  }
+}
+@keyframes twinkle {
+  0%,
+  100% {
+    opacity: 0;
+    transform: scale(0.4) rotate(0);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1) rotate(25deg);
+  }
+}
+@keyframes lunge-l {
+  50% {
+    transform: translateX(18px) rotate(4deg);
+  }
+}
+@keyframes lunge-r {
+  0%,
+  100% {
+    transform: scaleX(-1);
+  }
+  50% {
+    transform: scaleX(-1) translateX(18px) rotate(4deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
