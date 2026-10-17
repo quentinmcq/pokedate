@@ -17,16 +17,38 @@
   &__grid {
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+    grid-template-areas:
+      'stage header'
+      'stage summary'
+      'facts stats'
+      'evolutions matchups';
+    align-items: start;
+    gap: space(5) space(6);
+    padding: 0 space(6) space(6);
+
+    &--no-evolutions {
+      grid-template-areas:
+        'stage header'
+        'stage summary'
+        'facts stats'
+        'matchups matchups';
+    }
 
     @include bp(tablet) {
       grid-template-columns: minmax(0, 1fr);
+      grid-template-areas: 'stage' 'header' 'summary' 'facts' 'stats' 'matchups' 'evolutions';
+      padding: 0 space(5) space(6);
+
+      &--no-evolutions {
+        grid-template-areas: 'stage' 'header' 'summary' 'facts' 'stats' 'matchups';
+      }
     }
   }
 
   &__stage {
-    position: sticky;
-    top: space(3);
-    align-self: start;
+    grid-area: stage;
+    position: relative;
+    align-self: stretch;
     display: grid;
     place-items: center;
     padding: space(8) space(5) space(2);
@@ -34,8 +56,6 @@
     cursor: default;
 
     @include bp(tablet) {
-      position: relative;
-      top: 0;
       min-height: 0;
       padding-top: space(12);
     }
@@ -153,16 +173,35 @@
     animation: twinkle 1.6s ease-in-out infinite;
   }
 
-  &__info {
-    padding: space(6) space(6) space(6) space(2);
+  &__header {
+    grid-area: header;
     display: flex;
     flex-direction: column;
-    gap: space(5);
-    min-width: 0;
+    gap: space(4);
+    padding-top: space(6);
 
     @include bp(tablet) {
-      padding: space(2) space(5) space(6);
+      padding-top: 0;
     }
+  }
+
+  &__summary {
+    grid-area: summary;
+    display: flex;
+    flex-direction: column;
+    gap: space(4);
+  }
+
+  &__stats {
+    grid-area: stats;
+  }
+
+  &__matchups {
+    grid-area: matchups;
+  }
+
+  &__evolutions {
+    grid-area: evolutions;
   }
 
   &__id {
@@ -170,9 +209,13 @@
     color: color('text-muted');
     font-size: 0.95rem;
     display: flex;
-    gap: space(3);
+    gap: space(2) space(3);
     align-items: center;
     flex-wrap: wrap;
+
+    span {
+      white-space: nowrap;
+    }
   }
 
   &__name {
@@ -199,12 +242,6 @@
     color: #dcdcf5;
   }
 
-  &__lang {
-    font-size: 0.75rem;
-    color: color('text-muted');
-    margin-left: 6px;
-  }
-
   &__horoscope {
     margin: 0;
     padding: 14px space(4);
@@ -219,8 +256,9 @@
   }
 
   &__facts {
+    grid-area: facts;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 10px;
     margin: 0;
   }
@@ -238,6 +276,10 @@
       margin: 2px 0 0;
       font-weight: weight('bold');
     }
+
+    &--wide {
+      grid-column: 1 / -1;
+    }
   }
 
   &__hint {
@@ -248,8 +290,26 @@
     margin-top: 2px;
   }
 
+  &__abilities {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px space(4);
+  }
+
   &__ability {
-    display: block;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  &__hidden-ability {
+    font-size: font-size('2xs');
+    font-weight: weight('regular');
+    color: color('text-muted');
+    padding: 1px 8px;
+    border: 1px solid color('line');
+    border-radius: radius('pill');
+    white-space: nowrap;
   }
 
   &__section-title {
@@ -263,6 +323,17 @@
     display: flex;
     gap: space(2);
     flex-wrap: wrap;
+
+    @include bp(phone) {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  &__sheet-link {
+    @include bp(phone) {
+      grid-column: 1 / -1;
+    }
   }
 }
 

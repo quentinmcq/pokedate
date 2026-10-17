@@ -103,7 +103,7 @@ function sharePokemon() {
     :style="{ '--accent': typeColor(primaryType) }"
     :aria-labelledby="`pokemon-${pokemon.id}-name`"
   >
-    <div class="mon-card__grid">
+    <div class="mon-card__grid" :class="{ 'mon-card__grid--no-evolutions': !hasEvolutions }">
       <div class="mon-card__stage" :class="{ 'mon-card__stage--hidden': !isRevealed }">
         <span class="mon-card__bignum" aria-hidden="true">{{ padNumber(pokemon.id, 4) }}</span>
         <div class="mon-card__halo" aria-hidden="true" />
@@ -153,10 +153,10 @@ function sharePokemon() {
         >
       </div>
 
-      <div class="mon-card__info">
+      <header class="mon-card__header">
         <div class="mon-card__id">
-          N° {{ padNumber(pokemon.id, 4) }}
-          <template v-if="generation">· Gén. {{ generation.roman }} ({{ generation.region }})</template>
+          <span>N° {{ padNumber(pokemon.id, 4) }}</span>
+          <span v-if="generation">Gén. {{ generation.roman }} ({{ generation.region }})</span>
           <span v-if="pokemon.rarity === 'legendary'" class="tag">Légendaire</span>
           <span v-if="pokemon.rarity === 'mythical'" class="tag tag--myth">Fabuleux</span>
           <span v-if="pokemon.isBaby" class="tag tag--baby">Bébé</span>
@@ -168,54 +168,6 @@ function sharePokemon() {
         <div class="chip-list">
           <TypeChip v-for="type in pokemon.types" :key="type" :type="type" />
         </div>
-        <p class="mon-card__desc">
-          {{ pokemon.description
-          }}<span v-if="pokemon.descriptionIsEnglish" class="mon-card__lang">(pas encore traduit en français)</span>
-        </p>
-        <p class="mon-card__horoscope">
-          <strong>Si tu étais {{ pokemon.name }}…</strong> {{ personality }}
-        </p>
-
-        <dl class="mon-card__facts">
-          <div class="mon-card__fact">
-            <dt>Taille</dt>
-            <dd>
-              {{ formatNumber(pokemon.heightMeters) }} m
-              <span class="mon-card__hint">{{ describeHeight(pokemon.heightMeters) }}</span>
-            </dd>
-          </div>
-          <div class="mon-card__fact">
-            <dt>Poids</dt>
-            <dd>
-              {{ formatNumber(pokemon.weightKg) }} kg
-              <span class="mon-card__hint">{{ describeWeight(pokemon.weightKg) }}</span>
-            </dd>
-          </div>
-          <div class="mon-card__fact">
-            <dt>Talents</dt>
-            <dd>
-              <span v-for="ability in pokemon.abilities" :key="ability.name" class="mon-card__ability">
-                {{ ability.name }}<span v-if="ability.hidden" class="mon-card__hint">(talent caché)</span>
-              </span>
-            </dd>
-          </div>
-        </dl>
-
-        <section>
-          <component :is="sectionHeadingTag" class="mon-card__section-title">Statistiques de base</component>
-          <PokemonStatBars :stats="pokemon.stats" :filled="areStatBarsFilled" />
-        </section>
-
-        <section>
-          <component :is="sectionHeadingTag" class="mon-card__section-title">Types face à lui</component>
-          <PokemonMatchups :types="pokemon.types" />
-        </section>
-
-        <section v-if="hasEvolutions">
-          <component :is="sectionHeadingTag" class="mon-card__section-title">Évolutions</component>
-          <PokemonEvolutions :stages="pokemon.evolutionStages" :current-id="pokemon.id" />
-        </section>
-
         <div class="mon-card__actions">
           <button class="btn btn--primary btn--sm" type="button" @click="sharePokemon">
             <Icon name="lucide:share-2" aria-hidden="true" /> Partager
@@ -223,9 +175,58 @@ function sharePokemon() {
           <NuxtLink v-if="date" class="btn btn--ghost btn--sm" :to="{ path: '/duel', query: { a: toIsoDate(date) } }"
             ><Icon name="lucide:swords" aria-hidden="true" /> Défier un ami</NuxtLink
           >
-          <NuxtLink v-if="date" class="btn btn--ghost btn--sm" :to="pokemonPath(pokemon)">Voir sa fiche</NuxtLink>
+          <NuxtLink v-if="date" class="btn btn--ghost btn--sm mon-card__sheet-link" :to="pokemonPath(pokemon)"
+            >Voir sa fiche</NuxtLink
+          >
         </div>
+      </header>
+
+      <div class="mon-card__summary">
+        <p class="mon-card__desc">{{ pokemon.description }}</p>
+        <p class="mon-card__horoscope">
+          <strong>Si tu étais {{ pokemon.name }}…</strong> {{ personality }}
+        </p>
       </div>
+
+      <dl class="mon-card__facts">
+        <div class="mon-card__fact">
+          <dt>Taille</dt>
+          <dd>
+            {{ formatNumber(pokemon.heightMeters) }} m
+            <span class="mon-card__hint">{{ describeHeight(pokemon.heightMeters) }}</span>
+          </dd>
+        </div>
+        <div class="mon-card__fact">
+          <dt>Poids</dt>
+          <dd>
+            {{ formatNumber(pokemon.weightKg) }} kg
+            <span class="mon-card__hint">{{ describeWeight(pokemon.weightKg) }}</span>
+          </dd>
+        </div>
+        <div class="mon-card__fact mon-card__fact--wide">
+          <dt>Talents</dt>
+          <dd class="mon-card__abilities">
+            <span v-for="ability in pokemon.abilities" :key="ability.name" class="mon-card__ability">
+              {{ ability.name }}<span v-if="ability.hidden" class="mon-card__hidden-ability">talent caché</span>
+            </span>
+          </dd>
+        </div>
+      </dl>
+
+      <section class="mon-card__stats">
+        <component :is="sectionHeadingTag" class="mon-card__section-title">Statistiques de base</component>
+        <PokemonStatBars :stats="pokemon.stats" :filled="areStatBarsFilled" />
+      </section>
+
+      <section class="mon-card__matchups">
+        <component :is="sectionHeadingTag" class="mon-card__section-title">Types face à lui</component>
+        <PokemonMatchups :types="pokemon.types" />
+      </section>
+
+      <section v-if="hasEvolutions" class="mon-card__evolutions">
+        <component :is="sectionHeadingTag" class="mon-card__section-title">Évolutions</component>
+        <PokemonEvolutions :stages="pokemon.evolutionStages" :current-id="pokemon.id" />
+      </section>
     </div>
   </article>
 </template>
