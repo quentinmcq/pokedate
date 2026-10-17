@@ -7,11 +7,9 @@ export interface Attack {
   type: TypeKey
   mult: number
   dmg: number
-  /** tours pour mettre l'adversaire K.O. (Infinity si immunisé) */
   turns: number
 }
 
-// Combat simplifié au niveau 50 : une attaque de puissance 80 du meilleur type, physique ou spéciale.
 export function attack(a: Fighter, b: Fighter): Attack {
   const phys = a.stats[1]! >= a.stats[3]!
   const A = (phys ? a.stats[1]! : a.stats[3]!) + 5
@@ -28,7 +26,6 @@ export interface DuelResult {
   ab: Attack
   ba: Attack
   aFirst: boolean
-  /** null = match nul */
   winner: 'A' | 'B' | null
 }
 

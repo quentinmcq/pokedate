@@ -1,15 +1,11 @@
 import type { DateInput, DateParts } from '../types/pokemon'
 import { padNumber } from './pokemon'
 
-// ---------- La règle du jeu ----------
-
-/** Dernier chiffre du jour, du mois et de l'année → numéro du Pokémon (000 → #1000) */
 export function pokemonIdFromDate({ d, m, y }: DateParts) {
   const n = (d % 10) * 100 + (m % 10) * 10 + (y % 10)
   return n === 0 ? 1000 : n
 }
 
-/** FNV-1a : même date → même résultat, pour tout le monde */
 export function hashString(str: string) {
   let h = 2166136261
   for (const c of str) {
@@ -19,13 +15,9 @@ export function hashString(str: string) {
   return h >>> 0
 }
 
-/** ~5 % des dates sortent en version chromatique */
 export const isShinyDate = ({ d, m, y }: DateParts) => hashString(`${d}-${m}-${y}`) % 20 === 0
 
-/** Date « miroir » (jour = mois) : un des 25 Pokémon #1001–1025, inaccessibles autrement */
 export const secretIdForDate = ({ d, m, y }: DateParts) => (d === m ? 1001 + ((y * 31 + d) % 25) : null)
-
-// ---------- Saisie et URL ----------
 
 export function validateDateInput(v: DateInput): DateParts | { error: string } {
   const raw = { d: v.d.trim(), m: v.m.trim(), y: v.y.trim() }
@@ -46,7 +38,6 @@ export function isRealDate({ d, m, y }: DateParts) {
   return m >= 1 && m <= 12 && d >= 1 && dt.getUTCDate() === d && dt.getUTCMonth() === m - 1
 }
 
-/** 1995-03-12 */
 export const toIsoDate = ({ d, m, y }: DateParts) => `${padNumber(y, 4)}-${padNumber(m)}-${padNumber(d)}`
 
 export function parseIsoDate(s: unknown): DateParts | null {

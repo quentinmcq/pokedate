@@ -1,5 +1,3 @@
-// Récupère les 1025 Pokémon depuis PokeAPI et écrit un JSON compact.
-// Usage : npm run data  (écrit server/data/pokemon.json)
 import { writeFileSync } from 'node:fs'
 
 const OUT = process.argv[2]
@@ -95,7 +93,7 @@ const pokemon = raw.map(({ p, s }) => {
   const flav = s.flavor_text_entries.filter((f) => f.language.name === 'fr')
   const flavEn = s.flavor_text_entries.filter((f) => f.language.name === 'en')
   const desc = clean((flav.at(-1) || flavEn.at(-1))?.flavor_text || '')
-  const descEn = !flav.length // pas encore de traduction FR (souvent la Gen 9)
+  const descEn = !flav.length
   const stat = (n) => p.stats.find((x) => x.stat.name === n).base_stat
   const evoIdx = s.evolution_chain ? chainIndex[s.evolution_chain.url] : -1
   return {

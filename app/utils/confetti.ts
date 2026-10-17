@@ -1,4 +1,3 @@
-/** Pluie de confettis sur le <canvas id="confetti"> de app.vue */
 export function launchConfetti(colors: string[]) {
   if (matchMedia('(prefers-reduced-motion: reduce)').matches) return
   const c = document.getElementById('confetti') as HTMLCanvasElement | null
