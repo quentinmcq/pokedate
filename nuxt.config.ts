@@ -87,6 +87,7 @@ export default defineNuxtConfig({
 
   $development: {
     nitro: { publicAssets: [{ dir: GENERATED, baseURL: '/' }] },
+    vite: { optimizeDeps: { include: ['@vue/devtools-core', '@vue/devtools-kit'] } },
   },
 
   hooks: {
