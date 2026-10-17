@@ -30,6 +30,24 @@ test.describe('Fiches Pokémon', () => {
     await expect(page.locator('.gen-block')).toHaveCount(9)
     await expect(page.locator('.gen-block .dex-cell')).toHaveCount(1025)
   })
+
+  test('cherche un Pokémon par son nom ou son type', async ({ page }) => {
+    await gotoHydrated(page, '/pokemon')
+    const search = page.getByRole('searchbox', { name: 'Rechercher un Pokémon' })
+    await search.fill('evoli')
+    await expect(page.locator('.dex-cell')).toHaveText([/Évoli/])
+    await expect(page.locator('.dex-search__status')).toHaveText('1 Pokémon trouvé')
+
+    await search.fill('')
+    await page.getByLabel('Filtrer par type').selectOption({ label: 'Dragon' })
+    await expect(page.locator('.dex-cell', { hasText: 'Muplodocus' })).toBeVisible()
+    await expect(page.locator('.dex-cell', { hasText: 'Pikachu' })).toHaveCount(0)
+
+    await search.fill('pikachu')
+    await expect(page.getByText('Aucun Pokémon ne correspond à ta recherche.')).toBeVisible()
+    await page.getByRole('button', { name: 'Tout afficher' }).click()
+    await expect(page.locator('.dex-cell')).toHaveCount(1025)
+  })
 })
 
 test.describe('Référencement', () => {
