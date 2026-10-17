@@ -1,0 +1,98 @@
+@use '../abstracts' as *;
+
+.btn {
+  @include reset-button;
+  @include tap-target;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: space(2);
+  padding: space(3) space(6);
+  border-radius: radius('pill');
+  font-weight: weight('bold');
+  font-size: font-size('md');
+  line-height: 1.2;
+  text-decoration: none;
+  color: inherit;
+  transition:
+    transform duration('fast') ease('out'),
+    box-shadow duration('fast') ease('out'),
+    background duration('base');
+
+  &:active {
+    transform: scale(0.96);
+  }
+
+  &--primary {
+    background: color('brand-strong');
+    color: #fff;
+    box-shadow:
+      0 6px 0 color('brand-shadow'),
+      0 12px 30px rgba(255, 75, 62, 0.3);
+
+    &:hover {
+      transform: translateY(-2px);
+    }
+    &:active {
+      box-shadow: 0 2px 0 color('brand-shadow');
+      transform: translateY(3px);
+    }
+  }
+
+  &--ghost {
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid color('line');
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.13);
+    }
+  }
+
+  &--sm {
+    padding: space(2) space(4);
+    font-size: font-size('sm');
+  }
+}
+
+.icon-btn {
+  @include reset-button;
+  @include tap-target;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(0, 0, 0, 0.3);
+  font-size: 1.15rem;
+  display: grid;
+  place-items: center;
+  transition:
+    transform duration('fast'),
+    background duration('base');
+
+  &:hover {
+    transform: scale(1.08);
+    background: rgba(0, 0, 0, 0.45);
+  }
+
+  &[aria-pressed='true'] {
+    background: color('highlight');
+    color: color('on-light');
+    border-color: color('highlight');
+  }
+}
+
+.actions {
+  display: flex;
+  gap: space(3);
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: space(2);
+
+  &--spaced {
+    margin-top: space(4);
+  }
+}
+
+.text-link {
+  color: color('highlight');
+  font-weight: weight('semibold');
+  text-underline-offset: 3px;
+}

@@ -1,0 +1,51 @@
+@use 'sass:map';
+@use 'tokens' as t;
+@use 'functions' as f;
+
+@mixin bp($name) {
+  @if not map.has-key(t.$breakpoints, $name) {
+    @error 'Point de rupture inconnu : #{$name}';
+  }
+  @media (max-width: map.get(t.$breakpoints, $name)) {
+    @content;
+  }
+}
+
+@mixin focus-ring($offset: 3px) {
+  &:focus-visible {
+    outline: 3px solid f.color('highlight');
+    outline-offset: $offset;
+  }
+}
+
+@mixin surface($level: 2) {
+  background: f.color('surface-#{$level}');
+  border: 1px solid f.color('line');
+}
+
+@mixin eyebrow {
+  font-size: f.font-size('2xs');
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: f.color('text-muted');
+  font-weight: f.weight('semibold');
+}
+
+@mixin tap-target {
+  min-width: t.$tap-target;
+  min-height: t.$tap-target;
+}
+
+@mixin truncate {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@mixin reset-button {
+  border: 0;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+}

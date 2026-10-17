@@ -1,0 +1,41 @@
+@use '../abstracts' as *;
+
+h1,
+.h1 {
+  font-size: font-size('display');
+  line-height: 1.02;
+  letter-spacing: -0.035em;
+  margin: 0 0 space(3);
+  font-weight: weight('black');
+  text-wrap: balance;
+}
+
+h2 {
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+p {
+  text-wrap: pretty;
+}
+
+.lead {
+  color: color('text-muted');
+  max-width: 540px;
+  margin: 0 auto space(6);
+  font-size: 1.05rem;
+  line-height: 1.5;
+
+  b,
+  strong {
+    color: color('text');
+  }
+}
+
+.eyebrow {
+  @include eyebrow;
+}
+
+.mono {
+  font-family: var(--font-mono);
+}

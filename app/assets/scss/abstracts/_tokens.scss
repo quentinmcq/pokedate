@@ -1,0 +1,134 @@
+@use 'sass:map';
+
+$palette: (
+  'night-950': #0e1024,
+  'night-900': #14162b,
+  'night-850': #1a1d3a,
+  'night-800': #22264a,
+  'night-700': #2c3160,
+  'night-600': #353b70,
+  'night-400': #8287c2,
+  'night-300': #a9acd6,
+  'night-100': #e6e5fb,
+  'white': #ffffff,
+  'cherry-500': #ff4b3e,
+  'cherry-600': #d43629,
+  'cherry-800': #8f1f16,
+  'amber-400': #ffd23f,
+  'amber-200': #fff3b0,
+  'mint-300': #7dffa9,
+  'pink-200': #ffc6dd,
+  'violet-500': #7b5cff,
+  'violet-200': #c9c0ff,
+  'error-300': #ff9a8f,
+);
+
+$colors: (
+  'bg': map.get($palette, 'night-900'),
+  'surface-1': map.get($palette, 'night-850'),
+  'surface-2': map.get($palette, 'night-800'),
+  'surface-3': map.get($palette, 'night-700'),
+  'line': map.get($palette, 'night-600'),
+  'text': #f4f3ff,
+  'text-muted': map.get($palette, 'night-300'),
+  'text-subtle': #8f93c7,
+  'placeholder': map.get($palette, 'night-400'),
+  'on-light': map.get($palette, 'night-900'),
+  'brand': map.get($palette, 'cherry-500'),
+  'brand-strong': map.get($palette, 'cherry-600'),
+  'brand-shadow': map.get($palette, 'cherry-800'),
+  'highlight': map.get($palette, 'amber-400'),
+  'highlight-soft': map.get($palette, 'amber-200'),
+  'success': map.get($palette, 'mint-300'),
+  'error': map.get($palette, 'error-300'),
+  'mystic': map.get($palette, 'violet-500'),
+  'mystic-soft': map.get($palette, 'violet-200'),
+  'baby': map.get($palette, 'pink-200'),
+);
+
+$space: (
+  '0': 0,
+  '1': 4px,
+  '2': 8px,
+  '3': 12px,
+  '4': 16px,
+  '5': 20px,
+  '6': 24px,
+  '8': 32px,
+  '10': 40px,
+  '12': 48px,
+  '16': 64px,
+);
+
+$radius: (
+  'sm': 8px,
+  'md': 12px,
+  'lg': 16px,
+  'xl': 22px,
+  'pill': 999px,
+);
+
+$font-family: (
+  'display': (
+    'Bricolage Grotesque',
+    system-ui,
+    sans-serif,
+  ),
+  'mono': (
+    'JetBrains Mono',
+    ui-monospace,
+    monospace,
+  ),
+);
+
+$font-size: (
+  '2xs': 0.72rem,
+  'xs': 0.8rem,
+  'sm': 0.9rem,
+  'md': 1rem,
+  'lg': 1.1rem,
+  'xl': 1.5rem,
+  '2xl': 2rem,
+  'display': clamp(2rem, 6vw, 3.4rem),
+  'title': clamp(2.2rem, 5.5vw, 3.2rem),
+);
+
+$font-weight: (
+  'regular': 400,
+  'semibold': 600,
+  'bold': 700,
+  'black': 800,
+);
+
+$shadow: (
+  'sm': 0 4px 12px rgba(0, 0, 0, 0.25),
+  'md': 0 12px 30px rgba(0, 0, 0, 0.35),
+  'glow': 0 30px 80px -20px color-mix(in srgb, var(--accent) 45%, transparent),
+);
+
+$z: (
+  'base': 1,
+  'header': 2,
+  'overlay': 50,
+  'toast': 60,
+);
+
+$duration: (
+  'fast': 150ms,
+  'base': 250ms,
+  'slow': 600ms,
+);
+
+$ease: (
+  'out': cubic-bezier(0.2, 0.8, 0.2, 1),
+  'spring': cubic-bezier(0.2, 1.4, 0.4, 1),
+);
+
+$breakpoints: (
+  'phone': 480px,
+  'small': 640px,
+  'tablet': 760px,
+);
+
+$container-width: 980px;
+$tap-target: 44px;

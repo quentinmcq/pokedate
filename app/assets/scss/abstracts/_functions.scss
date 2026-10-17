@@ -1,0 +1,50 @@
+@use 'sass:map';
+@use 'tokens' as t;
+
+@function color($name) {
+  @if not map.has-key(t.$colors, $name) {
+    @error 'Couleur inconnue : #{$name}';
+  }
+  @return var(--color-#{$name});
+}
+
+@function space($step) {
+  @if not map.has-key(t.$space, '#{$step}') {
+    @error 'Espacement inconnu : #{$step}';
+  }
+  @return var(--space-#{$step});
+}
+
+@function radius($name) {
+  @if not map.has-key(t.$radius, $name) {
+    @error 'Rayon inconnu : #{$name}';
+  }
+  @return var(--radius-#{$name});
+}
+
+@function font-size($name) {
+  @if not map.has-key(t.$font-size, $name) {
+    @error 'Taille de texte inconnue : #{$name}';
+  }
+  @return var(--font-size-#{$name});
+}
+
+@function weight($name) {
+  @return map.get(t.$font-weight, $name);
+}
+
+@function shadow($name) {
+  @return var(--shadow-#{$name});
+}
+
+@function z($name) {
+  @return map.get(t.$z, $name);
+}
+
+@function duration($name) {
+  @return var(--duration-#{$name});
+}
+
+@function ease($name) {
+  @return var(--ease-#{$name});
+}

@@ -1,0 +1,35 @@
+@use 'sass:map';
+@use 'sass:list';
+@use '../abstracts/tokens' as t;
+
+:root {
+  color-scheme: dark;
+
+  @each $name, $value in t.$colors {
+    --color-#{$name}: #{$value};
+  }
+  @each $name, $value in t.$space {
+    --space-#{$name}: #{$value};
+  }
+  @each $name, $value in t.$radius {
+    --radius-#{$name}: #{$value};
+  }
+  @each $name, $value in t.$font-size {
+    --font-size-#{$name}: #{$value};
+  }
+  @each $name, $value in t.$font-family {
+    --font-#{$name}: #{$value};
+  }
+  @each $name, $value in t.$shadow {
+    --shadow-#{$name}: #{$value};
+  }
+  @each $name, $value in t.$duration {
+    --duration-#{$name}: #{$value};
+  }
+  @each $name, $value in t.$ease {
+    --ease-#{$name}: #{$value};
+  }
+
+  --accent: #{map.get(t.$colors, 'brand')};
+  --accent-2: #ff8a3d;
+}

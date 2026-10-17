@@ -1,0 +1,24 @@
+<script setup lang="ts">
+const { portfolioUrl } = useRuntimeConfig().public
+</script>
+
+<template>
+  <footer class="site-footer">
+    <div class="site-footer__inner">
+      <nav class="site-footer__nav" aria-label="Liens du site">
+        <NuxtLink to="/">Mon Pokémon</NuxtLink>
+        <NuxtLink to="/duel">Duel</NuxtLink>
+        <NuxtLink to="/pokedex">Mon Pokédex</NuxtLink>
+        <NuxtLink to="/pokemon">Les 1025 Pokémon</NuxtLink>
+      </nav>
+      <p class="site-footer__author">
+        Fait avec ❤️ par <a :href="portfolioUrl" target="_blank" rel="noopener">Quentin Macq</a>
+      </p>
+      <p class="site-footer__legal">
+        Données : <a href="https://pokeapi.co" target="_blank" rel="noopener">PokeAPI</a>. Pokémon © Nintendo / Game
+        Freak / The Pokémon Company. Projet de fan, non officiel et sans but commercial. Ton Pokédex reste dans ton
+        navigateur : aucun compte, aucun cookie, aucun traceur.
+      </p>
+    </div>
+  </footer>
+</template>

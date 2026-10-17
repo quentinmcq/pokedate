@@ -1,25 +1,32 @@
 <script setup lang="ts">
 import type { DateParts, PokemonDetail } from '#shared/types/pokemon'
 
-const props = defineProps<{
-  pokemon: PokemonDetail
-  /** date d'où vient le Pokémon (absente en mode exploration) */
-  date?: DateParts | null
-  shiny?: boolean
-  /** révélation façon « Qui est-ce ? » */
-  animate?: boolean
-}>()
+const props = withDefaults(
+  defineProps<{
+    pokemon: PokemonDetail
+    date?: DateParts | null
+    shiny?: boolean
+    animate?: boolean
+    headingLevel?: 'h1' | 'h2'
+  }>(),
+  { date: null, shiny: false, animate: false, headingLevel: 'h2' },
+)
 
 const p = computed(() => props.pokemon)
+const sectionHeading = computed(() => (props.headingLevel === 'h1' ? 'h2' : 'h3'))
 const { setAccent } = useAccent()
 setAccent(props.pokemon.types)
 
 const { catchPokemon } = useDex()
 const share = useShare()
-const absoluteUrl = useAbsoluteUrl()
+const siteUrl = useSiteUrl()
 const { show: toast } = useToast()
 
-const showShiny = ref(!!props.shiny)
+const showShiny = ref(props.shiny)
+watch(
+  () => props.shiny,
+  (v) => (showShiny.value = v),
+)
 const revealed = ref(!props.animate)
 const barsOn = ref(false)
 const isNew = ref(false)
@@ -73,42 +80,52 @@ function toggleShiny() {
 }
 
 function onShare() {
-  if (props.date) {
-    const { d, m } = props.date
-    share(
-      `Ma date (${padNumber(d)}/${padNumber(m)}) me donne ${p.value.fr} #${p.value.id}${showShiny.value ? ' ✨ SHINY' : ''} ! Et toi, quel Pokémon es-tu ?`,
-      absoluteUrl('/', { date: toIsoDate(props.date) }),
-    )
-  } else {
-    share(`Regarde ${p.value.fr} (#${p.value.id}) sur PokéDate !`, absoluteUrl(`/pokemon/${p.value.id}`))
-  }
+  const query = new URLSearchParams({ partage: '1' })
+  if (showShiny.value) query.set('shiny', '1')
+  const url = `${siteUrl(pokemonPath(p.value))}?${query}`
+  share(
+    props.date
+      ? `Ma date me donne ${p.value.fr} (#${p.value.id})${showShiny.value ? ' en version shiny ✨' : ''} ! Et toi, quel Pokémon se cache dans ta date ?`
+      : `Découvre ${p.value.fr} (#${p.value.id}) sur PokéDate !`,
+    url,
+  )
 }
 </script>
 
 <template>
-  <article class="card" :style="{ '--accent': typeColor(p.types[0]!) }">
-    <div class="card-grid">
-      <div class="stage" :class="{ 'hidden-mon': !revealed }" @click="skipReveal">
-        <span class="bignum">{{ padNumber(p.id, 4) }}</span>
-        <div class="halo" />
-        <img class="art" :src="artUrl(p.id, showShiny)" :alt="p.fr" width="320" height="320" />
-        <span class="who">Qui est-ce&nbsp;?</span>
-        <span class="ball reveal-ball" aria-hidden="true" />
+  <article class="mon-card" :style="{ '--accent': typeColor(p.types[0]!) }" :aria-labelledby="`mon-${p.id}`">
+    <div class="mon-card__grid">
+      <div class="mon-card__stage" :class="{ 'mon-card__stage--hidden': !revealed }">
+        <span class="mon-card__bignum" aria-hidden="true">{{ padNumber(p.id, 4) }}</span>
+        <div class="mon-card__halo" aria-hidden="true" />
+        <img
+          class="mon-card__art"
+          :src="artUrl(p.id, showShiny)"
+          :alt="`${p.fr}${showShiny ? ' (shiny)' : ''}`"
+          width="320"
+          height="320"
+          fetchpriority="high"
+          decoding="async"
+        />
+        <span class="mon-card__who" aria-hidden="true">Qui est-ce&nbsp;?</span>
+        <span class="ball mon-card__reveal-ball" aria-hidden="true" />
+        <button
+          v-if="!revealed"
+          class="mon-card__skip"
+          type="button"
+          aria-label="Révéler le Pokémon tout de suite"
+          @click="skipReveal"
+        />
         <span
           v-for="s in sparkles"
           :key="s.id"
-          class="sparkle"
-          :style="{ left: `${s.left}%`, top: `${s.top}%`, animationDelay: `${s.delay}s`, color: '#ffe680' }"
+          class="mon-card__sparkle"
+          aria-hidden="true"
+          :style="{ left: `${s.left}%`, top: `${s.top}%`, animationDelay: `${s.delay}s` }"
           >✦</span
         >
-        <div class="tools">
-          <button
-            class="icon-btn"
-            type="button"
-            title="Écouter son cri"
-            aria-label="Écouter son cri"
-            @click.stop="playCry"
-          >
+        <div class="mon-card__tools">
+          <button class="icon-btn" type="button" title="Écouter son cri" aria-label="Écouter son cri" @click="playCry">
             🔊
           </button>
           <button
@@ -116,114 +133,125 @@ function onShare() {
             type="button"
             :aria-pressed="showShiny"
             title="Version chromatique (shiny)"
-            aria-label="Version shiny"
-            @click.stop="toggleShiny"
+            aria-label="Afficher la version shiny"
+            @click="toggleShiny"
           >
             ✨
           </button>
         </div>
-        <span v-if="date && shiny" class="shiny-badge">✨ Shiny ! 1 date sur 20</span>
+        <span v-if="date && shiny" class="mon-card__shiny-badge">✨ Shiny ! 1 date sur 20</span>
       </div>
 
-      <div class="info">
-        <div class="id-line">
+      <div class="mon-card__info">
+        <div class="mon-card__id">
           N° {{ padNumber(p.id, 4) }} · Gén. {{ gen[0] }} ({{ gen[1] }})
           <span v-if="p.rare === 1" class="tag">Légendaire</span>
-          <span v-if="p.rare === 2" class="tag myth">Fabuleux</span>
-          <span v-if="p.baby" class="tag baby">Bébé</span>
-          <span v-if="isNew" class="tag new">Nouveau !</span>
+          <span v-if="p.rare === 2" class="tag tag--myth">Fabuleux</span>
+          <span v-if="p.baby" class="tag tag--baby">Bébé</span>
+          <span v-if="isNew" class="tag tag--new">Nouveau !</span>
         </div>
-        <h2 class="mon-name">
+        <component :is="headingLevel" :id="`mon-${p.id}`" class="mon-card__name">
           {{ p.fr }}<small>{{ p.en }} · {{ p.genus }}</small>
-        </h2>
-        <div class="types">
+        </component>
+        <div class="chip-list">
           <TypeChip v-for="t in p.types" :key="t" :type="t" />
         </div>
-        <p class="desc">{{ p.desc }}<span v-if="p.descEn" class="en">(pas encore traduit en français)</span></p>
-        <p class="horoscope">
+        <p class="mon-card__desc">
+          {{ p.desc }}<span v-if="p.descEn" class="mon-card__lang">(pas encore traduit en français)</span>
+        </p>
+        <p class="mon-card__horoscope">
           <strong>Si tu étais {{ p.fr }}…</strong> {{ TYPE_TRAIT[p.types[0]!] }} {{ STAT_TRAIT[best] }}
         </p>
 
-        <div class="facts">
-          <div class="fact">
-            <div class="k">Taille</div>
-            <div class="v">{{ formatNumber(p.h) }} m</div>
-            <div class="hint">{{ heightHint(p.h) }}</div>
+        <dl class="mon-card__facts">
+          <div class="mon-card__fact">
+            <dt>Taille</dt>
+            <dd>
+              {{ formatNumber(p.h) }} m<span class="mon-card__hint">{{ heightHint(p.h) }}</span>
+            </dd>
           </div>
-          <div class="fact">
-            <div class="k">Poids</div>
-            <div class="v">{{ formatNumber(p.w) }} kg</div>
-            <div class="hint">{{ weightHint(p.w) }}</div>
+          <div class="mon-card__fact">
+            <dt>Poids</dt>
+            <dd>
+              {{ formatNumber(p.w) }} kg<span class="mon-card__hint">{{ weightHint(p.w) }}</span>
+            </dd>
           </div>
-          <div class="fact">
-            <div class="k">Talents</div>
-            <div class="v">
-              <div v-for="[name, hidden] in p.ab" :key="name">
-                {{ name }} <span v-if="hidden" class="hint">(caché)</span>
-              </div>
-            </div>
+          <div class="mon-card__fact">
+            <dt>Talents</dt>
+            <dd>
+              <span v-for="[name, hidden] in p.ab" :key="name"
+                >{{ name }}<span v-if="hidden" class="mon-card__hint">(talent caché)</span><br
+              /></span>
+            </dd>
           </div>
-        </div>
+        </dl>
 
-        <div>
-          <p class="block-title">Statistiques de base</p>
-          <div class="stats">
+        <section>
+          <component :is="sectionHeading" class="mon-card__section-title">Statistiques de base</component>
+          <dl class="stat-bars">
             <template v-for="(v, i) in p.stats" :key="i">
-              <span class="lbl">{{ STAT_LABELS[i] }}</span>
-              <span class="val">{{ v }}</span>
-              <div class="bar">
-                <i
-                  :class="{ best: i === best }"
-                  :style="{ width: barsOn ? `${Math.min(100, (v / 200) * 100)}%` : '0' }"
-                />
-              </div>
+              <dt>{{ STAT_LABELS[i] }}</dt>
+              <dd>
+                <span class="stat-bars__val">{{ v }}</span>
+                <span class="stat-bars__track" aria-hidden="true"
+                  ><span
+                    class="stat-bars__fill"
+                    :class="{ 'stat-bars__fill--best': i === best }"
+                    :style="{ width: barsOn ? `${Math.min(100, (v / 200) * 100)}%` : '0' }"
+                /></span>
+              </dd>
             </template>
-            <div class="total">
-              <span>Total</span><span>{{ total }}</span>
-            </div>
-          </div>
-        </div>
+          </dl>
+          <p class="stat-bars__total">
+            <span>Total</span><span>{{ total }}</span>
+          </p>
+        </section>
 
-        <div>
-          <p class="block-title">Types face à lui</p>
+        <section>
+          <component :is="sectionHeading" class="mon-card__section-title">Types face à lui</component>
           <div class="matchups">
-            <div v-if="matchups.weak.length" class="row">
-              <em>Faible contre</em><TypeChip v-for="[t, m] in matchups.weak" :key="t" :type="t" :mult="m" small />
+            <div v-if="matchups.weak.length" class="chip-list">
+              <span class="matchups__label">Faible contre</span>
+              <TypeChip v-for="[t, m] in matchups.weak" :key="t" :type="t" :mult="m" small />
             </div>
-            <div v-if="matchups.resist.length" class="row">
-              <em>Résiste à</em><TypeChip v-for="[t, m] in matchups.resist" :key="t" :type="t" :mult="m" small />
+            <div v-if="matchups.resist.length" class="chip-list">
+              <span class="matchups__label">Résiste à</span>
+              <TypeChip v-for="[t, m] in matchups.resist" :key="t" :type="t" :mult="m" small />
             </div>
-            <div v-if="matchups.immune.length" class="row">
-              <em>Immunisé contre</em><TypeChip v-for="[t, m] in matchups.immune" :key="t" :type="t" :mult="m" small />
+            <div v-if="matchups.immune.length" class="chip-list">
+              <span class="matchups__label">Immunisé contre</span>
+              <TypeChip v-for="[t, m] in matchups.immune" :key="t" :type="t" :mult="m" small />
             </div>
           </div>
-        </div>
+        </section>
 
-        <div v-if="hasEvolutions">
-          <p class="block-title">Évolutions</p>
-          <div class="evo" :class="{ many: manyBranches }">
+        <section v-if="hasEvolutions">
+          <component :is="sectionHeading" class="mon-card__section-title">Évolutions</component>
+          <div class="evo" :class="{ 'evo--many': manyBranches }">
             <template v-for="(stage, i) in p.chain" :key="i">
-              <span v-if="i" class="arrow">→</span>
-              <div class="stage-col">
-                <NuxtLink v-for="e in stage" :key="e.id" :to="`/pokemon/${e.id}`" :class="{ current: e.id === p.id }">
-                  <img
-                    loading="lazy"
-                    :src="miniUrl(e.id)"
-                    alt=""
-                    @error="($event.target as HTMLImageElement).src = artUrl(e.id)"
-                  />
+              <span v-if="i" class="evo__arrow" aria-hidden="true">→</span>
+              <div class="evo__stage">
+                <NuxtLink
+                  v-for="e in stage"
+                  :key="e.id"
+                  class="evo__link"
+                  :to="pokemonPath(e)"
+                  :aria-current="e.id === p.id ? 'page' : undefined"
+                >
+                  <img loading="lazy" decoding="async" :src="miniUrl(e.id)" alt="" width="56" height="56" />
                   {{ e.fr }}
                 </NuxtLink>
               </div>
             </template>
           </div>
-        </div>
+        </section>
 
-        <div class="card-actions">
-          <button class="btn primary small" type="button" @click="onShare">Partager 📤</button>
-          <NuxtLink v-if="date" class="btn ghost small" :to="{ path: '/duel', query: { a: toIsoDate(date) } }"
+        <div class="mon-card__actions">
+          <button class="btn btn--primary btn--sm" type="button" @click="onShare">Partager 📤</button>
+          <NuxtLink v-if="date" class="btn btn--ghost btn--sm" :to="{ path: '/duel', query: { a: toIsoDate(date) } }"
             >Défier un ami ⚔️</NuxtLink
           >
+          <NuxtLink v-if="date" class="btn btn--ghost btn--sm" :to="pokemonPath(p)">Voir sa fiche</NuxtLink>
         </div>
       </div>
     </div>

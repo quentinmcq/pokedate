@@ -1,0 +1,67 @@
+@use '../abstracts' as *;
+
+.type-chip {
+  --c: #888;
+  --ink: #fff;
+  background: var(--c);
+  color: var(--ink);
+  padding: 5px 14px 5px 10px;
+  border-radius: radius('pill');
+  font-weight: weight('bold');
+  font-size: font-size('sm');
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  &--sm {
+    font-size: 0.75rem;
+    padding: 3px 9px 3px 7px;
+  }
+
+  &__mult {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    background: rgba(20, 22, 43, 0.85);
+    color: #fff;
+    padding: 1px 5px;
+    border-radius: 6px;
+    margin-left: 2px;
+  }
+}
+
+.chip-list {
+  display: flex;
+  gap: space(2);
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.tag {
+  font-weight: weight('bold');
+  font-size: 0.78rem;
+  padding: 3px 10px;
+  border-radius: radius('pill');
+  background: color('highlight');
+  color: color('on-light');
+  font-family: var(--font-display);
+
+  &--myth {
+    background: linear-gradient(90deg, #ff7ce5, #8b7bff);
+    color: #fff;
+  }
+  &--baby {
+    background: color('baby');
+  }
+  &--new {
+    background: color('success');
+  }
+}
+
+.pill {
+  font-family: var(--font-mono);
+  font-size: font-size('2xs');
+  background: color('highlight');
+  color: color('on-light');
+  padding: 1px 7px;
+  border-radius: radius('pill');
+}

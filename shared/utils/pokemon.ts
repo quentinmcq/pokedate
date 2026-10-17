@@ -2,37 +2,33 @@ import type { TypeKey } from '../types/pokemon'
 
 export const MAX_POKEMON = 1025
 
-const SPR = 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon'
-const CRY = 'https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/latest'
-export const artUrl = (id: number, shiny = false) => `${SPR}/other/official-artwork/${shiny ? 'shiny/' : ''}${id}.png`
-export const miniUrl = (id: number, shiny = false) => `${SPR}/${shiny ? 'shiny/' : ''}${id}.png`
-export const cryUrl = (id: number) => `${CRY}/${id}.ogg`
+export const artUrl = (id: number, shiny = false) => `/sprites/${shiny ? 'art-shiny' : 'art'}/${id}.webp`
+export const miniUrl = (id: number, shiny = false) => `/sprites/${shiny ? 'mini-shiny' : 'mini'}/${id}.webp`
+export const cryUrl = (id: number) => `/cries/${id}.ogg`
 
-/** [nom FR, couleur, emoji] */
-export const TYPES: Record<TypeKey, [string, string, string]> = {
-  normal: ['Normal', '#9FA19F', '⭐'],
-  fire: ['Feu', '#E62829', '🔥'],
-  water: ['Eau', '#2980EF', '💧'],
-  electric: ['Électrik', '#E0AE00', '⚡'],
-  grass: ['Plante', '#3FA129', '🌿'],
-  ice: ['Glace', '#3DCEF3', '❄️'],
-  fighting: ['Combat', '#FF8000', '🥊'],
-  poison: ['Poison', '#9141CB', '☠️'],
-  ground: ['Sol', '#915121', '⛰️'],
-  flying: ['Vol', '#81B9EF', '🪶'],
-  psychic: ['Psy', '#EF4179', '🔮'],
-  bug: ['Insecte', '#91A119', '🐛'],
-  rock: ['Roche', '#AFA981', '🪨'],
-  ghost: ['Spectre', '#704170', '👻'],
-  dragon: ['Dragon', '#5060E1', '🐉'],
-  dark: ['Ténèbres', '#624D4E', '🌙'],
-  steel: ['Acier', '#60A1B8', '⚙️'],
-  fairy: ['Fée', '#EF70EF', '✨'],
+export const TYPES: Record<TypeKey, [string, string, string, string]> = {
+  normal: ['Normal', '#9FA19F', '⭐', '#14162b'],
+  fire: ['Feu', '#D92B23', '🔥', '#ffffff'],
+  water: ['Eau', '#2980EF', '💧', '#14162b'],
+  electric: ['Électrik', '#E0AE00', '⚡', '#14162b'],
+  grass: ['Plante', '#3FA129', '🌿', '#14162b'],
+  ice: ['Glace', '#3DCEF3', '❄️', '#14162b'],
+  fighting: ['Combat', '#FF8000', '🥊', '#14162b'],
+  poison: ['Poison', '#9141CB', '☠️', '#ffffff'],
+  ground: ['Sol', '#915121', '⛰️', '#ffffff'],
+  flying: ['Vol', '#81B9EF', '🪶', '#14162b'],
+  psychic: ['Psy', '#EF4179', '🔮', '#14162b'],
+  bug: ['Insecte', '#91A119', '🐛', '#14162b'],
+  rock: ['Roche', '#AFA981', '🪨', '#14162b'],
+  ghost: ['Spectre', '#704170', '👻', '#ffffff'],
+  dragon: ['Dragon', '#5060E1', '🐉', '#ffffff'],
+  dark: ['Ténèbres', '#624D4E', '🌙', '#ffffff'],
+  steel: ['Acier', '#60A1B8', '⚙️', '#14162b'],
+  fairy: ['Fée', '#EF70EF', '✨', '#14162b'],
 }
 export const TYPE_KEYS = Object.keys(TYPES) as TypeKey[]
 export const typeColor = (t: TypeKey) => TYPES[t][1]
 
-// Efficacité offensive : attaquant → { défenseur: multiplicateur } (les ×1 sont omis)
 const CHART: Record<TypeKey, Partial<Record<TypeKey, number>>> = {
   normal: { rock: 0.5, ghost: 0, steel: 0.5 },
   fire: { fire: 0.5, water: 0.5, grass: 2, ice: 2, bug: 2, rock: 0.5, dragon: 0.5, steel: 2 },
@@ -87,7 +83,7 @@ const CHART: Record<TypeKey, Partial<Record<TypeKey, number>>> = {
   steel: { fire: 0.5, water: 0.5, electric: 0.5, ice: 2, rock: 2, steel: 0.5, fairy: 2 },
   fairy: { fire: 0.5, fighting: 2, poison: 0.5, dragon: 2, dark: 2, steel: 0.5 },
 }
-/** Multiplicateur d'une attaque de type `atk` sur un Pokémon de types `defTypes` */
+
 export const typeEffect = (atk: TypeKey, defTypes: TypeKey[]) => defTypes.reduce((m, d) => m * (CHART[atk][d] ?? 1), 1)
 
 export interface Matchups {
@@ -153,6 +149,18 @@ export const STAT_TRAIT = [
 
 export const formatNumber = (n: number, digits = 1) => n.toLocaleString('fr-FR', { maximumFractionDigits: digits })
 export const padNumber = (n: number | string, len = 2) => String(n).padStart(len, '0')
+
+export const slugify = (s: string) =>
+  s
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/♀/g, '-f')
+    .replace(/♂/g, '-m')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+
+export const pokemonPath = (p: { id: number; fr: string }) => `/pokemon/${p.id}-${slugify(p.fr)}`
 
 export function heightHint(h: number) {
   if (h <= 0.3) return 'Tient dans ta poche 👖'

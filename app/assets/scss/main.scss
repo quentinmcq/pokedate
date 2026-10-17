@@ -1,11 +1,20 @@
-// Feuille de style globale, découpée par zone de l'interface
-@use 'base';
-@use 'header';
-@use 'form';
-@use 'formula';
-@use 'card';
-@use 'duel';
-@use 'pokedex';
-@use 'misc';
-@use 'animations';
-@use 'responsive';
+@use 'base/root';
+@use 'base/reset';
+@use 'base/typography';
+@use 'base/animations';
+
+@use 'components/button';
+@use 'components/date-field';
+@use 'components/chip';
+@use 'components/formula';
+@use 'components/pokemon-card';
+@use 'components/misc';
+
+@use 'layout/header';
+@use 'layout/page';
+@use 'layout/footer';
+
+@use 'pages/home';
+@use 'pages/duel';
+@use 'pages/pokedex';
+@use 'pages/pokemon';
