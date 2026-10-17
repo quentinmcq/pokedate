@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test'
+import { gotoHydrated } from './helpers'
 
 const meta = (name: string) => `meta[name="${name}"], meta[property="${name}"]`
 
@@ -11,7 +12,7 @@ test.describe('Fiches Pokémon', () => {
   })
 
   test('navigue vers le Pokémon suivant et les évolutions', async ({ page }) => {
-    await page.goto('/pokemon/25-pikachu')
+    await gotoHydrated(page, '/pokemon/25-pikachu')
     await page.getByRole('link', { name: /#26 →/ }).click()
     await expect(page).toHaveURL('/pokemon/26-raichu')
     await page.locator('.evo__link', { hasText: 'Pichu' }).click()
@@ -25,7 +26,7 @@ test.describe('Fiches Pokémon', () => {
   })
 
   test('liste les 1025 Pokémon par génération', async ({ page }) => {
-    await page.goto('/pokemon')
+    await gotoHydrated(page, '/pokemon')
     await expect(page.locator('.gen-block')).toHaveCount(9)
     await expect(page.locator('.gen-block .dex-cell')).toHaveCount(1025)
   })
@@ -33,7 +34,7 @@ test.describe('Fiches Pokémon', () => {
 
 test.describe('Référencement', () => {
   test('chaque fiche a un titre, une description et une image d’aperçu', async ({ page }) => {
-    await page.goto('/pokemon/706-muplodocus')
+    await gotoHydrated(page, '/pokemon/706-muplodocus')
     await expect(page).toHaveTitle('Muplodocus (n° 706) : types, stats, faiblesses et évolutions · PokéDate')
     await expect(page.locator(meta('description'))).toHaveAttribute('content', /Muplodocus \(n° 706\)/)
     await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', /\/pokemon\/706-muplodocus$/)
@@ -44,15 +45,15 @@ test.describe('Référencement', () => {
   })
 
   test('les pages personnelles ne sont pas indexées', async ({ page }) => {
-    await page.goto('/?date=2026-10-17')
+    await gotoHydrated(page, '/?date=2026-10-17')
     await expect(page.locator(meta('robots'))).toHaveAttribute('content', 'noindex, follow')
     await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', /\/$/)
-    await page.goto('/duel?pa=1&pb=4')
+    await gotoHydrated(page, '/duel?pa=1&pb=4')
     await expect(page.locator(meta('robots'))).toHaveAttribute('content', 'noindex, follow')
   })
 
   test('l’accueil publie des données structurées valides', async ({ page }) => {
-    await page.goto('/')
+    await gotoHydrated(page, '/')
     const blocks = await page.locator('script[type="application/ld+json"]').allTextContents()
     const types = blocks.flatMap((b) => [JSON.parse(b)].flat().map((x: { '@type': string }) => x['@type']))
     expect(types).toEqual(expect.arrayContaining(['WebSite', 'WebApplication', 'FAQPage']))
@@ -62,9 +63,20 @@ test.describe('Référencement', () => {
     const sitemap = await request.get('/sitemap.xml')
     expect(sitemap.headers()['content-type']).toContain('application/xml')
     const xml = await sitemap.text()
-    expect(xml.match(/<url>/g)).toHaveLength(1028)
+    expect(xml.match(/<url>/g)).toHaveLength(1029)
     expect(xml).toContain('/pokemon/1025-')
     const robots = await (await request.get('/robots.txt')).text()
     expect(robots).toContain('Sitemap: ')
+  })
+})
+
+test.describe('Mentions légales', () => {
+  test('sont accessibles depuis le pied de page', async ({ page }) => {
+    await gotoHydrated(page, '/')
+    await page.getByRole('contentinfo').getByRole('link', { name: 'Mentions légales' }).click()
+    await expect(page).toHaveURL('/mentions-legales')
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Mentions légales')
+    await expect(page.getByText('Cloudflare, Inc.')).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Données personnelles' })).toBeVisible()
   })
 })

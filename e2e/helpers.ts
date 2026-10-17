@@ -1,5 +1,16 @@
 import { expect, type Page } from '@playwright/test'
 
+export async function gotoHydrated(page: Page, path: string) {
+  const response = await page.goto(path)
+  await page.waitForFunction(() => {
+    const root = document.getElementById('__nuxt') as
+      | (HTMLElement & { __vue_app__?: { config: { globalProperties: { $nuxt?: { isHydrating?: boolean } } } } })
+      | null
+    return root?.__vue_app__?.config.globalProperties.$nuxt?.isHydrating === false
+  })
+  return response
+}
+
 export async function fillDate(page: Page, scope: string, d: string, m: string, y: string) {
   const field = page.locator(scope)
   await field.getByLabel('Jour').fill(d)
@@ -8,7 +19,7 @@ export async function fillDate(page: Page, scope: string, d: string, m: string, 
 }
 
 export async function revealDate(page: Page, d: string, m: string, y: string) {
-  await page.goto('/')
+  await gotoHydrated(page, '/')
   await fillDate(page, '.hero', d, m, y)
   await page.getByRole('button', { name: 'Révéler mon Pokémon' }).click()
   await expect(page.locator('.mon-card')).toBeVisible()

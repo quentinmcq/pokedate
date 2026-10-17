@@ -1,6 +1,6 @@
 import { AxeBuilder } from '@axe-core/playwright'
 import { expect, test } from '@playwright/test'
-import { revealDate, trackConsoleErrors } from './helpers'
+import { gotoHydrated, revealDate, trackConsoleErrors } from './helpers'
 
 const PAGES = [
   '/',
@@ -9,6 +9,7 @@ const PAGES = [
   '/pokedex',
   '/pokemon',
   '/pokemon/133-evoli',
+  '/mentions-legales',
 ]
 
 test.describe('Sécurité', () => {
@@ -28,7 +29,8 @@ test.describe('Sécurité', () => {
       dialog = true
       await d.dismiss()
     })
-    await page.goto(
+    await gotoHydrated(
+      page,
       '/duel?pa=1&pb=4&na=%3Cimg%20src%3Dx%20onerror%3Dalert(1)%3E&nb=%22%3E%3Csvg%20onload%3Dalert(1)%3E',
     )
     await expect(page.locator('.fighter__player').first()).toContainText('<img src=x')
@@ -43,7 +45,7 @@ test.describe('Sécurité', () => {
       page.on('request', (r) => {
         if (!r.url().startsWith(baseURL!) && !r.url().startsWith('data:')) external.push(r.url())
       })
-      await page.goto(path)
+      await gotoHydrated(page, path)
       await page.waitForLoadState('networkidle')
       expect(external).toEqual([])
       expect(errors.filter((e) => /Content Security Policy|Refused to/i.test(e))).toEqual([])
@@ -55,7 +57,7 @@ test.describe('Accessibilité', () => {
   for (const path of PAGES) {
     test(`aucun problème grave détecté par axe : ${path}`, async ({ page }) => {
       await page.emulateMedia({ reducedMotion: 'reduce' })
-      await page.goto(path)
+      await gotoHydrated(page, path)
       await page.waitForLoadState('networkidle')
       const results = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa']).analyze()
       const serious = results.violations.filter((v) => v.impact === 'serious' || v.impact === 'critical')
@@ -64,7 +66,7 @@ test.describe('Accessibilité', () => {
   }
 
   test('le formulaire se remplit entièrement au clavier', async ({ page }) => {
-    await page.goto('/')
+    await gotoHydrated(page, '/')
     await page.getByLabel('Jour').focus()
     await page.keyboard.type('17102026')
     await page.keyboard.press('Enter')
@@ -75,7 +77,7 @@ test.describe('Accessibilité', () => {
 test.describe('Affichage', () => {
   for (const path of PAGES) {
     test(`pas de défilement horizontal : ${path}`, async ({ page }) => {
-      await page.goto(path)
+      await gotoHydrated(page, path)
       await page.waitForLoadState('networkidle')
       const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth)
       expect(overflow).toBeLessThanOrEqual(0)
@@ -91,4 +93,18 @@ test.describe('Affichage', () => {
       )
     expect(broken).toEqual([])
   })
+})
+
+test.describe('Hydratation', () => {
+  for (const path of [...PAGES, '/pokemon/2000-inconnu']) {
+    test(`aucun écart serveur / navigateur avec un Pokédex déjà rempli : ${path}`, async ({ page }) => {
+      await page.addInitScript(() =>
+        localStorage.setItem('pokedate.dex', JSON.stringify({ 1: { shiny: false }, 25: { shiny: true }, 133: {} })),
+      )
+      const errors = trackConsoleErrors(page)
+      await gotoHydrated(page, path)
+      await expect(page.locator('.site-nav .pill')).toHaveText(/[1-9]/)
+      expect(errors.filter((error) => /hydration/i.test(error))).toEqual([])
+    })
+  }
 })

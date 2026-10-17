@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test'
-import { fillDate, readSharedLink, revealDate, trackConsoleErrors } from './helpers'
+import { fillDate, gotoHydrated, readSharedLink, revealDate, trackConsoleErrors } from './helpers'
 
 test.describe('Mon Pokémon', () => {
   test('révèle le Pokémon d’une date', async ({ page }) => {
@@ -16,7 +16,7 @@ test.describe('Mon Pokémon', () => {
   })
 
   test('affiche une erreur claire pour une date impossible', async ({ page }) => {
-    await page.goto('/')
+    await gotoHydrated(page, '/')
     await fillDate(page, '.hero', '31', '02', '2026')
     await page.getByRole('button', { name: 'Révéler mon Pokémon' }).click()
     await expect(page.getByRole('alert')).toContainText("n'existe pas")
@@ -25,14 +25,14 @@ test.describe('Mon Pokémon', () => {
   })
 
   test('demande une année à 4 chiffres', async ({ page }) => {
-    await page.goto('/')
+    await gotoHydrated(page, '/')
     await fillDate(page, '.hero', '17', '10', '26')
     await page.getByRole('button', { name: 'Révéler mon Pokémon' }).click()
     await expect(page.getByRole('alert')).toContainText('4 chiffres')
   })
 
   test('remplit la date en la collant d’un coup', async ({ page }) => {
-    await page.goto('/')
+    await gotoHydrated(page, '/')
     await page.getByLabel('Jour').focus()
     await page.evaluate(() => {
       const event = new Event('paste', { bubbles: true, cancelable: true })
@@ -45,7 +45,7 @@ test.describe('Mon Pokémon', () => {
   })
 
   test('le bouton « Aujourd’hui » révèle le Pokémon du jour', async ({ page }) => {
-    await page.goto('/')
+    await gotoHydrated(page, '/')
     await page.getByRole('button', { name: "Aujourd'hui" }).click()
     await expect(page).toHaveURL(/\?date=\d{4}-\d{2}-\d{2}$/)
     await expect(page.locator('.mon-card')).toBeVisible()
@@ -60,7 +60,7 @@ test.describe('Mon Pokémon', () => {
   })
 
   test('une date shiny affiche la version chromatique', async ({ page }) => {
-    await page.goto('/?date=1990-04-06')
+    await gotoHydrated(page, '/?date=1990-04-06')
     await expect(page.locator('.mon-card__shiny-badge')).toBeVisible()
     await expect(page.locator('.mon-card__art')).toHaveAttribute('src', /art-shiny/)
   })
@@ -75,7 +75,7 @@ test.describe('Mon Pokémon', () => {
   })
 
   test('un lien partagé invite à tester sa propre date', async ({ page }) => {
-    await page.goto('/pokemon/706-muplodocus?partage=1')
+    await gotoHydrated(page, '/pokemon/706-muplodocus?partage=1')
     const banner = page.locator('.banner--top')
     await expect(banner).toContainText('est tombé·e sur Muplodocus')
     await banner.click()
@@ -84,9 +84,22 @@ test.describe('Mon Pokémon', () => {
   })
 
   test('la FAQ s’ouvre et se ferme', async ({ page }) => {
-    await page.goto('/')
+    await gotoHydrated(page, '/')
     const question = page.getByText('Comment PokéDate trouve mon Pokémon ?')
     await question.click()
     await expect(page.getByText(/Le 17\/10\/2026 donne 7, 0 et 6/)).toBeVisible()
   })
+})
+
+test('le formulaire fonctionne même avant le chargement du JavaScript', async ({ browser }) => {
+  const context = await browser.newContext({ javaScriptEnabled: false })
+  const page = await context.newPage()
+  await page.goto('/')
+  await page.getByLabel('Jour').fill('17')
+  await page.getByLabel('Mois').fill('10')
+  await page.getByLabel('Année').fill('2026')
+  await page.getByRole('button', { name: 'Révéler mon Pokémon' }).click()
+  await expect(page).toHaveURL(/\?date=2026-10-17$/)
+  await expect(page.getByRole('heading', { level: 2, name: /Muplodocus/ })).toBeVisible()
+  await context.close()
 })

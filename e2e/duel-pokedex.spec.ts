@@ -1,9 +1,9 @@
 import { expect, test } from '@playwright/test'
-import { fillDate, readSharedLink, revealDate } from './helpers'
+import { fillDate, gotoHydrated, readSharedLink, revealDate } from './helpers'
 
 test.describe('Duel', () => {
   test('oppose deux dates et désigne un vainqueur', async ({ page }) => {
-    await page.goto('/duel')
+    await gotoHydrated(page, '/duel')
     await page.getByLabel('Prénom du joueur 1').fill('Quentin')
     await page.getByLabel('Prénom du joueur 2').fill('Léa')
     await fillDate(page, '.duel-form__side >> nth=0', '12', '03', '1995')
@@ -17,7 +17,7 @@ test.describe('Duel', () => {
   })
 
   test('le lien du duel ne contient aucune date', async ({ page }) => {
-    await page.goto('/duel?pa=235&pb=578&na=Quentin&nb=L%C3%A9a')
+    await gotoHydrated(page, '/duel?pa=235&pb=578&na=Quentin&nb=L%C3%A9a')
     await expect(page.locator('#verdict')).toBeVisible()
     const copied = await readSharedLink(page)
     await page.getByRole('button', { name: /Partager le duel/ }).click()
@@ -35,12 +35,12 @@ test.describe('Duel', () => {
   })
 
   test('tronque les prénoms trop longs venus de l’URL', async ({ page }) => {
-    await page.goto(`/duel?pa=1&pb=4&na=${'A'.repeat(200)}`)
+    await gotoHydrated(page, `/duel?pa=1&pb=4&na=${'A'.repeat(200)}`)
     await expect(page.locator('.fighter__player').first()).toHaveText('A'.repeat(20))
   })
 
   test('ignore des numéros de Pokémon invalides', async ({ page }) => {
-    await page.goto('/duel?pa=0&pb=99999')
+    await gotoHydrated(page, '/duel?pa=0&pb=99999')
     await expect(page.locator('.duel-result')).toHaveCount(0)
     await expect(page.getByRole('heading', { level: 1 })).toHaveText("Duel d'anniversaires")
   })
@@ -48,11 +48,11 @@ test.describe('Duel', () => {
 
 test.describe('Pokédex', () => {
   test('garde les Pokémon découverts, même après rechargement', async ({ page }) => {
-    await page.goto('/pokedex')
+    await gotoHydrated(page, '/pokedex')
     await expect(page.getByText('Ton Pokédex est vide.')).toBeVisible()
 
     await revealDate(page, '17', '10', '2026')
-    await page.goto('/pokedex')
+    await gotoHydrated(page, '/pokedex')
     await expect(page.locator('.dex-stats')).toContainText('1 / 1025')
     await page.reload()
     const cell = page.locator('.dex-cell', { hasText: 'Muplodocus' })
@@ -62,7 +62,7 @@ test.describe('Pokédex', () => {
   })
 
   test('peut afficher les 1025 cases', async ({ page }) => {
-    await page.goto('/pokedex')
+    await gotoHydrated(page, '/pokedex')
     await page.getByLabel('Afficher seulement les découverts').uncheck()
     await expect(page.locator('.dex-grid > li')).toHaveCount(1025)
   })
