@@ -3,7 +3,7 @@
 Entre une date → le dernier chiffre du **jour**, du **mois** et de l'**année** donnent le numéro du Pokémon.
 Ex. 17/10/2026 → 7 · 0 · 6 → **#706 Muplodocus**. Si les trois chiffres sont 0 (ex. 10/10/2020) → #1000.
 
-En ligne : https://pokedate.quentin-macq.dev
+En ligne : https://pokedate.quentin-macq.workers.dev
 
 ## Stack
 
