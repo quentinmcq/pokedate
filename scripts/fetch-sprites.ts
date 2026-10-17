@@ -36,8 +36,21 @@ function writeOutput(path: string, content: Buffer) {
   writeFileSync(path, content)
 }
 
-const toArtworkWebp = (image: Buffer) =>
-  sharp(image).resize(480, 480, { fit: 'inside', withoutEnlargement: true }).webp({ quality: 80 }).toBuffer()
+const ARTWORK_SIZE = 480
+const ARTWORK_DRAWING_SIZE = 432
+
+// Some shiny artworks are drawn larger than their regular version: trimming and recentring keeps both at one scale.
+async function toArtworkWebp(image: Buffer) {
+  const drawing = await sharp(image)
+    .trim()
+    .resize(ARTWORK_DRAWING_SIZE, ARTWORK_DRAWING_SIZE, { fit: 'inside' })
+    .png()
+    .toBuffer()
+  return sharp({ create: { width: ARTWORK_SIZE, height: ARTWORK_SIZE, channels: 4, background: TRANSPARENT } })
+    .composite([{ input: drawing, gravity: 'center' }])
+    .webp({ quality: 80 })
+    .toBuffer()
+}
 
 const toSpriteWebp = (image: Buffer) => sharp(image).webp({ lossless: true }).toBuffer()
 
