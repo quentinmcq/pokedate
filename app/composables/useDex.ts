@@ -1,11 +1,17 @@
-// Pokédex perso : enregistré dans le navigateur (localStorage). On ne le lit qu'après
-// l'hydratation (plugins/dex.client.ts ou premier catchPokemon) pour que le rendu
-// serveur et le premier rendu client restent identiques.
-
 const STORAGE_KEY = 'pokedate.dex'
 
-/** numéro → { s: 1 si déjà vu en shiny } */
 export type DexState = Record<number, { s: number }>
+
+export function sanitizeDex(raw: unknown): DexState {
+  const out: DexState = {}
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return out
+  for (const [key, value] of Object.entries(raw)) {
+    const id = Number(key)
+    if (!Number.isInteger(id) || id < 1 || id > MAX_POKEMON) continue
+    out[id] = { s: (value as { s?: unknown } | null)?.s === 1 ? 1 : 0 }
+  }
+  return out
+}
 
 export function useDex() {
   const dex = useState<DexState>('dex', () => ({}))
@@ -17,12 +23,10 @@ export function useDex() {
     if (loaded.value || import.meta.server) return
     loaded.value = true
     try {
-      const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) ?? '{}')
-      if (saved && typeof saved === 'object') dex.value = { ...saved, ...dex.value }
+      dex.value = { ...sanitizeDex(JSON.parse(localStorage.getItem(STORAGE_KEY) ?? '{}')), ...dex.value }
     } catch {}
   }
 
-  /** Enregistre un Pokémon ; renvoie true si c'est une nouvelle découverte */
   function catchPokemon(id: number, shiny = false) {
     ensureLoaded()
     const isNew = !dex.value[id]

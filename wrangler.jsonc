@@ -3,15 +3,12 @@
   "name": "pokedate",
   "compatibility_date": "2026-10-01",
   "compatibility_flags": ["nodejs_compat"],
-  // Généré par `nuxt build` (preset cloudflare_module)
   "main": "./.output/server/index.mjs",
   "assets": {
     "directory": "./.output/public",
     "binding": "ASSETS",
   },
-  "observability": { "enabled": true },
-  // Adresse workers.dev en attendant un nom de domaine dédié. Pour en brancher un :
-  // "routes": [{ "pattern": "mondomaine.fr", "custom_domain": true }],
+  "observability": { "enabled": true, "logs": { "enabled": true, "invocation_logs": false } },
   "workers_dev": true,
   "preview_urls": false,
 }

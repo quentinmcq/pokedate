@@ -8,7 +8,7 @@ export default defineNuxtConfig({
   compatibilityDate: '2026-10-17',
   devtools: { enabled: true },
 
-  modules: ['@nuxt/fonts'],
+  modules: ['@nuxt/fonts', 'nuxt-security'],
 
   css: ['~/assets/scss/main.scss'],
 
@@ -38,6 +38,43 @@ export default defineNuxtConfig({
       { name: 'Bricolage Grotesque', provider: 'google', weights: [400, 600, 800], global: true },
       { name: 'JetBrains Mono', provider: 'google', weights: [500, 700], global: true },
     ],
+  },
+
+  security: {
+    nonce: true,
+    sri: true,
+    removeLoggers: false,
+    rateLimiter: false,
+    xssValidator: false,
+    headers: {
+      contentSecurityPolicy: {
+        'default-src': ["'self'"],
+        'base-uri': ["'none'"],
+        'connect-src': ["'self'"],
+        'font-src': ["'self'"],
+        'form-action': ["'self'"],
+        'frame-ancestors': ["'none'"],
+        'img-src': ["'self'", 'data:'],
+        'media-src': ["'self'"],
+        'object-src': ["'none'"],
+        'script-src': ["'self'", "'strict-dynamic'", "'nonce-{{nonce}}'"],
+        'script-src-attr': ["'none'"],
+        'style-src': ["'self'", "'unsafe-inline'"],
+        'upgrade-insecure-requests': true,
+      },
+      crossOriginEmbedderPolicy: false,
+      referrerPolicy: 'strict-origin-when-cross-origin',
+      strictTransportSecurity: { maxAge: 31536000, includeSubdomains: true },
+      permissionsPolicy: {
+        camera: [],
+        microphone: [],
+        geolocation: [],
+        payment: [],
+        usb: [],
+        'display-capture': [],
+        fullscreen: [],
+      },
+    },
   },
 
   routeRules: {
