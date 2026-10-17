@@ -1,6 +1,5 @@
 export default defineEventHandler((event) => {
-  const id = Number(getRouterParam(event, 'id'))
-  const pokemon = Number.isInteger(id) ? findPokemon(id) : null
+  const pokemon = findPokemon(Number(getRouterParam(event, 'id')))
   if (!pokemon) throw createError({ statusCode: 404, statusMessage: 'Pokémon introuvable' })
   return pokemon
 })

@@ -1,35 +1,47 @@
-import type { TypeKey } from '../types/pokemon'
+import type { BaseStats, StatKey, TypeKey } from '../types/pokemon'
 
-export const MAX_POKEMON = 1025
+export const POKEMON_COUNT = 1025
 
-export const artUrl = (id: number, shiny = false) => `/sprites/${shiny ? 'art-shiny' : 'art'}/${id}.webp`
-export const miniUrl = (id: number, shiny = false) => `/sprites/${shiny ? 'mini-shiny' : 'mini'}/${id}.webp`
+export const artworkUrl = (id: number, shiny = false) => `/sprites/${shiny ? 'art-shiny' : 'art'}/${id}.webp`
+export const spriteUrl = (id: number, shiny = false) => `/sprites/${shiny ? 'mini-shiny' : 'mini'}/${id}.webp`
+export const shareImagePath = (id: number) => `/sprites/og/${id}.jpg`
 export const cryUrl = (id: number) => `/cries/${id}.ogg`
 
-export const TYPES: Record<TypeKey, [string, string, string, string]> = {
-  normal: ['Normal', '#9FA19F', '⭐', '#14162b'],
-  fire: ['Feu', '#D92B23', '🔥', '#ffffff'],
-  water: ['Eau', '#2980EF', '💧', '#14162b'],
-  electric: ['Électrik', '#E0AE00', '⚡', '#14162b'],
-  grass: ['Plante', '#3FA129', '🌿', '#14162b'],
-  ice: ['Glace', '#3DCEF3', '❄️', '#14162b'],
-  fighting: ['Combat', '#FF8000', '🥊', '#14162b'],
-  poison: ['Poison', '#9141CB', '☠️', '#ffffff'],
-  ground: ['Sol', '#915121', '⛰️', '#ffffff'],
-  flying: ['Vol', '#81B9EF', '🪶', '#14162b'],
-  psychic: ['Psy', '#EF4179', '🔮', '#14162b'],
-  bug: ['Insecte', '#91A119', '🐛', '#14162b'],
-  rock: ['Roche', '#AFA981', '🪨', '#14162b'],
-  ghost: ['Spectre', '#704170', '👻', '#ffffff'],
-  dragon: ['Dragon', '#5060E1', '🐉', '#ffffff'],
-  dark: ['Ténèbres', '#624D4E', '🌙', '#ffffff'],
-  steel: ['Acier', '#60A1B8', '⚙️', '#14162b'],
-  fairy: ['Fée', '#EF70EF', '✨', '#14162b'],
+export interface PokemonTypeStyle {
+  label: string
+  color: string
+  emoji: string
+  textColor: string
 }
-export const TYPE_KEYS = Object.keys(TYPES) as TypeKey[]
-export const typeColor = (t: TypeKey) => TYPES[t][1]
 
-const CHART: Record<TypeKey, Partial<Record<TypeKey, number>>> = {
+const DARK_TEXT = '#14162b'
+const LIGHT_TEXT = '#ffffff'
+
+export const POKEMON_TYPES: Record<TypeKey, PokemonTypeStyle> = {
+  normal: { label: 'Normal', color: '#9FA19F', emoji: '⭐', textColor: DARK_TEXT },
+  fire: { label: 'Feu', color: '#D92B23', emoji: '🔥', textColor: LIGHT_TEXT },
+  water: { label: 'Eau', color: '#2980EF', emoji: '💧', textColor: DARK_TEXT },
+  electric: { label: 'Électrik', color: '#E0AE00', emoji: '⚡', textColor: DARK_TEXT },
+  grass: { label: 'Plante', color: '#3FA129', emoji: '🌿', textColor: DARK_TEXT },
+  ice: { label: 'Glace', color: '#3DCEF3', emoji: '❄️', textColor: DARK_TEXT },
+  fighting: { label: 'Combat', color: '#FF8000', emoji: '🥊', textColor: DARK_TEXT },
+  poison: { label: 'Poison', color: '#9141CB', emoji: '☠️', textColor: LIGHT_TEXT },
+  ground: { label: 'Sol', color: '#915121', emoji: '⛰️', textColor: LIGHT_TEXT },
+  flying: { label: 'Vol', color: '#81B9EF', emoji: '🪶', textColor: DARK_TEXT },
+  psychic: { label: 'Psy', color: '#EF4179', emoji: '🔮', textColor: DARK_TEXT },
+  bug: { label: 'Insecte', color: '#91A119', emoji: '🐛', textColor: DARK_TEXT },
+  rock: { label: 'Roche', color: '#AFA981', emoji: '🪨', textColor: DARK_TEXT },
+  ghost: { label: 'Spectre', color: '#704170', emoji: '👻', textColor: LIGHT_TEXT },
+  dragon: { label: 'Dragon', color: '#5060E1', emoji: '🐉', textColor: LIGHT_TEXT },
+  dark: { label: 'Ténèbres', color: '#624D4E', emoji: '🌙', textColor: LIGHT_TEXT },
+  steel: { label: 'Acier', color: '#60A1B8', emoji: '⚙️', textColor: DARK_TEXT },
+  fairy: { label: 'Fée', color: '#EF70EF', emoji: '✨', textColor: DARK_TEXT },
+}
+
+export const TYPE_KEYS = Object.keys(POKEMON_TYPES) as TypeKey[]
+export const typeColor = (type: TypeKey) => POKEMON_TYPES[type].color
+
+const OFFENSIVE_MULTIPLIERS: Record<TypeKey, Partial<Record<TypeKey, number>>> = {
   normal: { rock: 0.5, ghost: 0, steel: 0.5 },
   fire: { fire: 0.5, water: 0.5, grass: 2, ice: 2, bug: 2, rock: 0.5, dragon: 0.5, steel: 2 },
   water: { fire: 2, water: 0.5, grass: 0.5, ground: 2, rock: 2, dragon: 0.5 },
@@ -84,41 +96,76 @@ const CHART: Record<TypeKey, Partial<Record<TypeKey, number>>> = {
   fairy: { fire: 0.5, fighting: 2, poison: 0.5, dragon: 2, dark: 2, steel: 0.5 },
 }
 
-export const typeEffect = (atk: TypeKey, defTypes: TypeKey[]) => defTypes.reduce((m, d) => m * (CHART[atk][d] ?? 1), 1)
+export const typeEffectiveness = (attackType: TypeKey, defenderTypes: readonly TypeKey[]) =>
+  defenderTypes.reduce(
+    (multiplier, defenderType) => multiplier * (OFFENSIVE_MULTIPLIERS[attackType][defenderType] ?? 1),
+    1,
+  )
 
-export interface Matchups {
-  weak: [TypeKey, number][]
-  resist: [TypeKey, number][]
-  immune: [TypeKey, number][]
+export interface TypeMatchup {
+  type: TypeKey
+  multiplier: number
 }
-export function matchupsFor(types: TypeKey[]): Matchups {
-  const res: Matchups = { weak: [], resist: [], immune: [] }
-  for (const t of TYPE_KEYS) {
-    const m = typeEffect(t, types)
-    if (m === 0) res.immune.push([t, m])
-    else if (m > 1) res.weak.push([t, m])
-    else if (m < 1) res.resist.push([t, m])
+
+export interface DefensiveMatchups {
+  weaknesses: TypeMatchup[]
+  resistances: TypeMatchup[]
+  immunities: TypeMatchup[]
+}
+
+export function defensiveMatchups(defenderTypes: readonly TypeKey[]): DefensiveMatchups {
+  const matchups: DefensiveMatchups = { weaknesses: [], resistances: [], immunities: [] }
+  for (const type of TYPE_KEYS) {
+    const multiplier = typeEffectiveness(type, defenderTypes)
+    if (multiplier === 0) matchups.immunities.push({ type, multiplier })
+    else if (multiplier > 1) matchups.weaknesses.push({ type, multiplier })
+    else if (multiplier < 1) matchups.resistances.push({ type, multiplier })
   }
-  res.weak.sort((a, b) => b[1] - a[1])
-  return res
+  matchups.weaknesses.sort((a, b) => b.multiplier - a.multiplier)
+  return matchups
 }
-export const multLabel = (m: number) => (m === 4 ? '×4' : m === 0.25 ? '×¼' : m === 0.5 ? '×½' : m === 0 ? '×0' : '×2')
 
-export const STAT_LABELS = ['PV', 'Attaque', 'Défense', 'Atq. Spé.', 'Déf. Spé.', 'Vitesse']
-export const GENS: [string, string][] = [
-  ['', ''],
-  ['I', 'Kanto'],
-  ['II', 'Johto'],
-  ['III', 'Hoenn'],
-  ['IV', 'Sinnoh'],
-  ['V', 'Unys'],
-  ['VI', 'Kalos'],
-  ['VII', 'Alola'],
-  ['VIII', 'Galar'],
-  ['IX', 'Paldea'],
+const MULTIPLIER_LABELS: Record<number, string> = { 0: '×0', 0.25: '×¼', 0.5: '×½', 1: '×1', 2: '×2', 4: '×4' }
+export const formatMultiplier = (multiplier: number) => MULTIPLIER_LABELS[multiplier] ?? `×${multiplier}`
+
+export const STAT_KEYS: StatKey[] = ['hp', 'attack', 'defense', 'specialAttack', 'specialDefense', 'speed']
+
+export const STAT_LABELS: Record<StatKey, string> = {
+  hp: 'PV',
+  attack: 'Attaque',
+  defense: 'Défense',
+  specialAttack: 'Atq. Spé.',
+  specialDefense: 'Déf. Spé.',
+  speed: 'Vitesse',
+}
+
+export const statTotal = (stats: BaseStats) => STAT_KEYS.reduce((total, key) => total + stats[key], 0)
+
+export const strongestStat = (stats: BaseStats): StatKey =>
+  STAT_KEYS.reduce((best, key) => (stats[key] > stats[best] ? key : best), STAT_KEYS[0]!)
+
+export interface Generation {
+  roman: string
+  region: string
+  firstId: number
+  lastId: number
+}
+
+export const GENERATIONS: Generation[] = [
+  { roman: 'I', region: 'Kanto', firstId: 1, lastId: 151 },
+  { roman: 'II', region: 'Johto', firstId: 152, lastId: 251 },
+  { roman: 'III', region: 'Hoenn', firstId: 252, lastId: 386 },
+  { roman: 'IV', region: 'Sinnoh', firstId: 387, lastId: 493 },
+  { roman: 'V', region: 'Unys', firstId: 494, lastId: 649 },
+  { roman: 'VI', region: 'Kalos', firstId: 650, lastId: 721 },
+  { roman: 'VII', region: 'Alola', firstId: 722, lastId: 809 },
+  { roman: 'VIII', region: 'Galar', firstId: 810, lastId: 905 },
+  { roman: 'IX', region: 'Paldea', firstId: 906, lastId: 1025 },
 ]
 
-export const TYPE_TRAIT: Record<TypeKey, string> = {
+export const generationOf = (generationNumber: number) => GENERATIONS[generationNumber - 1]
+
+export const TYPE_PERSONALITY: Record<TypeKey, string> = {
   normal: "Fiable et adaptable, tu t'entends avec absolument tout le monde.",
   fire: "Tempérament de feu : tu t'enflammes vite, pour le meilleur.",
   water: "Calme en surface, profond à l'intérieur.",
@@ -138,38 +185,46 @@ export const TYPE_TRAIT: Record<TypeKey, string> = {
   steel: "Volonté d'acier et routine millimétrée.",
   fairy: 'Tu mets des paillettes dans la vie des autres.',
 }
-export const STAT_TRAIT = [
-  "Ton super-pouvoir : l'endurance, tu tiens jusqu'au bout de la nuit.",
-  "Ton super-pouvoir : foncer. Réfléchir, c'est pour après.",
-  "Ton super-pouvoir : rien ne t'atteint, surtout pas les critiques.",
-  'Ton super-pouvoir : une imagination qui déborde.',
-  "Ton super-pouvoir : la sagesse, tes conseils valent de l'or.",
-  'Ton super-pouvoir : la vitesse. Toujours premier arrivé au buffet.',
-]
 
-export const formatNumber = (n: number, digits = 1) => n.toLocaleString('fr-FR', { maximumFractionDigits: digits })
-export const padNumber = (n: number | string, len = 2) => String(n).padStart(len, '0')
+export const STAT_SUPERPOWER: Record<StatKey, string> = {
+  hp: "Ton super-pouvoir : l'endurance, tu tiens jusqu'au bout de la nuit.",
+  attack: "Ton super-pouvoir : foncer. Réfléchir, c'est pour après.",
+  defense: "Ton super-pouvoir : rien ne t'atteint, surtout pas les critiques.",
+  specialAttack: 'Ton super-pouvoir : une imagination qui déborde.',
+  specialDefense: "Ton super-pouvoir : la sagesse, tes conseils valent de l'or.",
+  speed: 'Ton super-pouvoir : la vitesse. Toujours premier arrivé au buffet.',
+}
 
-export const slugify = (s: string) =>
-  s
+export const formatNumber = (value: number, maxDecimals = 1) =>
+  value.toLocaleString('fr-FR', { maximumFractionDigits: maxDecimals })
+
+export const padNumber = (value: number | string, length = 2) => String(value).padStart(length, '0')
+
+const AVERAGE_HUMAN_HEIGHT_METERS = 1.7
+const BAGUETTE_WEIGHT_KG = 0.25
+
+export function describeHeight(heightMeters: number) {
+  if (heightMeters <= 0.3) return 'Tient dans ta poche 👖'
+  if (heightMeters <= 0.7) return 'Tient dans ton sac à dos 🎒'
+  if (heightMeters < 1.4) return "T'arrive à peu près à la taille"
+  if (heightMeters <= 2) return 'À peu près ta hauteur 🧍'
+  return `${formatNumber(heightMeters / AVERAGE_HUMAN_HEIGHT_METERS)}× ta taille 🦒`
+}
+
+export function describeWeight(weightKg: number) {
+  if (weightKg < BAGUETTE_WEIGHT_KG) return "Plus léger qu'une baguette 🥖"
+  const baguettes = Math.round(weightKg / BAGUETTE_WEIGHT_KG)
+  return `≈ ${formatNumber(baguettes, 0)} baguette${baguettes > 1 ? 's' : ''} 🥖`
+}
+
+export const slugify = (text: string) =>
+  text
     .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[̀-ͯ]/g, '')
     .toLowerCase()
     .replace(/♀/g, '-f')
     .replace(/♂/g, '-m')
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '')
 
-export const pokemonPath = (p: { id: number; fr: string }) => `/pokemon/${p.id}-${slugify(p.fr)}`
-
-export function heightHint(h: number) {
-  if (h <= 0.3) return 'Tient dans ta poche 👖'
-  if (h <= 0.7) return 'Tient dans ton sac à dos 🎒'
-  if (h < 1.4) return "T'arrive à peu près à la taille"
-  if (h <= 2) return 'À peu près ta hauteur 🧍'
-  return `${formatNumber(h / 1.7)}× ta taille 🦒`
-}
-export function weightHint(w: number) {
-  if (w < 0.25) return "Plus léger qu'une baguette 🥖"
-  return `≈ ${formatNumber(Math.round(w / 0.25), 0)} baguette${w >= 0.5 ? 's' : ''} 🥖`
-}
+export const pokemonPath = (pokemon: { id: number; name: string }) => `/pokemon/${pokemon.id}-${slugify(pokemon.name)}`

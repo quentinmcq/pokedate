@@ -1,13 +1,12 @@
-// Plan du site pour les moteurs de recherche : pages fixes + une fiche par Pokémon
 export default defineEventHandler((event) => {
   const { siteUrl } = useRuntimeConfig(event).public
-  const url = (path: string) => new URL(path, siteUrl).href
+  const absoluteUrl = (path: string) => new URL(path, siteUrl).href
 
   const pages = [
-    { loc: url('/'), priority: '1.0' },
-    { loc: url('/pokemon'), priority: '0.8' },
-    { loc: url('/duel'), priority: '0.6' },
-    ...getDexList().map((p) => ({ loc: url(pokemonPath(p)), priority: '0.7' })),
+    { url: absoluteUrl('/'), priority: '1.0' },
+    { url: absoluteUrl('/pokemon'), priority: '0.8' },
+    { url: absoluteUrl('/duel'), priority: '0.6' },
+    ...listPokedexEntries().map((entry) => ({ url: absoluteUrl(pokemonPath(entry)), priority: '0.7' })),
   ]
 
   setResponseHeaders(event, {
@@ -16,7 +15,7 @@ export default defineEventHandler((event) => {
   })
   return `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${pages.map((p) => `  <url><loc>${p.loc}</loc><priority>${p.priority}</priority></url>`).join('\n')}
+${pages.map((page) => `  <url><loc>${page.url}</loc><priority>${page.priority}</priority></url>`).join('\n')}
 </urlset>
 `
 })

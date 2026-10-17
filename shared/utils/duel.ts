@@ -1,54 +1,72 @@
-import type { Pokemon, TypeKey } from '../types/pokemon'
-import { typeEffect } from './pokemon'
+import type { PokemonDetail, TypeKey } from '../types/pokemon'
+import { statTotal, typeEffectiveness } from './pokemon'
 
-type Fighter = Pick<Pokemon, 'id' | 'types' | 'stats'>
+export type Fighter = Pick<PokemonDetail, 'id' | 'types' | 'stats'>
+export type DuelSide = 'A' | 'B'
 
-export interface Attack {
+export interface AttackSummary {
   type: TypeKey
-  mult: number
-  dmg: number
-  turns: number
+  multiplier: number
+  damage: number
+  turnsToKnockOut: number
 }
 
-export function attack(a: Fighter, b: Fighter): Attack {
-  const phys = a.stats[1]! >= a.stats[3]!
-  const A = (phys ? a.stats[1]! : a.stats[3]!) + 5
-  const D = (phys ? b.stats[2]! : b.stats[4]!) + 5
-  const [type, mult] = a.types.map((t) => [t, typeEffect(t, b.types)] as const).toSorted((x, y) => y[1] - x[1])[0]!
-  const dmg = Math.floor(((35.2 * A) / D + 2) * 1.5 * mult)
-  const turns = dmg ? Math.ceil((b.stats[0]! + 60) / dmg) : Infinity
-  return { type, mult, dmg, turns }
+export interface DuelOutcome {
+  attackOfA: AttackSummary
+  attackOfB: AttackSummary
+  firstStriker: DuelSide
+  winner: DuelSide | null
 }
 
-const total = (p: Fighter) => p.stats.reduce((x, y) => x + y, 0)
+const LEVEL_FACTOR = 22
+const MOVE_POWER = 80
+const SAME_TYPE_BONUS = 1.5
+const LEVEL_50_STAT_BONUS = 5
+const LEVEL_50_HP_BONUS = 60
 
-export interface DuelResult {
-  ab: Attack
-  ba: Attack
-  aFirst: boolean
-  winner: 'A' | 'B' | null
+export function computeAttack(attacker: Fighter, defender: Fighter): AttackSummary {
+  const isPhysical = attacker.stats.attack >= attacker.stats.specialAttack
+  const attackStat = (isPhysical ? attacker.stats.attack : attacker.stats.specialAttack) + LEVEL_50_STAT_BONUS
+  const defenseStat = (isPhysical ? defender.stats.defense : defender.stats.specialDefense) + LEVEL_50_STAT_BONUS
+
+  const bestAttack = attacker.types
+    .map((type) => ({ type, multiplier: typeEffectiveness(type, defender.types) }))
+    .reduce((best, candidate) => (candidate.multiplier > best.multiplier ? candidate : best))
+
+  const baseDamage = (LEVEL_FACTOR * MOVE_POWER * attackStat) / defenseStat / 50 + 2
+  const damage = Math.floor(baseDamage * SAME_TYPE_BONUS * bestAttack.multiplier)
+  const defenderHp = defender.stats.hp + LEVEL_50_HP_BONUS
+  const turnsToKnockOut = damage > 0 ? Math.ceil(defenderHp / damage) : Infinity
+
+  return { ...bestAttack, damage, turnsToKnockOut }
 }
 
-export function duel(a: Fighter, b: Fighter): DuelResult {
-  const ab = attack(a, b)
-  const ba = attack(b, a)
-  const aFirst = a.stats[5]! > b.stats[5]! || (a.stats[5] === b.stats[5] && total(a) >= total(b))
-  let winner: DuelResult['winner'] = null
-  if (a.id === b.id || (ab.turns === Infinity && ba.turns === Infinity)) winner = null
-  else if (aFirst) winner = ab.turns <= ba.turns ? 'A' : 'B'
-  else winner = ba.turns <= ab.turns ? 'B' : 'A'
-  return { ab, ba, aFirst, winner }
+export function resolveDuel(fighterA: Fighter, fighterB: Fighter): DuelOutcome {
+  const attackOfA = computeAttack(fighterA, fighterB)
+  const attackOfB = computeAttack(fighterB, fighterA)
+
+  const aIsFaster =
+    fighterA.stats.speed > fighterB.stats.speed ||
+    (fighterA.stats.speed === fighterB.stats.speed && statTotal(fighterA.stats) >= statTotal(fighterB.stats))
+  const firstStriker: DuelSide = aIsFaster ? 'A' : 'B'
+
+  const nobodyCanHit = attackOfA.turnsToKnockOut === Infinity && attackOfB.turnsToKnockOut === Infinity
+  let winner: DuelSide | null = null
+  if (fighterA.id !== fighterB.id && !nobodyCanHit) {
+    if (firstStriker === 'A') winner = attackOfA.turnsToKnockOut <= attackOfB.turnsToKnockOut ? 'A' : 'B'
+    else winner = attackOfB.turnsToKnockOut <= attackOfA.turnsToKnockOut ? 'B' : 'A'
+  }
+
+  return { attackOfA, attackOfB, firstStriker, winner }
 }
 
-export const effectText = (m: number) =>
-  m === 0
-    ? "n'a aucun effet 🚫"
-    : m >= 4
-      ? 'est ultra efficace 💥'
-      : m >= 2
-        ? 'est super efficace 💥'
-        : m < 1
-          ? "n'est pas très efficace…"
-          : 'touche normalement'
+export function describeEffectiveness(multiplier: number) {
+  if (multiplier === 0) return "n'a aucun effet 🚫"
+  if (multiplier >= 4) return 'est ultra efficace 💥'
+  if (multiplier >= 2) return 'est super efficace 💥'
+  if (multiplier < 1) return "n'est pas très efficace…"
+  return 'touche normalement'
+}
 
-export const statTotal = total
+export const describeKnockOut = (turns: number) =>
+  turns === Infinity ? 'ne peut pas le toucher' : `le met K.O. en ${turns} tour${turns > 1 ? 's' : ''}`

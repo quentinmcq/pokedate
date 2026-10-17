@@ -1,1 +1,1 @@
-export default defineEventHandler(() => getDexList())
+export default defineEventHandler(() => listPokedexEntries())

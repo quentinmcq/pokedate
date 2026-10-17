@@ -18,49 +18,60 @@ export type TypeKey =
   | 'steel'
   | 'fairy'
 
-export interface Pokemon {
+export type PokemonTypes = [TypeKey] | [TypeKey, TypeKey]
+
+export interface BaseStats {
+  hp: number
+  attack: number
+  defense: number
+  specialAttack: number
+  specialDefense: number
+  speed: number
+}
+
+export type StatKey = keyof BaseStats
+
+export interface Ability {
+  name: string
+  hidden: boolean
+}
+
+export type Rarity = 'legendary' | 'mythical' | null
+
+export interface PokemonSummary {
   id: number
-  fr: string
-  en: string
+  name: string
+}
+
+export interface PokedexEntry extends PokemonSummary {
+  types: PokemonTypes
+}
+
+export interface PokemonDetail extends PokedexEntry {
+  englishName: string
   genus: string
-  types: TypeKey[]
-  h: number
-  w: number
-  stats: number[]
-  ab: [string, number][]
-  desc: string
-  descEn?: number
-  gen: number
-  rare: number
-  baby: number
-  evo: number
+  heightMeters: number
+  weightKg: number
+  stats: BaseStats
+  abilities: Ability[]
+  description: string
+  descriptionIsEnglish: boolean
+  generation: number
+  rarity: Rarity
+  isBaby: boolean
+  evolutionStages: PokemonSummary[][]
+  previous: PokemonSummary | null
+  next: PokemonSummary | null
 }
 
-export interface EvoMon {
-  id: number
-  fr: string
+export interface CalendarDate {
+  day: number
+  month: number
+  year: number
 }
 
-export interface PokemonDetail extends Omit<Pokemon, 'evo'> {
-  chain: EvoMon[][]
-  prev: EvoMon | null
-  next: EvoMon | null
-}
-
-export interface DexEntry {
-  id: number
-  fr: string
-  types: TypeKey[]
-}
-
-export interface DateParts {
-  d: number
-  m: number
-  y: number
-}
-
-export interface DateInput {
-  d: string
-  m: string
-  y: string
+export interface DateFieldValue {
+  day: string
+  month: string
+  year: string
 }
