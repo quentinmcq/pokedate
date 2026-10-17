@@ -73,8 +73,7 @@
   }
 }
 
-.page-enter-active,
-.page-leave-active {
+.page-enter-active {
   transition:
     opacity var(--duration-base) var(--ease-out),
     transform var(--duration-base) var(--ease-out);
@@ -82,9 +81,6 @@
 .page-enter-from {
   opacity: 0;
   transform: translateY(8px);
-}
-.page-leave-to {
-  opacity: 0;
 }
 
 @media (prefers-reduced-motion: reduce) {
