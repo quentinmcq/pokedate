@@ -8,8 +8,6 @@ export default defineConfig({
   fullyParallel: true,
   forbidOnly: isCI,
   retries: isCI ? 1 : 0,
-  // Private repositories get 2-core runners, where Playwright would default to a single worker.
-  workers: isCI ? 3 : undefined,
   reporter: isCI ? [['github'], ['html', { open: 'never' }]] : [['list']],
   use: {
     baseURL: `http://localhost:${PORT}`,
