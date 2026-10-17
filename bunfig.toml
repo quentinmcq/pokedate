@@ -1,0 +1,4 @@
+[install]
+# 1 day (in seconds): manual installs skip versions published too recently. Renovate waits 3 days.
+minimumReleaseAge = 86400
+minimumReleaseAgeExcludes = []
