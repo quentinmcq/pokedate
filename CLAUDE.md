@@ -15,7 +15,7 @@ Nuxt 4 rendu côté serveur sur Cloudflare Workers, Bun, SCSS, Nuxt Icon (Lucide
 
 - Noms de fonctions et de variables explicites plutôt que des commentaires. Un commentaire seulement pour
   expliquer un choix non évident, toujours en anglais.
-- Commits atomiques au format Conventional Commits, en français (`feat(ui): …`, `fix(securite): …`).
+- Commits atomiques au format Conventional Commits, en anglais (`feat(card): …`, `fix(security): …`).
 - Aucune mention de Claude dans les commits ni les PR (pas de `Co-Authored-By`, pas de lien de session,
   pas de « Generated with Claude Code »).
 - Travail sur une branche + PR, fusion en avance rapide pour garder un historique linéaire.
