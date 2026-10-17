@@ -9,6 +9,7 @@ export type Discoveries = Record<number, Discovery>
 const isShinyFlag = (value: unknown) => {
   if (!value || typeof value !== 'object') return false
   const flags = value as { shiny?: unknown; s?: unknown }
+  // Older versions stored { s: 0 | 1 }.
   return flags.shiny === true || flags.s === 1
 }
 

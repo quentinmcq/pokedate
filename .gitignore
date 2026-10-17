@@ -1,4 +1,4 @@
-# Dépendances / build
+# Dependencies and build output
 node_modules
 .output
 .nuxt
@@ -10,7 +10,7 @@ dist
 .wrangler
 .dev.vars
 
-# Divers
+# Misc
 .env
 .env.*
 !.env.example
@@ -18,10 +18,10 @@ dist
 .idea
 *.log
 
-# Images et cris générés par `bun run sprites` (trop lourds pour le dépôt)
+# Images and cries produced by `bun run sprites` (too large for the repository)
 generated
 
-# Tests
+# Test reports
 test-results
 playwright-report
 coverage

@@ -2,6 +2,7 @@ import data from '../data/pokemon.json'
 import type { StoredPokedex, StoredPokemon } from '../data/storedPokedex'
 import type { PokedexEntry, PokemonDetail, PokemonSummary, Rarity } from '../../shared/types/pokemon'
 
+// pokemon.json keeps short keys to stay small; they are mapped to explicit names here only.
 const { pokemon: storedPokemon, chains: evolutionChains } = data as unknown as StoredPokedex
 
 const RARITY_BY_CODE: Record<number, Rarity> = { 0: null, 1: 'legendary', 2: 'mythical' }
