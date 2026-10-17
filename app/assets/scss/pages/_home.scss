@@ -50,6 +50,27 @@
     @include surface(2);
     border-radius: radius('lg');
     padding: 0 space(5);
+    interpolate-size: allow-keywords;
+    transition: border-color duration('base');
+
+    &:hover {
+      border-color: color('text-subtle');
+    }
+
+    &::details-content {
+      block-size: 0;
+      opacity: 0;
+      overflow: hidden;
+      transition:
+        block-size duration('medium') ease('standard'),
+        opacity duration('medium') ease('standard'),
+        content-visibility duration('medium') allow-discrete;
+    }
+
+    &[open]::details-content {
+      block-size: auto;
+      opacity: 1;
+    }
 
     &[open] summary::after {
       transform: rotate(45deg);
@@ -58,6 +79,8 @@
 
   summary {
     cursor: pointer;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
     list-style: none;
     padding: space(4) 0;
     font-weight: weight('bold');
@@ -74,7 +97,7 @@
       font-size: font-size('xl');
       line-height: 1;
       color: color('highlight');
-      transition: transform duration('base');
+      transition: transform duration('medium') ease('standard');
     }
   }
 
