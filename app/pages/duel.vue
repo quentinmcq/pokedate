@@ -33,6 +33,7 @@ const playerLabelB = computed(() => duelQuery.value.playerNameB || 'Joueur 2')
 const outcome = computed(() =>
   hasBothPokemon.value && pokemonA.value && pokemonB.value ? resolveDuel(pokemonA.value, pokemonB.value) : null,
 )
+const hasResult = computed(() => !!(outcome.value && pokemonA.value && pokemonB.value))
 const winnerPokemon = computed(() => {
   if (outcome.value?.winner === 'A') return pokemonA.value
   if (outcome.value?.winner === 'B') return pokemonB.value
@@ -135,42 +136,9 @@ usePageSeo({
 
 <template>
   <div>
-    <form class="hero" autocomplete="off" novalidate @submit.prevent="startDuel">
+    <div v-if="hasResult" class="hero duel-heading">
       <h1>Duel d'anniversaires</h1>
-      <p class="lead">Ta date contre celle d'un·e ami·e : quel Pokémon l'emporte&nbsp;?</p>
-      <div class="duel-form">
-        <div class="duel-form__side">
-          <label class="visually-hidden" for="player-name-a">Prénom du joueur 1</label>
-          <input
-            id="player-name-a"
-            v-model="playerNameInputA"
-            class="text-input"
-            placeholder="Ton prénom"
-            :maxlength="PLAYER_NAME_MAX_LENGTH"
-          />
-          <DateField v-model="dateA" compact legend="Date du joueur 1" error-id="duel-error" />
-        </div>
-        <span class="vs-badge" aria-hidden="true">VS</span>
-        <div class="duel-form__side">
-          <label class="visually-hidden" for="player-name-b">Prénom du joueur 2</label>
-          <input
-            id="player-name-b"
-            v-model="playerNameInputB"
-            class="text-input"
-            placeholder="Son prénom"
-            :maxlength="PLAYER_NAME_MAX_LENGTH"
-          />
-          <DateField v-model="dateB" compact legend="Date du joueur 2" error-id="duel-error" />
-        </div>
-      </div>
-      <p id="duel-error" class="field-error" role="alert">{{ formError }}</p>
-      <div class="actions">
-        <button class="btn btn--primary" type="submit">
-          <Icon name="lucide:swords" aria-hidden="true" /> Lancer le combat
-        </button>
-      </div>
-      <p class="field-hint">Seuls les Pokémon apparaissent dans le lien du duel, jamais vos dates.</p>
-    </form>
+    </div>
 
     <section
       v-if="outcome && pokemonA && pokemonB"
@@ -211,6 +179,53 @@ usePageSeo({
         </button>
       </div>
     </section>
+
+    <form
+      class="hero"
+      :class="{ 'duel-rematch': hasResult }"
+      autocomplete="off"
+      novalidate
+      :aria-labelledby="hasResult ? 'rematch-title' : undefined"
+      @submit.prevent="startDuel"
+    >
+      <h2 v-if="hasResult" id="rematch-title" class="duel-rematch__title">Ta revanche&nbsp;?</h2>
+      <template v-else>
+        <h1>Duel d'anniversaires</h1>
+        <p class="lead">Ta date contre celle d'un·e ami·e : quel Pokémon l'emporte&nbsp;?</p>
+      </template>
+      <div class="duel-form">
+        <div class="duel-form__side">
+          <label class="visually-hidden" for="player-name-a">Prénom du joueur 1</label>
+          <input
+            id="player-name-a"
+            v-model="playerNameInputA"
+            class="text-input"
+            placeholder="Ton prénom"
+            :maxlength="PLAYER_NAME_MAX_LENGTH"
+          />
+          <DateField v-model="dateA" compact legend="Date du joueur 1" error-id="duel-error" />
+        </div>
+        <span class="vs-badge" aria-hidden="true">VS</span>
+        <div class="duel-form__side">
+          <label class="visually-hidden" for="player-name-b">Prénom du joueur 2</label>
+          <input
+            id="player-name-b"
+            v-model="playerNameInputB"
+            class="text-input"
+            placeholder="Son prénom"
+            :maxlength="PLAYER_NAME_MAX_LENGTH"
+          />
+          <DateField v-model="dateB" compact legend="Date du joueur 2" error-id="duel-error" />
+        </div>
+      </div>
+      <p id="duel-error" class="field-error" role="alert">{{ formError }}</p>
+      <div class="actions">
+        <button class="btn btn--primary" type="submit">
+          <Icon name="lucide:swords" aria-hidden="true" /> Lancer le combat
+        </button>
+      </div>
+      <p class="field-hint">Seuls les Pokémon apparaissent dans le lien du duel, jamais vos dates.</p>
+    </form>
   </div>
 </template>
 

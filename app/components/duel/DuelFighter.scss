@@ -1,4 +1,5 @@
 @use '../../assets/scss/abstracts/functions' as *;
+@use '../../assets/scss/abstracts/mixins' as *;
 
 .fighter {
   --accent: #888;
@@ -18,11 +19,21 @@
     opacity 0.4s,
     filter 0.4s;
 
+  @include bp(small) {
+    padding: space(4) space(2);
+  }
+
   img {
     width: 160px;
     height: 160px;
+    max-width: 100%;
     object-fit: contain;
     filter: drop-shadow(0 12px 16px rgba(0, 0, 0, 0.4));
+
+    @include bp(small) {
+      width: 96px;
+      height: 96px;
+    }
   }
 
   &--left img {
@@ -42,6 +53,11 @@
   &__name {
     margin: 2px 0 space(2);
     font-size: font-size('xl');
+    overflow-wrap: anywhere;
+
+    @include bp(small) {
+      font-size: font-size('md');
+    }
 
     small {
       margin-left: space(1);
@@ -55,10 +71,22 @@
   }
 
   &__power {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 2px space(3);
     font-family: var(--font-mono), monospace;
     margin-top: 10px;
     font-size: 0.85rem;
     color: color('text-muted');
+
+    span {
+      white-space: nowrap;
+    }
+
+    @include bp(small) {
+      font-size: 0.75rem;
+    }
 
     b {
       color: color('text');

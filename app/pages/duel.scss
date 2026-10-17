@@ -8,6 +8,10 @@
   gap: 18px;
   flex-wrap: wrap;
 
+  @include bp(small) {
+    flex-direction: column;
+  }
+
   &__side {
     display: flex;
     flex-direction: column;
@@ -24,8 +28,12 @@
   text-shadow: 0 3px 0 var(--color-brand);
 }
 
+.duel-heading {
+  padding-bottom: 0;
+}
+
 .duel-result {
-  margin-top: space(8);
+  margin-top: space(5);
 
   &:focus {
     outline: none;
@@ -39,7 +47,7 @@
   align-items: stretch;
 
   @include bp(small) {
-    grid-template-columns: 1fr;
+    gap: space(1);
   }
 
   &__vs {
@@ -50,6 +58,20 @@
     font-style: italic;
     color: color('highlight');
     text-shadow: 0 4px 0 var(--color-brand);
+
+    @include bp(small) {
+      font-size: 1.3rem;
+    }
+  }
+}
+
+.duel-rematch {
+  margin-top: space(10);
+  border-top: 1px solid color('line');
+
+  &__title {
+    margin: 0 0 space(5);
+    font-size: font-size('xl');
   }
 }
 

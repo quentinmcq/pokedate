@@ -26,6 +26,16 @@ test.describe('Duel', () => {
     expect(text).not.toMatch(/\d{4}-\d{2}-\d{2}/)
   })
 
+  test('un duel partagé montre le résultat, puis propose la revanche', async ({ page }) => {
+    await gotoHydrated(page, '/duel?pa=235&pb=578&na=Quentin&nb=L%C3%A9a')
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText("Duel d'anniversaires")
+    const rematch = page.getByRole('form', { name: 'Ta revanche ?' })
+    await expect(rematch).toBeVisible()
+    const verdictBox = await page.locator('#verdict').boundingBox()
+    const rematchBox = await rematch.boundingBox()
+    expect(verdictBox!.y).toBeLessThan(rematchBox!.y)
+  })
+
   test('« Défier un ami » pré-remplit ma date', async ({ page }) => {
     await revealDate(page, '17', '10', '2026')
     await page.getByRole('link', { name: /Défier un ami/ }).click()
