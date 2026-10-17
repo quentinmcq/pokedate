@@ -9,6 +9,7 @@ const { applyTypes, resetAccent } = usePageAccent()
 const shareLink = useShareLink()
 const absoluteUrl = useAbsoluteUrl()
 const { recordDiscovery } = usePokedex()
+const trackEvent = useTrackEvent()
 rememberCurrentPath('/duel')
 
 const duelQuery = computed(() => parseDuelQuery(route.query))
@@ -101,6 +102,7 @@ async function startDuel() {
     return dateFieldB.value?.focusInvalidPart(parsedB.invalidPart)
   }
   formError.value = ''
+  trackEvent('duel')
 
   await router.push({
     query: buildDuelQuery({

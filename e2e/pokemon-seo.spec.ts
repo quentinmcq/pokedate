@@ -122,3 +122,26 @@ test.describe('Mentions légales', () => {
     await expect(page.getByRole('heading', { name: 'Données personnelles' })).toBeVisible()
   })
 })
+
+test.describe('Mesure d’audience', () => {
+  test('?stats=off exclut ce navigateur des statistiques', async ({ page }) => {
+    await gotoHydrated(page, '/?stats=off')
+    await expect(page.getByRole('status')).toContainText('ne sont plus comptées')
+    await expect(page).toHaveURL('/')
+    expect(await page.evaluate(() => localStorage.getItem('pokedate.stats-off'))).toBe('1')
+    await gotoHydrated(page, '/?stats=on')
+    await expect(page.getByRole('status')).toContainText('de nouveau comptées')
+    expect(await page.evaluate(() => localStorage.getItem('pokedate.stats-off'))).toBeNull()
+  })
+
+  test('compte les actions connues et refuse le reste', { tag: '@server' }, async ({ request, baseURL }) => {
+    const headers = { origin: baseURL! }
+    expect((await request.post('/api/events', { data: { name: 'duel' }, headers })).status()).toBe(204)
+    expect((await request.post('/api/events', { data: { name: 'nimportequoi' }, headers })).status()).toBe(400)
+    const foreign = await request.post('/api/events', {
+      data: { name: 'duel' },
+      headers: { origin: 'https://evil.example' },
+    })
+    expect(foreign.status()).toBe(403)
+  })
+})

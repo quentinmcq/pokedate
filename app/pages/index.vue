@@ -8,6 +8,7 @@ const { resetAccent } = usePageAccent()
 const absoluteUrl = useAbsoluteUrl()
 const { portfolioUrl } = useRuntimeConfig().public
 const { recordDiscovery } = usePokedex()
+const trackEvent = useTrackEvent()
 rememberCurrentPath('/')
 
 const RANDOM_DATE_START = new Date(1950, 0, 1).getTime()
@@ -53,6 +54,7 @@ async function revealPokemonFor(date: CalendarDate, { isRandom = false } = {}) {
   formError.value = ''
   invalidDatePart.value = null
   revealCount.value++
+  trackEvent(isRandom ? 'random' : 'reveal')
   await router.push({ query: { date: toIsoDate(date), ...(isRandom ? { hasard: '1' } : {}) } })
   await nextTick()
   resultSection.value?.scrollIntoView({ behavior: 'smooth', block: 'start' })

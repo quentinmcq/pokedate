@@ -72,6 +72,12 @@ usePageSeo({
           paramètres des adresses (donc jamais ta date). Seules des statistiques globales en ressortent : pages vues,
           pays, type d'appareil, site d'origine. Les polices, images et sons sont servis par le site lui-même.
         </li>
+        <li v-if="hasAudienceMeasurement">
+          PokéDate compte aussi, jour par jour, le nombre total de certaines actions (Pokémon révélés, duels, tournois,
+          partages…), sans rien qui permette de savoir qui les a faites. Pour ne compter ni tes visites ni tes actions,
+          ouvre <NuxtLink to="/?stats=off" class="text-link">pokedate.fr/?stats=off</NuxtLink> une fois sur chaque
+          appareil.
+        </li>
         <li v-else>
           Aucun cookie, aucune mesure d'audience, aucun traceur publicitaire. Les polices, images et sons sont servis
           par le site lui-même, sans appel à un service tiers.

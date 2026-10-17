@@ -2,6 +2,12 @@
 const { discoveries } = usePokedex()
 const absoluteUrl = useAbsoluteUrl()
 const { showToast } = useToast()
+const trackEvent = useTrackEvent()
+
+function openTransfer() {
+  isOpen.value = true
+  trackEvent('transfer')
+}
 
 const isOpen = ref(false)
 const transferUrl = computed(
@@ -47,7 +53,7 @@ const shareLink = () => navigator.share({ title: 'Mon Pokédex PokéDate', url: 
     </template>
     <template v-else>
       <p>Ton Pokédex vit dans ce navigateur. Pour le retrouver sur ton téléphone ou ton ordinateur, transfère-le.</p>
-      <button class="btn btn--ghost btn--sm" type="button" @click="isOpen = true">
+      <button class="btn btn--ghost btn--sm" type="button" @click="openTransfer">
         <Icon name="lucide:qr-code" aria-hidden="true" /> Transférer mon Pokédex
       </button>
     </template>

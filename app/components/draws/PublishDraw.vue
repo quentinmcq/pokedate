@@ -4,6 +4,7 @@ import type { PublicDraw } from '#shared/types/pokemon'
 const props = defineProps<{ pokemonId: number; pokemonName: string; shiny: boolean }>()
 
 const NICKNAME_STORAGE_KEY = 'pokedate.nickname'
+const trackEvent = useTrackEvent()
 
 const nickname = ref('')
 const status = ref<'idle' | 'sending' | 'published'>('idle')
@@ -35,6 +36,7 @@ async function publish() {
       body: { pokemonId: props.pokemonId, shiny: props.shiny, nickname: check.nickname },
     })
     rememberNickname(check.nickname)
+    trackEvent('publish')
     status.value = 'published'
   } catch (error) {
     errorMessage.value = readErrorMessage(error)

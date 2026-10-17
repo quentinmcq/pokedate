@@ -19,6 +19,7 @@ interface RateLimiter {
 export interface PokedateBindings {
   DB?: D1Database
   PUBLISH_RATE_LIMITER?: RateLimiter
+  EVENT_RATE_LIMITER?: RateLimiter
 }
 
 type ContextWithCloudflare = { cloudflare?: { env?: PokedateBindings } }

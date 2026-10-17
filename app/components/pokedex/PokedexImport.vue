@@ -6,12 +6,14 @@ const emit = defineEmits<{ done: [] }>()
 
 const { importDiscoveries } = usePokedex()
 const { showToast } = useToast()
+const trackEvent = useTrackEvent()
 
 const incomingCaughtCount = computed(() => Object.values(props.incoming).filter((discovery) => discovery.caught).length)
 const incomingSeenCount = computed(() => Object.keys(props.incoming).length - incomingCaughtCount.value)
 
 function acceptImport() {
   const newlyCaught = importDiscoveries(props.incoming)
+  trackEvent('import')
   showToast(
     newlyCaught
       ? `${newlyCaught} Pokémon attrapé${newlyCaught > 1 ? 's' : ''} en plus !`

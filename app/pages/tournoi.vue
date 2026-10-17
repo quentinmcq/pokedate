@@ -14,6 +14,7 @@ const { applyTypes, resetAccent } = usePageAccent()
 const shareLink = useShareLink()
 const absoluteUrl = useAbsoluteUrl()
 const { recordDiscovery } = usePokedex()
+const trackEvent = useTrackEvent()
 
 const tournamentPlayers = computed(() => parseTournamentQuery(route.query))
 
@@ -95,6 +96,7 @@ async function startTournament() {
   }
   formError.value = ''
   invalidPart.value = null
+  trackEvent('tournament')
   await router.push({ query: buildTournamentQuery(players) })
   await nextTick()
   resultSection.value?.scrollIntoView({ behavior: 'smooth', block: 'start' })

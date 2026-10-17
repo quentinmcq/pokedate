@@ -17,6 +17,7 @@
     "data": "bun scripts/fetch-pokemon.ts",
     "sprites": "bun scripts/fetch-sprites.ts",
     "icons": "bun scripts/app-icons.ts",
+    "stats": "bun scripts/stats.ts",
     "share-image": "bun scripts/default-share-image.ts",
     "test": "bun run test:unit && bun run test:e2e",
     "test:unit": "vitest run",

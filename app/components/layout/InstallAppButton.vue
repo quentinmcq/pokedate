@@ -5,6 +5,7 @@ interface BeforeInstallPromptEvent extends Event {
 }
 
 const installPrompt = shallowRef<BeforeInstallPromptEvent | null>(null)
+const trackEvent = useTrackEvent()
 
 function keepInstallPrompt(event: Event) {
   event.preventDefault()
@@ -17,7 +18,9 @@ async function installApp() {
   const prompt = installPrompt.value
   if (!prompt) return
   await prompt.prompt()
-  if ((await prompt.userChoice).outcome === 'accepted') forgetInstallPrompt()
+  if ((await prompt.userChoice).outcome !== 'accepted') return
+  trackEvent('install')
+  forgetInstallPrompt()
 }
 
 onMounted(() => {

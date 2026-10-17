@@ -1,0 +1,43 @@
+import { spawnSync } from 'node:child_process'
+import type { TrackedEvent } from '../shared/utils/trackedEvents'
+
+const DEFAULT_DAYS = 7
+const days = Number(process.argv[2] ?? DEFAULT_DAYS)
+if (!Number.isInteger(days) || days < 1) throw new Error('Usage : bun run stats [nombre de jours]')
+
+const EVENT_LABELS: Record<TrackedEvent, string> = {
+  reveal: 'Pokémon révélés (date saisie)',
+  random: 'Tirages au hasard',
+  duel: 'Duels lancés',
+  tournament: 'Tournois lancés',
+  share: 'Partages',
+  transfer: 'Transferts de Pokédex préparés',
+  import: 'Pokédex importés',
+  publish: 'Tirages publiés',
+  install: 'Installations de l’appli',
+}
+
+function queryDatabase<Row>(sql: string): Row[] {
+  const command = spawnSync('bunx', ['wrangler', 'd1', 'execute', 'pokedate', '--remote', '--json', '--command', sql], {
+    encoding: 'utf8',
+  })
+  if (command.status !== 0) throw new Error(command.stderr)
+  return JSON.parse(command.stdout)[0].results as Row[]
+}
+
+const since = `date('now', '-${days - 1} days')`
+const totals = queryDatabase<{ name: TrackedEvent; total: number }>(
+  `SELECT name, SUM(count) AS total FROM event_counts WHERE day >= ${since} GROUP BY name ORDER BY total DESC`,
+)
+const perDay = queryDatabase<{ day: string; total: number }>(
+  `SELECT day, SUM(count) AS total FROM event_counts WHERE day >= ${since} GROUP BY day ORDER BY day`,
+)
+
+console.info(`\nPokéDate, ${days} derniers jours\n`)
+if (!totals.length) console.info('Aucune action enregistrée pour l’instant.')
+for (const { name, total } of totals) console.info(`${String(total).padStart(6)}  ${EVENT_LABELS[name] ?? name}`)
+if (perDay.length) {
+  console.info('\nPar jour (toutes actions)')
+  for (const { day, total } of perDay) console.info(`  ${day}  ${'█'.repeat(Math.min(total, 60))} ${total}`)
+}
+console.info('\nVisiteurs et pages vues : tableau de bord Cloudflare, Web Analytics.\n')

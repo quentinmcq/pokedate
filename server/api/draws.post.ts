@@ -1,12 +1,6 @@
 const readPokemonId = (value: unknown) =>
   typeof value === 'number' && Number.isInteger(value) && value >= 1 && value <= POKEMON_COUNT ? value : null
 
-function assertSameOrigin(event: Parameters<typeof getRequestHost>[0]) {
-  const origin = getRequestHeader(event, 'origin')
-  if (origin && new URL(origin).host !== getRequestHost(event, { xForwardedHost: true }))
-    throw createError({ statusCode: 403, message: 'Publication refusée.' })
-}
-
 export default defineEventHandler(async (event) => {
   setResponseHeader(event, 'cache-control', 'no-store')
   assertSameOrigin(event)
