@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PokéDate</title>
+  <meta name="description" content="Entre une date, découvre ton Pokémon : le dernier chiffre du jour, du mois et de l'année donnent son numéro.">
+  <meta name="theme-color" content="#14162b">
+  <meta property="og:title" content="PokéDate — quel Pokémon es-tu ?">
+  <meta property="og:description" content="Entre ta date d'anniversaire et découvre ton Pokémon.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='46' fill='%23fff' stroke='%23222' stroke-width='8'/%3E%3Cpath d='M4 50a46 46 0 0 1 92 0z' fill='%23e3350d' stroke='%23222' stroke-width='8'/%3E%3Ccircle cx='50' cy='50' r='13' fill='%23fff' stroke='%23222' stroke-width='8'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <canvas id="confetti" aria-hidden="true"></canvas>
+
+  <header class="top">
+    <a class="logo" href="./" aria-label="PokéDate, accueil">
+      <span class="ball" aria-hidden="true"></span>
+      <span>Poké<b>Date</b></span>
+    </a>
+    <nav class="tabs" role="tablist">
+      <button role="tab" data-tab="me" aria-selected="true">Mon Pokémon</button>
+      <button role="tab" data-tab="duel" aria-selected="false">Duel</button>
+      <button role="tab" data-tab="dex" aria-selected="false">Pokédex <span id="dexCount" class="pill">0</span></button>
+    </nav>
+  </header>
+
+  <main>
+    <!-- ============ MON POKÉMON ============ -->
+    <section id="tab-me" class="panel">
+      <form id="formMe" class="entry" autocomplete="off">
+        <h1>Quel Pokémon<br>se cache dans ta date&nbsp;?</h1>
+        <p class="sub">Le dernier chiffre du <b>jour</b>, du <b>mois</b> et de l'<b>année</b> forment le numéro de ton Pokémon.</p>
+        <div class="date-field" data-date>
+          <label><span>Jour</span><input inputmode="numeric" maxlength="2" placeholder="JJ" data-part="d" required></label>
+          <span class="sep">/</span>
+          <label><span>Mois</span><input inputmode="numeric" maxlength="2" placeholder="MM" data-part="m" required></label>
+          <span class="sep">/</span>
+          <label class="y"><span>Année</span><input inputmode="numeric" maxlength="4" placeholder="AAAA" data-part="y" required></label>
+        </div>
+        <p class="error" id="errMe" role="alert"></p>
+        <div class="actions">
+          <button class="btn primary" type="submit">Révéler mon Pokémon</button>
+          <button class="btn ghost" type="button" id="btnToday">Aujourd'hui</button>
+          <button class="btn ghost" type="button" id="btnRandom" title="Une date au hasard">🎲</button>
+        </div>
+      </form>
+
+      <div id="result" class="result" hidden></div>
+    </section>
+
+    <!-- ============ DUEL ============ -->
+    <section id="tab-duel" class="panel" hidden>
+      <form id="formDuel" class="entry" autocomplete="off">
+        <h1>Duel d'anniversaires</h1>
+        <p class="sub">Ta date contre celle d'un·e ami·e : quel Pokémon l'emporte&nbsp;?</p>
+        <div class="duel-inputs">
+          <div>
+            <input class="name" id="nameA" placeholder="Toi" maxlength="20">
+            <div class="date-field compact" data-date>
+              <label><input inputmode="numeric" maxlength="2" placeholder="JJ" data-part="d" required aria-label="Jour"></label>
+              <span class="sep">/</span>
+              <label><input inputmode="numeric" maxlength="2" placeholder="MM" data-part="m" required aria-label="Mois"></label>
+              <span class="sep">/</span>
+              <label class="y"><input inputmode="numeric" maxlength="4" placeholder="AAAA" data-part="y" required aria-label="Année"></label>
+            </div>
+          </div>
+          <span class="vs-badge">VS</span>
+          <div>
+            <input class="name" id="nameB" placeholder="Ton ami·e" maxlength="20">
+            <div class="date-field compact" data-date>
+              <label><input inputmode="numeric" maxlength="2" placeholder="JJ" data-part="d" required aria-label="Jour"></label>
+              <span class="sep">/</span>
+              <label><input inputmode="numeric" maxlength="2" placeholder="MM" data-part="m" required aria-label="Mois"></label>
+              <span class="sep">/</span>
+              <label class="y"><input inputmode="numeric" maxlength="4" placeholder="AAAA" data-part="y" required aria-label="Année"></label>
+            </div>
+          </div>
+        </div>
+        <p class="error" id="errDuel" role="alert"></p>
+        <div class="actions"><button class="btn primary" type="submit">Lancer le combat ⚔️</button></div>
+      </form>
+      <div id="duelResult" class="duel-result" hidden></div>
+    </section>
+
+    <!-- ============ POKÉDEX ============ -->
+    <section id="tab-dex" class="panel" hidden>
+      <div class="entry">
+        <h1>Ton Pokédex</h1>
+        <p class="sub">Chaque Pokémon révélé (le tien, ceux de tes potes, les duels…) est enregistré ici. Saurez-vous les attraper tous&nbsp;?</p>
+        <div class="dex-progress"><div id="dexBar"></div></div>
+        <p id="dexText" class="dex-text"></p>
+        <label class="toggle"><input type="checkbox" id="dexOnly" checked> Afficher seulement les découverts</label>
+      </div>
+      <div id="dexGrid" class="dex-grid"></div>
+    </section>
+  </main>
+
+  <footer class="foot">
+    Données &amp; images : <a href="https://pokeapi.co" target="_blank" rel="noopener">PokeAPI</a>. Pokémon © Nintendo / Game Freak / The Pokémon Company. Projet de fan, non officiel.
+  </footer>
+
+  <div id="toast" class="toast" role="status"></div>
+  <script type="module" src="app.js"></script>
+</body>
+</html>

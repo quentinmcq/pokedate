@@ -1,0 +1,12 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "pokedate",
+  "compatibility_date": "2026-10-01",
+  // Site 100 % statique : Cloudflare sert le dossier public/ tel quel
+  "assets": {
+    "directory": "./public"
+  },
+  "routes": [
+    { "pattern": "pokedate.quentin-macq.dev", "custom_domain": true }
+  ]
+}
