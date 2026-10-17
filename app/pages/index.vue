@@ -44,10 +44,18 @@ const [{ data: pokemon }, { data: mirrorPokemon }] = await Promise.all([
   usePokemonDetail(mirrorPokemonId),
 ])
 
-const recordMirrorPokemon = () =>
-  mirrorPokemon.value && recordDiscovery(mirrorPokemon.value.id, { caught: !isRandomDraw.value })
-onMounted(recordMirrorPokemon)
-watch(mirrorPokemon, recordMirrorPokemon)
+const isNewDiscovery = ref(false)
+
+// Recorded from the date itself, so leaving before the Pokémon details arrive still fills the Pokédex.
+function recordRevealedDate() {
+  const date = selectedDate.value
+  if (!date) return
+  const caught = !isRandomDraw.value
+  isNewDiscovery.value = recordDiscovery(pokemonIdFromDate(date), { caught, shiny: isShinyDate(date) })
+  const mirrorId = mirrorPokemonIdForDate(date)
+  if (mirrorId) recordDiscovery(mirrorId, { caught })
+}
+onMounted(() => watch([() => route.fullPath, revealCount], recordRevealedDate, { immediate: true }))
 watchEffect(() => !pokemon.value && resetAccent())
 
 async function revealPokemonFor(date: CalendarDate, { isRandom = false } = {}) {
@@ -148,12 +156,21 @@ usePageSeo({
 
     <section v-if="pokemon && selectedDate" ref="resultSection" class="result" tabindex="-1" aria-label="Ton Pokémon">
       <DateFormula :date="selectedDate" />
+      <p v-if="isRandomDraw" class="result__random-note">
+        <Icon name="lucide:dices" aria-hidden="true" />
+        <span>
+          Tirage au hasard&nbsp;: {{ pokemon.name }} est seulement <b>vu</b> dans ton Pokédex, en ombre<template
+            v-if="isShiny"
+            >, même s'il est shiny</template
+          >. Pour l'attraper, entre une date qui compte pour toi.
+        </span>
+      </p>
       <PokemonCard
         :key="`${toIsoDate(selectedDate)}-${revealCount}`"
         :pokemon="pokemon"
         :date="selectedDate"
         :shiny="isShiny"
-        :catch-on-reveal="!isRandomDraw"
+        :new-discovery="isNewDiscovery"
         animate
       />
       <PublishDraw

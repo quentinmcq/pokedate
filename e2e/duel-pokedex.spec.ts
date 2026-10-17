@@ -79,6 +79,22 @@ test.describe('Pokédex', () => {
     await expect(page).toHaveURL('/')
   })
 
+  test('enregistre le tirage même si on quitte la page avant que la carte s’affiche', async ({ page }) => {
+    await gotoHydrated(page, '/')
+    await page.route('**/api/pokemon/**', async (route) => {
+      await new Promise((resolve) => setTimeout(resolve, 4000))
+      await route.continue()
+    })
+    await page.getByRole('button', { name: /Au hasard/ }).click()
+    await expect(page).toHaveURL(/hasard=1/)
+    await page
+      .getByRole('navigation', { name: 'Navigation principale' })
+      .getByRole('link', { name: /Pokédex/ })
+      .click()
+    await expect(page).toHaveURL('/pokedex')
+    await expect(page.locator('.dex-stats')).toContainText('1 vu')
+  })
+
   test('une fiche consultée compte comme vue, pas comme attrapée', async ({ page }) => {
     await gotoHydrated(page, '/pokemon/25-pikachu')
     await gotoHydrated(page, '/pokedex')

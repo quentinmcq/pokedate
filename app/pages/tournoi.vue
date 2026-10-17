@@ -63,12 +63,15 @@ watchEffect(() => {
 
 function celebrate() {
   if (!contenders.value || !champion.value) return
-  for (const { pokemon, shiny } of contenders.value) recordDiscovery(pokemon.id, { caught: true, shiny })
   const championType = champion.value.pokemon.types[0]
   setTimeout(() => launchConfetti(['#ffd23f', typeColor(championType), '#fff']), 600)
 }
 watch(champion, celebrate)
 onMounted(celebrate)
+
+const recordTournamentPokemon = () =>
+  tournamentPlayers.value?.forEach(({ pokemonId, shiny }) => recordDiscovery(pokemonId, { caught: true, shiny }))
+onMounted(() => watch(tournamentPlayers, recordTournamentPokemon, { immediate: true }))
 
 let nextDraftKey = 0
 const createDraft = (): PlayerDraft => ({ key: nextDraftKey++, name: '', date: emptyDateFieldValue() })

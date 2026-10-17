@@ -15,6 +15,14 @@ test.describe('Mon Pokémon', () => {
     expect(errors).toEqual([])
   })
 
+  test('signale un Pokémon nouveau une seule fois', async ({ page }) => {
+    await revealDate(page, '17', '10', '2026')
+    await expect(page.locator('.mon-card .tag--new')).toHaveText('Nouveau !')
+    await page.getByRole('button', { name: 'Révéler mon Pokémon' }).click()
+    await expect(page.locator('.mon-card__name')).toContainText('Muplodocus')
+    await expect(page.locator('.mon-card .tag--new')).toHaveCount(0)
+  })
+
   test('affiche une erreur claire pour une date impossible', async ({ page }) => {
     await gotoHydrated(page, '/')
     await fillDate(page, '.hero', '31', '02', '2026')
@@ -67,6 +75,7 @@ test.describe('Mon Pokémon', () => {
     await expect(page).toHaveURL(/\?date=\d{4}-\d{2}-\d{2}&hasard=1$/)
     await expect(page.locator('.mon-card')).toBeVisible()
     await expect(page.locator('.site-nav .pill')).toContainText('0')
+    await expect(page.locator('.result__random-note')).toContainText('seulement vu')
   })
 
   test('le menu ramène au dernier Pokémon révélé', async ({ page }) => {

@@ -8,9 +8,9 @@ const props = withDefaults(
     shiny?: boolean
     animate?: boolean
     headingLevel?: 'h1' | 'h2'
-    catchOnReveal?: boolean
+    newDiscovery?: boolean | null
   }>(),
-  { date: null, shiny: false, animate: false, headingLevel: 'h2', catchOnReveal: false },
+  { date: null, shiny: false, animate: false, headingLevel: 'h2', newDiscovery: null },
 )
 
 const REVEAL_DELAY_MS = 1300
@@ -53,7 +53,8 @@ function reveal() {
 
 let revealTimer: ReturnType<typeof setTimeout> | undefined
 onMounted(() => {
-  isNewDiscovery.value = recordDiscovery(props.pokemon.id, { caught: props.catchOnReveal, shiny: isShinyShown.value })
+  if (props.newDiscovery === null)
+    isNewDiscovery.value = recordDiscovery(props.pokemon.id, { shiny: isShinyShown.value })
   if (props.animate) revealTimer = setTimeout(reveal, REVEAL_DELAY_MS)
   else requestAnimationFrame(() => requestAnimationFrame(reveal))
 })
@@ -147,7 +148,7 @@ function sharePokemon() {
           </button>
         </div>
         <span v-if="date && shiny" class="mon-card__shiny-badge"
-          ><Icon name="lucide:sparkles" aria-hidden="true" /> Shiny ! 1 date sur 20</span
+          ><Icon name="lucide:sparkles" aria-hidden="true" /> Shiny : seulement 1 date sur 20 !</span
         >
       </div>
 
@@ -158,7 +159,7 @@ function sharePokemon() {
           <span v-if="pokemon.rarity === 'legendary'" class="tag">Légendaire</span>
           <span v-if="pokemon.rarity === 'mythical'" class="tag tag--myth">Fabuleux</span>
           <span v-if="pokemon.isBaby" class="tag tag--baby">Bébé</span>
-          <span v-if="isNewDiscovery" class="tag tag--new">Nouveau !</span>
+          <span v-if="newDiscovery ?? isNewDiscovery" class="tag tag--new">Nouveau !</span>
         </div>
         <component :is="headingLevel" :id="`pokemon-${pokemon.id}-name`" class="mon-card__name">
           {{ pokemon.name }}<small>{{ pokemon.englishName }} · {{ pokemon.genus }}</small>

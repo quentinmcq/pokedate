@@ -5,6 +5,22 @@
   outline: none;
 }
 
+.result__random-note {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: space(2);
+  max-width: 560px;
+  margin: 0 auto space(4);
+  color: color('text-muted');
+  font-size: font-size('sm');
+  text-align: left;
+
+  b {
+    color: color('text');
+  }
+}
+
 .section {
   margin-top: space(16);
 

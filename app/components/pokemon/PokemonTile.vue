@@ -21,8 +21,12 @@ const link = computed(() => ({ path: pokemonPath(props.pokemon), query: props.sh
     :to="link"
   >
     <img loading="lazy" decoding="async" :src="spriteUrl(pokemon.id, shiny)" alt="" width="72" height="72" />
-    <b><span v-if="state === 'seen'" class="visually-hidden">Vu, pas encore attrapé : </span>{{ pokemon.name }}</b>
-    <span>#{{ padNumber(pokemon.id, 4) }}</span>
+    <b>{{ pokemon.name }}</b>
+    <span
+      ><template v-if="state === 'seen'">Vu<span class="visually-hidden">, pas encore attrapé</span> · </template>#{{
+        padNumber(pokemon.id, 4)
+      }}</span
+    >
   </NuxtLink>
 </template>
 
