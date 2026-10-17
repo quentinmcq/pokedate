@@ -44,19 +44,20 @@ Avant les tests fonctionnels la première fois : `bunx playwright install chromi
 ```
 app/
   pages/              index (ma date), duel, pokedex, pokemon/index (les 1025), pokemon/[slug] (fiche)
-  components/         PokemonCard, DateField, DateFormula, TypeChip, AppHeader, AppFooter
-  composables/        usePokemon (données), useDex (Pokédex perso), useSeo, useUi (toast, partage, couleurs)
+  components/         PokemonCard (+ StatBars, Matchups, Evolutions), PokemonTile, DuelFighter, DateField…
+  composables/        usePokemonApi, usePokedex (découvertes), usePageAccent, useToast, useShareLink, useSeo
+  utils/              paramètres du duel, textes SEO, FAQ, confettis
   assets/scss/        Design system
     abstracts/        tokens (couleurs, espaces, typo…), fonctions et mixins
     base/             variables CSS, reset, typographie, animations
     components/       boutons, champs, badges, carte Pokémon…
     layout/, pages/   en-tête, pied de page, styles propres à chaque page
 server/
+  data/               pokemon.json (clés courtes) et son type StoredPokedex
   api/                /api/pokemon/:id et /api/pokedex
   routes/             sitemap.xml et robots.txt
-  data/pokemon.json   Les 1025 Pokémon (noms FR/EN, types, stats, talents, description, évolutions)
 shared/               Règles du jeu, types, table des faiblesses, combat (app et serveur)
-scripts/              Récupération des données, des images et des aperçus
+scripts/              fetch-pokemon.ts (données), fetch-sprites.ts (images, cris, aperçus), default-share-image.ts
 test/                 Tests Vitest (unit/ : logique, nuxt/ : composants)
 e2e/                  Tests Playwright (parcours, SEO, sécurité, accessibilité)
 generated/            Images et cris générés (hors dépôt), copiés dans le site au build
