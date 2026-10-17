@@ -114,3 +114,53 @@ test.describe('Pokédex', () => {
     await expect(page.locator('.dex-grid > li')).toHaveCount(1025)
   })
 })
+
+test.describe('Tournoi', () => {
+  test('classe 3 joueurs sans mettre leurs dates dans le lien', async ({ page }) => {
+    await gotoHydrated(page, '/tournoi')
+    const rows = page.locator('.players__row')
+    const players = [
+      ['Quentin', '12', '03', '1995'],
+      ['Léa', '25', '07', '1998'],
+      ['Max', '17', '10', '2026'],
+    ] as const
+    for (const [index, [name, day, month, year]] of players.entries()) {
+      await rows
+        .nth(index)
+        .getByRole('textbox', { name: /Prénom/ })
+        .fill(name)
+      await fillDate(page, `.players__row >> nth=${index}`, day, month, year)
+    }
+    await page.getByRole('button', { name: /Lancer le tournoi/ }).click()
+
+    await expect(page.locator('.ranking__row')).toHaveCount(3)
+    await expect(page.locator('#ranking-title')).toContainText('gagne avec')
+    await expect(page).toHaveURL(/p=235&p=578&p=706/)
+    expect(page.url()).not.toMatch(/1995|1998|2026/)
+    await expect(page.locator('.site-nav .pill')).toContainText('3')
+  })
+
+  test('ajoute et retire des joueurs entre 3 et 8', async ({ page }) => {
+    await gotoHydrated(page, '/tournoi')
+    await expect(page.getByRole('button', { name: /Retirer le joueur/ })).toHaveCount(0)
+    const addPlayer = page.getByRole('button', { name: 'Ajouter un joueur' })
+    for (let added = 0; added < 5; added++) await addPlayer.click()
+    await expect(page.locator('.players__row')).toHaveCount(8)
+    await expect(addPlayer).toHaveCount(0)
+    await page.getByRole('button', { name: 'Retirer le joueur 8' }).click()
+    await expect(page.locator('.players__row')).toHaveCount(7)
+  })
+
+  test('signale le joueur dont la date est fausse', async ({ page }) => {
+    await gotoHydrated(page, '/tournoi')
+    await page
+      .locator('.players__row')
+      .nth(1)
+      .getByRole('textbox', { name: /Prénom/ })
+      .fill('Léa')
+    await fillDate(page, '.players__row >> nth=0', '01', '01', '2000')
+    await fillDate(page, '.players__row >> nth=1', '31', '02', '2000')
+    await page.getByRole('button', { name: /Lancer le tournoi/ }).click()
+    await expect(page.getByRole('alert')).toHaveText("Léa : Le 31/02 n'existe pas… même chez les Pokémon.")
+  })
+})

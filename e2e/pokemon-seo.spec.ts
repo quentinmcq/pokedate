@@ -105,7 +105,7 @@ test.describe('Référencement', { tag: '@server' }, () => {
     const sitemap = await request.get('/sitemap.xml')
     expect(sitemap.headers()['content-type']).toContain('application/xml')
     const xml = await sitemap.text()
-    expect(xml.match(/<url>/g)).toHaveLength(1029)
+    expect(xml.match(/<url>/g)).toHaveLength(1030)
     expect(xml).toContain('/pokemon/1025-')
     const robots = await (await request.get('/robots.txt')).text()
     expect(robots).toContain('Sitemap: ')

@@ -180,7 +180,7 @@ usePageSeo({
           <li>{{ tempoText }}</li>
         </ul>
       </div>
-      <div class="actions actions--spaced">
+      <div class="actions">
         <button class="btn btn--primary btn--sm" type="button" @click="shareDuel">
           <Icon name="lucide:share-2" aria-hidden="true" /> Partager le duel
         </button>
@@ -246,6 +246,9 @@ usePageSeo({
         </button>
       </div>
       <p class="field-hint">Seuls les Pokémon apparaissent dans le lien du duel, jamais vos dates.</p>
+      <p class="field-hint">
+        Vous êtes plus de deux&nbsp;? <NuxtLink to="/tournoi" class="text-link">Lance un tournoi</NuxtLink>.
+      </p>
     </form>
   </div>
 </template>
