@@ -1,7 +1,6 @@
 @use '../abstracts' as *;
 
-h1,
-.h1 {
+h1 {
   font-size: font-size('display');
   line-height: 1.02;
   letter-spacing: -0.035em;
@@ -30,12 +29,4 @@ p {
   strong {
     color: color('text');
   }
-}
-
-.eyebrow {
-  @include eyebrow;
-}
-
-.mono {
-  font-family: var(--font-mono);
 }

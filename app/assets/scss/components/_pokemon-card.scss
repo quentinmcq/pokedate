@@ -250,6 +250,10 @@
     margin-top: 2px;
   }
 
+  &__ability {
+    display: block;
+  }
+
   &__section-title {
     @include eyebrow;
     letter-spacing: 0.1em;
