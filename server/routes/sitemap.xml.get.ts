@@ -6,6 +6,7 @@ export default defineEventHandler((event) => {
     { url: absoluteUrl('/'), priority: '1.0' },
     { url: absoluteUrl('/pokemon'), priority: '0.8' },
     { url: absoluteUrl('/duel'), priority: '0.6' },
+    { url: absoluteUrl('/mentions-legales'), priority: '0.2' },
     ...listPokedexEntries().map((entry) => ({ url: absoluteUrl(pokemonPath(entry)), priority: '0.7' })),
   ]
 
