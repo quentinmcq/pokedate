@@ -1,5 +1,6 @@
 @use '../../assets/scss/abstracts/tokens' as *;
 @use '../../assets/scss/abstracts/functions' as *;
+@use '../../assets/scss/abstracts/mixins' as *;
 
 .site-footer {
   position: relative;
@@ -37,7 +38,19 @@
     }
   }
 
+  &__aside {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: space(3);
+
+    @include bp(small) {
+      align-items: flex-start;
+    }
+  }
+
   &__author {
+    margin: 0;
     font-size: font-size('sm');
     color: color('text-muted');
 
