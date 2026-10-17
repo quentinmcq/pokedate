@@ -1,14 +1,16 @@
 import { describe, expect, it } from 'vitest'
 import {
-  TYPES,
+  POKEMON_TYPES,
   TYPE_KEYS,
-  heightHint,
-  matchupsFor,
-  multLabel,
+  defensiveMatchups,
+  describeHeight,
+  describeWeight,
+  formatMultiplier,
   pokemonPath,
   slugify,
-  typeEffect,
-  weightHint,
+  statTotal,
+  strongestStat,
+  typeEffectiveness,
 } from '../../shared/utils/pokemon'
 
 describe('table des types', () => {
@@ -17,48 +19,63 @@ describe('table des types', () => {
   })
 
   it('applique les multiplicateurs de base', () => {
-    expect(typeEffect('fire', ['grass'])).toBe(2)
-    expect(typeEffect('water', ['grass'])).toBe(0.5)
-    expect(typeEffect('normal', ['ghost'])).toBe(0)
-    expect(typeEffect('ground', ['flying'])).toBe(0)
-    expect(typeEffect('electric', ['normal'])).toBe(1)
+    expect(typeEffectiveness('fire', ['grass'])).toBe(2)
+    expect(typeEffectiveness('water', ['grass'])).toBe(0.5)
+    expect(typeEffectiveness('normal', ['ghost'])).toBe(0)
+    expect(typeEffectiveness('ground', ['flying'])).toBe(0)
+    expect(typeEffectiveness('electric', ['normal'])).toBe(1)
   })
 
   it('multiplie pour les doubles types', () => {
-    expect(typeEffect('ice', ['dragon', 'flying'])).toBe(4)
-    expect(typeEffect('fire', ['water', 'dragon'])).toBe(0.25)
+    expect(typeEffectiveness('ice', ['dragon', 'flying'])).toBe(4)
+    expect(typeEffectiveness('fire', ['water', 'dragon'])).toBe(0.25)
   })
 
   it('classe faiblesses, résistances et immunités', () => {
-    const normal = matchupsFor(['normal'])
-    expect(normal.weak).toEqual([['fighting', 2]])
-    expect(normal.immune).toEqual([['ghost', 0]])
-    expect(normal.resist).toEqual([])
-
-    const dragonFlying = matchupsFor(['dragon', 'flying'])
-    expect(dragonFlying.weak[0]).toEqual(['ice', 4])
+    const normal = defensiveMatchups(['normal'])
+    expect(normal.weaknesses).toEqual([{ type: 'fighting', multiplier: 2 }])
+    expect(normal.immunities).toEqual([{ type: 'ghost', multiplier: 0 }])
+    expect(normal.resistances).toEqual([])
+    expect(defensiveMatchups(['dragon', 'flying']).weaknesses[0]).toEqual({ type: 'ice', multiplier: 4 })
   })
 
   it('affiche les multiplicateurs lisiblement', () => {
-    expect([4, 2, 0.5, 0.25, 0].map(multLabel)).toEqual(['×4', '×2', '×½', '×¼', '×0'])
+    expect([4, 2, 0.5, 0.25, 0].map(formatMultiplier)).toEqual(['×4', '×2', '×½', '×¼', '×0'])
   })
 })
-function luminance(hex: string) {
-  const [r, g, b] = [1, 3, 5].map((i) => {
-    const c = Number.parseInt(hex.slice(i, i + 2), 16) / 255
-    return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4
-  })
-  return 0.2126 * r! + 0.7152 * g! + 0.0722 * b!
+
+function relativeLuminance(hexColor: string) {
+  const [red, green, blue] = [1, 3, 5].map((start) => {
+    const channel = Number.parseInt(hexColor.slice(start, start + 2), 16) / 255
+    return channel <= 0.03928 ? channel / 12.92 : ((channel + 0.055) / 1.055) ** 2.4
+  }) as [number, number, number]
+  return 0.2126 * red + 0.7152 * green + 0.0722 * blue
 }
-const contrast = (a: string, b: string) => {
-  const [hi, lo] = [luminance(a), luminance(b)].toSorted((x, y) => y - x)
-  return (hi! + 0.05) / (lo! + 0.05)
+
+function contrastRatio(colorA: string, colorB: string) {
+  const [lighter, darker] = [relativeLuminance(colorA), relativeLuminance(colorB)].toSorted((a, b) => b - a) as [
+    number,
+    number,
+  ]
+  return (lighter + 0.05) / (darker + 0.05)
 }
 
 describe('accessibilité des badges de type', () => {
-  it.each(TYPE_KEYS)('%s : texte lisible (≥ 4,5:1)', (t) => {
-    const [, bg, , ink] = TYPES[t]
-    expect(contrast(bg, ink)).toBeGreaterThanOrEqual(4.5)
+  it.each(TYPE_KEYS)('%s : texte lisible (≥ 4,5:1)', (type) => {
+    const { color, textColor } = POKEMON_TYPES[type]
+    expect(contrastRatio(color, textColor)).toBeGreaterThanOrEqual(4.5)
+  })
+})
+
+describe('statistiques', () => {
+  const ronflexStats = { hp: 160, attack: 110, defense: 65, specialAttack: 65, specialDefense: 110, speed: 30 }
+
+  it('calcule le total', () => {
+    expect(statTotal(ronflexStats)).toBe(540)
+  })
+
+  it('trouve la meilleure statistique', () => {
+    expect(strongestStat(ronflexStats)).toBe('hp')
   })
 })
 
@@ -73,18 +90,19 @@ describe('adresses des fiches', () => {
   })
 
   it('préfixe le numéro', () => {
-    expect(pokemonPath({ id: 706, fr: 'Muplodocus' })).toBe('/pokemon/706-muplodocus')
+    expect(pokemonPath({ id: 706, name: 'Muplodocus' })).toBe('/pokemon/706-muplodocus')
   })
 })
 
 describe('comparaisons amusantes', () => {
   it('compare la taille à un humain', () => {
-    expect(heightHint(0.2)).toContain('poche')
-    expect(heightHint(3.4)).toContain('2× ta taille')
+    expect(describeHeight(0.2)).toContain('poche')
+    expect(describeHeight(3.4)).toContain('2× ta taille')
   })
 
   it('compte le poids en baguettes', () => {
-    expect(weightHint(0.1)).toContain('Plus léger')
-    expect(weightHint(6.5)).toBe('≈ 26 baguettes 🥖')
+    expect(describeWeight(0.1)).toContain('Plus léger')
+    expect(describeWeight(0.3)).toBe('≈ 1 baguette 🥖')
+    expect(describeWeight(6.5)).toBe('≈ 26 baguettes 🥖')
   })
 })

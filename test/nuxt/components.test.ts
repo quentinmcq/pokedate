@@ -14,7 +14,7 @@ describe('TypeChip', () => {
   })
 
   it('affiche le multiplicateur quand il est fourni', async () => {
-    const wrapper = await mountSuspended(TypeChip, { props: { type: 'ice', mult: 4, small: true } })
+    const wrapper = await mountSuspended(TypeChip, { props: { type: 'ice', multiplier: 4, small: true } })
     expect(wrapper.find('.type-chip__mult').text()).toBe('×4')
     expect(wrapper.classes()).toContain('type-chip--sm')
   })
@@ -22,14 +22,14 @@ describe('TypeChip', () => {
 
 describe('DateFormula', () => {
   it('met en avant le dernier chiffre de chaque partie', async () => {
-    const wrapper = await mountSuspended(DateFormula, { props: { date: { d: 17, m: 10, y: 2026 } } })
+    const wrapper = await mountSuspended(DateFormula, { props: { date: { day: 17, month: 10, year: 2026 } } })
     expect(wrapper.findAll('.formula__digit').map((d) => d.text())).toEqual(['7', '0', '6'])
     expect(wrapper.find('.formula__num').text()).toBe('N° 706')
     expect(wrapper.find('.visually-hidden').text()).toContain('numéro 706')
   })
 
   it('explique le cas 000', async () => {
-    const wrapper = await mountSuspended(DateFormula, { props: { date: { d: 10, m: 10, y: 2020 } } })
+    const wrapper = await mountSuspended(DateFormula, { props: { date: { day: 10, month: 10, year: 2020 } } })
     expect(wrapper.text()).toContain('000 devient 1000')
   })
 })
