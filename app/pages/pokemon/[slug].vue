@@ -14,7 +14,7 @@ const pokemonIdFromSlug = (slug: unknown) => {
 const { data } = await usePokemonDetail(pokemonIdFromSlug(route.params.slug))
 const pokemon = data.value
 if (!pokemon)
-  throw createError({ statusCode: 404, statusMessage: "Ce Pokémon n'existe pas (encore ?)", fatal: import.meta.client })
+  throw createError({ statusCode: 404, message: "Ce Pokémon n'existe pas (encore ?)", fatal: import.meta.client })
 
 const canonicalPath = pokemonPath(pokemon)
 if (route.path !== canonicalPath) await navigateTo({ path: canonicalPath, query: route.query }, { redirectCode: 301 })
