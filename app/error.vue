@@ -9,8 +9,7 @@ useSeoMeta({ robots: 'noindex' })
 </script>
 
 <template>
-  <AppHeader />
-  <main id="contenu" class="site-main">
+  <NuxtLayout>
     <section class="hero">
       <h1>{{ notFound ? 'Un Pokémon sauvage a fui…' : 'Oups, une erreur' }}</h1>
       <p class="lead">
@@ -25,6 +24,5 @@ useSeoMeta({ robots: 'noindex' })
         <NuxtLink v-if="notFound" class="btn btn--ghost" to="/pokemon">Voir les 1025 Pokémon</NuxtLink>
       </div>
     </section>
-  </main>
-  <AppFooter />
+  </NuxtLayout>
 </template>

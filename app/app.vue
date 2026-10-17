@@ -12,11 +12,9 @@ useSiteSeo()
   <a class="skip-link" href="#contenu">Aller au contenu</a>
   <NuxtLoadingIndicator color="#ffd23f" :height="3" />
   <canvas id="confetti" aria-hidden="true" />
-  <AppHeader />
-  <main id="contenu" class="site-main" tabindex="-1">
+  <NuxtLayout>
     <NuxtPage />
-  </main>
-  <AppFooter />
+  </NuxtLayout>
   <div class="toast" :class="{ 'toast--visible': toast.visible }" role="status" aria-live="polite">
     {{ toast.message }}
   </div>
