@@ -58,6 +58,7 @@ test.describe('Sécurité', { tag: '@server' }, () => {
 test.describe('Accessibilité', () => {
   for (const path of PAGES) {
     test(`aucun problème grave détecté par axe : ${path}`, async ({ page }) => {
+      test.slow(path === '/pokemon', 'axe audits 1025 tiles')
       await page.emulateMedia({ reducedMotion: 'reduce' })
       await gotoHydrated(page, path)
       await page.waitForLoadState('networkidle')

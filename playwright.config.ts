@@ -9,6 +9,8 @@ export default defineConfig({
   fullyParallel: true,
   forbidOnly: isCI,
   retries: isCI ? 1 : 0,
+  // CI runs desktop and mobile in two parallel jobs on 2-core runners.
+  workers: isCI ? 2 : undefined,
   reporter: isCI ? [['github'], ['html', { open: 'never' }]] : [['list']],
   use: {
     baseURL: `http://localhost:${PORT}`,
@@ -21,7 +23,7 @@ export default defineConfig({
   ],
   webServer: {
     // A separate local state keeps test draws out of the database used by the dev server.
-    command: `bunx wrangler d1 migrations apply pokedate --local --persist-to ${E2E_STATE_DIR} && bunx wrangler dev --port ${PORT} --ip 127.0.0.1 --persist-to ${E2E_STATE_DIR} --show-interactive-dev-session=false`,
+    command: `bun scripts/e2e-server.ts ${PORT} ${E2E_STATE_DIR}`,
     url: `http://localhost:${PORT}/robots.txt`,
     reuseExistingServer: !isCI,
     timeout: 120_000,

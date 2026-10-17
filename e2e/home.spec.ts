@@ -85,6 +85,8 @@ test.describe('Mon Pokémon', () => {
 
   test('publie son tirage dans les derniers tirages', async ({ page }, testInfo) => {
     const nickname = `Test ${testInfo.project.name}-${Date.now() % 10000}`
+    // Cloudflare always overwrites this header in production; here it gives each run its own rate-limit bucket.
+    await page.setExtraHTTPHeaders({ 'cf-connecting-ip': `e2e-${testInfo.project.name}-${Date.now()}` })
     await revealDate(page, '17', '10', '2026')
     const publish = page.getByRole('region', { name: 'Publier dans les derniers tirages' })
     await publish.getByLabel('Ton pseudo').fill('C0nnard')
@@ -96,7 +98,7 @@ test.describe('Mon Pokémon', () => {
     await expect(publish.getByRole('status')).toContainText("C'est publié")
     await publish.getByRole('link', { name: 'Voir les derniers tirages' }).click()
     await expect(page).toHaveURL('/tirages')
-    await expect(page.locator('.draws__item').first()).toContainText(`${nickname} a tiré Muplodocus`)
+    await expect(page.locator('.draws__item', { hasText: nickname })).toContainText(`${nickname} a tiré Muplodocus`)
   })
 
   test('« Au hasard » ne propose pas de publier', async ({ page }) => {
