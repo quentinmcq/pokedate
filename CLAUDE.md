@@ -18,7 +18,8 @@ Nuxt 4 rendu côté serveur sur Cloudflare Workers, Bun, SCSS, Nuxt Icon (Lucide
 - Commits atomiques au format Conventional Commits, en anglais (`feat(card): …`, `fix(security): …`).
 - Aucune mention de Claude dans les commits ni les PR (pas de `Co-Authored-By`, pas de lien de session,
   pas de « Generated with Claude Code »).
-- Travail sur une branche + PR, fusion en avance rapide pour garder un historique linéaire.
+- Commits directement sur `main` (pas de PR), historique linéaire. Tout lancer en local avant de pousser :
+  chaque push sur `main` passe la CI puis déploie.
 - Textes de l'interface en français, tutoiement.
 - Icônes : `<Icon name="lucide:…" />`, pas d'emoji dans l'interface (seulement dans les textes partagés).
 - Actions GitHub épinglées par hash de commit ; Renovate (messages en anglais) gère les mises à jour.
