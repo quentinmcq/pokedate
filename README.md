@@ -48,8 +48,6 @@ Vitest / Playwright · Lefthook · Renovate.
 | `e2e/`       | Playwright                                                  |
 | `generated/` | Images et cris générés, hors dépôt                          |
 
-Audit sécurité, performance, accessibilité et SEO : [docs/AUDIT.md](docs/AUDIT.md).
-
 ---
 
 Projet de fan non officiel. Pokémon © Nintendo / Game Freak / The Pokémon Company.
