@@ -21,7 +21,7 @@ Nuxt 4 rendu côté serveur sur Cloudflare Workers, Bun, SCSS, Nuxt Icon (Lucide
 - Textes de l'interface en français, tutoiement.
 - Icônes : `<Icon name="lucide:…" />`, pas d'emoji dans l'interface (seulement dans les textes partagés).
 - Actions GitHub épinglées par hash de commit ; Renovate (messages en anglais) gère les mises à jour.
-- `bunfig.toml` : Bun refuse les versions publiées depuis moins d'un jour (Renovate attend 3 jours).
+- `bunfig.toml` : Bun et Renovate ignorent les versions publiées depuis moins d'un jour.
 - Hooks Lefthook : format + lint au commit, types + tests unitaires au push. Ne pas les contourner.
 
 ## Architecture

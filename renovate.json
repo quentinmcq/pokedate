@@ -3,7 +3,7 @@
   "extends": ["config:recommended", "helpers:pinGitHubActionDigests", ":dependencyDashboard"],
   "timezone": "Europe/Paris",
   "schedule": ["before 7am on monday"],
-  "minimumReleaseAge": "3 days",
+  "minimumReleaseAge": "1 day",
   "rangeStrategy": "bump",
   "prConcurrentLimit": 5,
   "labels": ["dependencies"],
