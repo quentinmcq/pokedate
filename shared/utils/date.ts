@@ -3,9 +3,11 @@ import { padNumber } from './pokemon'
 
 const lastDigit = (value: number) => value % 10
 
+export const LAST_DATE_POKEMON_ID = 1000
+
 export function pokemonIdFromDate({ day, month, year }: CalendarDate) {
   const id = lastDigit(day) * 100 + lastDigit(month) * 10 + lastDigit(year)
-  return id === 0 ? 1000 : id
+  return id === 0 ? LAST_DATE_POKEMON_ID : id
 }
 
 function fnv1aHash(text: string) {
@@ -105,6 +107,13 @@ export const toDateFieldValue = ({ day, month, year }: CalendarDate): DateFieldV
 })
 
 export const emptyDateFieldValue = (): DateFieldValue => ({ day: '', month: '', year: '' })
+
+export function todayInTimeZone(timeZone: string, now = new Date()): CalendarDate {
+  const parts = new Intl.DateTimeFormat('en-US', { timeZone, year: 'numeric', month: 'numeric', day: 'numeric' })
+    .formatToParts(now)
+    .reduce<Record<string, number>>((values, part) => ({ ...values, [part.type]: Number(part.value) }), {})
+  return { day: parts.day ?? 1, month: parts.month ?? 1, year: parts.year ?? 1970 }
+}
 
 export const todayAsCalendarDate = (now = new Date()): CalendarDate => ({
   day: now.getDate(),

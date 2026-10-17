@@ -25,6 +25,20 @@ test.describe('Fiches Pokémon', () => {
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Un Pokémon sauvage a fui…')
   })
 
+  test('explique quelles dates donnent le Pokémon', async ({ page }) => {
+    await gotoHydrated(page, '/pokemon/25-pikachu')
+    const section = page.getByRole('region', { name: 'Quelles dates donnent Pikachu ?' })
+    await expect(section).toContainText('le jour finit par 0 (10, 20 ou 30)')
+    await expect(section).toContainText('le mois finit par 2 (février ou décembre)')
+    await expect(section).toContainText('20/02/1995')
+    await expect(section.locator('time')).toHaveAttribute('datetime', /^\d{4}-02-[123]0$/)
+  })
+
+  test('explique la date miroir d’un Pokémon bonus', async ({ page }) => {
+    await gotoHydrated(page, '/pokemon/1010')
+    await expect(page.getByRole('region', { name: /Quelles dates donnent/ })).toContainText('date miroir')
+  })
+
   test('liste les 1025 Pokémon par génération', async ({ page }) => {
     await gotoHydrated(page, '/pokemon')
     await expect(page.locator('.gen-block')).toHaveCount(9)

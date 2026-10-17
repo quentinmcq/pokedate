@@ -19,6 +19,7 @@ if (!pokemon)
 const canonicalPath = pokemonPath(pokemon)
 if (route.path !== canonicalPath) await navigateTo({ path: canonicalPath, query: route.query }, { redirectCode: 301 })
 
+const todayInParis = useState('today-in-paris', () => todayInTimeZone('Europe/Paris'))
 const isShinyRequested = route.query.shiny === '1'
 const isSharedLink = route.query.partage === '1'
 
@@ -64,6 +65,7 @@ usePageSeo({
     </HighlightBanner>
 
     <PokemonCard :pokemon="pokemon" :shiny="isShinyRequested" heading-level="h1" />
+    <PokemonDates :pokemon-id="pokemon.id" :pokemon-name="pokemon.name" :today="todayInParis" />
 
     <nav class="pager" aria-label="Pokémon voisins">
       <NuxtLink v-if="pokemon.previous" :to="pokemonPath(pokemon.previous)" rel="prev">
