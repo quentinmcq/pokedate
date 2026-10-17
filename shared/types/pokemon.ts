@@ -74,3 +74,12 @@ export interface DateFieldValue {
   month: string
   year: string
 }
+
+export interface PublicDraw {
+  id: number
+  pokemonId: number
+  pokemonName: string
+  shiny: boolean
+  nickname: string
+  createdAt: string
+}

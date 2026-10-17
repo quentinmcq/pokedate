@@ -83,6 +83,29 @@ test.describe('Mon Pokémon', () => {
     await expect(page).toHaveURL('/')
   })
 
+  test('publie son tirage dans les derniers tirages', async ({ page }, testInfo) => {
+    const nickname = `Test ${testInfo.project.name}-${Date.now() % 10000}`
+    await revealDate(page, '17', '10', '2026')
+    const publish = page.getByRole('region', { name: 'Publier dans les derniers tirages' })
+    await publish.getByLabel('Ton pseudo').fill('C0nnard')
+    await publish.getByRole('button', { name: /Publier Muplodocus/ }).click()
+    await expect(publish.getByRole('alert')).toContainText('ne passe pas')
+
+    await publish.getByLabel('Ton pseudo').fill(nickname)
+    await publish.getByRole('button', { name: /Publier Muplodocus/ }).click()
+    await expect(publish.getByRole('status')).toContainText("C'est publié")
+    await publish.getByRole('link', { name: 'Voir les derniers tirages' }).click()
+    await expect(page).toHaveURL('/tirages')
+    await expect(page.locator('.draws__item').first()).toContainText(`${nickname} a tiré Muplodocus`)
+  })
+
+  test('« Au hasard » ne propose pas de publier', async ({ page }) => {
+    await gotoHydrated(page, '/')
+    await page.getByRole('button', { name: /Au hasard/ }).click()
+    await expect(page.locator('.mon-card')).toBeVisible()
+    await expect(page.getByRole('region', { name: 'Publier dans les derniers tirages' })).toHaveCount(0)
+  })
+
   test('une date miroir fait apparaître un Pokémon rare', async ({ page }) => {
     await revealDate(page, '04', '04', '1990')
     const banner = page.locator('.banner')

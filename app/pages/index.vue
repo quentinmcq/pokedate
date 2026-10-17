@@ -154,6 +154,13 @@ usePageSeo({
         :catch-on-reveal="!isRandomDraw"
         animate
       />
+      <PublishDraw
+        v-if="!isRandomDraw"
+        :key="`publish-${toIsoDate(selectedDate)}-${revealCount}`"
+        :pokemon-id="pokemon.id"
+        :pokemon-name="pokemon.name"
+        :shiny="isShiny"
+      />
       <HighlightBanner
         v-if="mirrorPokemon"
         :to="pokemonPath(mirrorPokemon)"

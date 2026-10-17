@@ -1,0 +1,66 @@
+@use '../assets/scss/abstracts/functions' as *;
+@use '../assets/scss/abstracts/mixins' as *;
+
+.draws-empty {
+  margin: space(8) auto 0;
+  max-width: 40ch;
+  text-align: center;
+  color: color('text-muted');
+}
+
+.draws {
+  display: grid;
+  gap: space(2);
+  max-width: 720px;
+  margin: space(6) auto 0;
+  padding: 0;
+  list-style: none;
+
+  &__item {
+    display: grid;
+    grid-template-columns: 56px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: space(3);
+    padding: space(2) space(4);
+    border-radius: radius('lg');
+    @include surface(2);
+
+    @include bp(phone) {
+      grid-template-columns: 44px minmax(0, 1fr);
+      row-gap: 0;
+    }
+  }
+
+  &__sprite {
+    width: 56px;
+    height: 56px;
+    image-rendering: pixelated;
+
+    @include bp(phone) {
+      grid-row: span 2;
+      width: 44px;
+      height: 44px;
+    }
+  }
+
+  &__text {
+    margin: 0;
+    overflow-wrap: anywhere;
+
+    a {
+      color: color('highlight');
+    }
+  }
+
+  &__shiny {
+    color: color('highlight');
+    font-size: font-size('sm');
+  }
+
+  &__time {
+    font-family: var(--font-mono), monospace;
+    font-size: font-size('xs');
+    color: color('text-muted');
+    white-space: nowrap;
+  }
+}

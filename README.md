@@ -28,6 +28,13 @@ bun run dev
 sur le domaine de `siteUrl` et seulement si le jeton du site est défini, dans les `vars` de `wrangler.jsonc` :
 `NUXT_PUBLIC_CLOUDFLARE_ANALYTICS_TOKEN`.
 
+## Derniers tirages
+
+Les tirages publiés (pseudo, Pokémon, heure) vivent dans la base Cloudflare D1 `pokedate` : les 50 derniers, 7 jours
+au plus, purgés chaque nuit. Nouvelle migration dans `migrations/` : l'appliquer avec
+`bunx wrangler d1 migrations apply pokedate --remote` avant de pousser. Retirer un tirage :
+`bunx wrangler d1 execute pokedate --remote --command "DELETE FROM draws WHERE id = 42"`.
+
 ## Qualité
 
 | Quand            | Quoi                                    |

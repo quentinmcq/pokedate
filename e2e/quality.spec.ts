@@ -8,6 +8,7 @@ const PAGES = [
   '/duel?pa=235&pb=578&na=Quentin&nb=L%C3%A9a',
   '/tournoi?p=235&p=578&p=706&n=Quentin&n=L%C3%A9a&n=Max&s=0&s=1&s=0',
   '/pokedex',
+  '/tirages',
   '/pokemon',
   '/pokemon/133-evoli',
   '/mentions-legales',

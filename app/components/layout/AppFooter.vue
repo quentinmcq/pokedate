@@ -9,6 +9,7 @@ const { portfolioUrl } = useRuntimeConfig().public
         <NuxtLink to="/">Mon Pokémon</NuxtLink>
         <NuxtLink to="/duel">Duel</NuxtLink>
         <NuxtLink to="/tournoi">Tournoi</NuxtLink>
+        <NuxtLink to="/tirages">Derniers tirages</NuxtLink>
         <NuxtLink to="/pokedex">Mon Pokédex</NuxtLink>
         <NuxtLink to="/pokemon">Les 1025 Pokémon</NuxtLink>
         <NuxtLink to="/mentions-legales">Mentions légales</NuxtLink>
@@ -22,7 +23,7 @@ const { portfolioUrl } = useRuntimeConfig().public
         Données : <a href="https://pokeapi.co" target="_blank" rel="noopener">PokeAPI</a> et
         <a href="https://www.pokepedia.fr" target="_blank" rel="noopener">Poképédia</a>. Pokémon © Nintendo / Game Freak
         / The Pokémon Company. Projet de fan, non officiel et sans but commercial. Ton Pokédex reste dans ton navigateur
-        : aucun compte, aucun cookie, aucun traceur.
+        : aucun compte, aucun cookie, aucun traceur. Seuls les tirages que tu choisis de publier sont enregistrés.
       </p>
     </div>
   </footer>

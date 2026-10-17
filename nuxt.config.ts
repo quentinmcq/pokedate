@@ -101,6 +101,7 @@ export default defineNuxtConfig({
 
   routeRules: {
     '/api/**': { headers: { 'cache-control': 'public, max-age=3600, s-maxage=86400' } },
+    '/api/draws': { headers: { 'cache-control': 'no-store' } },
     '/sprites/**': {
       headers: { 'cache-control': `public, max-age=${ONE_MONTH}, stale-while-revalidate=${ONE_MONTH}` },
     },
@@ -149,5 +150,7 @@ export default defineNuxtConfig({
 
   nitro: {
     preset: 'cloudflare_module',
+    experimental: { tasks: true },
+    scheduledTasks: { '0 4 * * *': ['draws:purge'] },
   },
 })

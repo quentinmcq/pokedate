@@ -17,5 +17,15 @@
   "workers_dev": true,
   "dev": { "host": "localhost" },
   "vars": { "NUXT_PUBLIC_CLOUDFLARE_ANALYTICS_TOKEN": "c62cb03df93349a7828f898f10f028df" },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "pokedate",
+      "database_id": "91138166-09e5-47ba-bb0c-869867b07a12",
+      "migrations_dir": "migrations",
+    },
+  ],
+  "ratelimits": [{ "name": "PUBLISH_RATE_LIMITER", "namespace_id": "1001", "simple": { "limit": 3, "period": 60 } }],
+  "triggers": { "crons": ["0 4 * * *"] },
   "preview_urls": false,
 }

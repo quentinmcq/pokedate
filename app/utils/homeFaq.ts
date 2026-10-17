@@ -27,6 +27,6 @@ export const HOME_FAQ: FaqItem[] = [
   {
     question: 'Mes données sont-elles enregistrées ?',
     answer:
-      "Non. Il n'y a ni compte, ni cookie, ni traceur. Ton Pokédex est enregistré uniquement dans ton navigateur, et les liens que tu partages ne contiennent jamais ta date de naissance.",
+      "Il n'y a ni compte, ni cookie, ni traceur. Ton Pokédex est enregistré uniquement dans ton navigateur, et les liens que tu partages ne contiennent jamais ta date de naissance. Seule exception, si tu le décides : publier un tirage enregistre ton pseudo, le Pokémon et l'heure, visibles par tous pendant 7 jours au plus.",
   },
 ]

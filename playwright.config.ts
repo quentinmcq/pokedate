@@ -19,7 +19,7 @@ export default defineConfig({
     { name: 'mobile', use: { ...devices['Pixel 7'] }, grepInvert: /@server/ },
   ],
   webServer: {
-    command: `bunx wrangler dev --port ${PORT} --ip 127.0.0.1 --show-interactive-dev-session=false`,
+    command: `bunx wrangler d1 migrations apply pokedate --local && bunx wrangler dev --port ${PORT} --ip 127.0.0.1 --show-interactive-dev-session=false`,
     url: `http://localhost:${PORT}/robots.txt`,
     reuseExistingServer: !isCI,
     timeout: 120_000,
