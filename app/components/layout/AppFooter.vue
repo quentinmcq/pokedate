@@ -17,9 +17,10 @@ const { portfolioUrl } = useRuntimeConfig().public
         <a :href="portfolioUrl" target="_blank" rel="noopener">Quentin Macq</a>
       </p>
       <p class="site-footer__legal">
-        Données : <a href="https://pokeapi.co" target="_blank" rel="noopener">PokeAPI</a>. Pokémon © Nintendo / Game
-        Freak / The Pokémon Company. Projet de fan, non officiel et sans but commercial. Ton Pokédex reste dans ton
-        navigateur : aucun compte, aucun cookie, aucun traceur.
+        Données : <a href="https://pokeapi.co" target="_blank" rel="noopener">PokeAPI</a> et
+        <a href="https://www.pokepedia.fr" target="_blank" rel="noopener">Poképédia</a>. Pokémon © Nintendo / Game Freak
+        / The Pokémon Company. Projet de fan, non officiel et sans but commercial. Ton Pokédex reste dans ton navigateur
+        : aucun compte, aucun cookie, aucun traceur.
       </p>
     </div>
   </footer>

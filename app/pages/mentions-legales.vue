@@ -36,9 +36,14 @@ usePageSeo({
       </p>
       <p>
         Les données et les images proviennent de
-        <a href="https://pokeapi.co" target="_blank" rel="noopener">PokeAPI</a>. Pour toute demande concernant un
-        contenu, écris à l'éditeur : il sera retiré rapidement si nécessaire.
+        <a href="https://pokeapi.co" target="_blank" rel="noopener">PokeAPI</a>. Les descriptions du Pokédex des Pokémon
+        les plus récents (n° 899 à 1025) viennent de
+        <a href="https://www.pokepedia.fr" target="_blank" rel="noopener">Poképédia</a>, sous licence
+        <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/deed.fr" target="_blank" rel="noopener"
+          >CC BY-NC-SA 3.0</a
+        >.
       </p>
+      <p>Pour toute demande concernant un contenu, écris à l'éditeur : il sera retiré rapidement si nécessaire.</p>
     </section>
 
     <section aria-labelledby="personal-data">

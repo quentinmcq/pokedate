@@ -11,7 +11,6 @@ export interface StoredPokemon {
   stats: [number, number, number, number, number, number]
   ab: [string, 0 | 1][]
   desc: string
-  descEn?: 1
   gen: number
   rare: 0 | 1 | 2
   baby: 0 | 1

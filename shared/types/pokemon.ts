@@ -55,7 +55,6 @@ export interface PokemonDetail extends PokedexEntry {
   stats: BaseStats
   abilities: Ability[]
   description: string
-  descriptionIsEnglish: boolean
   generation: number
   rarity: Rarity
   isBaby: boolean

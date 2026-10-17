@@ -6,6 +6,9 @@ import { POKEMON_COUNT } from '../shared/utils/pokemon'
 
 const OUTPUT_FILE = join(import.meta.dirname, '..', 'server', 'data', 'pokemon.json')
 const POKEAPI_URL = 'https://pokeapi.co/api/v2'
+const POKEPEDIA_URL = 'https://www.pokepedia.fr'
+const POKEPEDIA_DELAY_MS = 500
+const USER_AGENT = 'PokeDate/1.0 (projet de fan non commercial)'
 const PARALLEL_REQUESTS = 12
 const REQUEST_ATTEMPTS = 4
 
@@ -144,6 +147,43 @@ const chains = await mapInParallel(chainUrls, async (url) =>
 )
 const chainIndexByUrl = new Map(chainUrls.map((url, index) => [url, index]))
 
+const HTML_ENTITIES: Record<string, string> = {
+  '&amp;': '&',
+  '&quot;': '"',
+  '&#39;': "'",
+  '&lt;': '<',
+  '&gt;': '>',
+  '&nbsp;': ' ',
+}
+const decodeHtml = (text: string) =>
+  text.replace(/&(amp|quot|#39|lt|gt|nbsp);/g, (entity) => HTML_ENTITIES[entity] ?? entity)
+const PLACEHOLDER_DESCRIPTION = /^En l'absence de Pokédex/
+const SPIN_OFF_GAMES = /Pokémon (GO|Sleep|HOME|Masters)/
+const stripTags = (markup: string) =>
+  decodeHtml(markup.replace(/<[^>]+>/g, ''))
+    .replace(/\s+/g, ' ')
+    .trim()
+
+async function frenchDescriptionFromPokepedia(frenchName: string) {
+  const response = await fetch(`${POKEPEDIA_URL}/${encodeURIComponent(frenchName.replace(/ /g, '_'))}`, {
+    headers: { 'user-agent': USER_AGENT },
+  }).catch(() => null)
+  if (!response?.ok) return null
+  const page = await response.text()
+  const section = page.indexOf('id="Descriptions_du_Pokédex"')
+  if (section < 0) return null
+  const list = /<dl[^>]*>([\s\S]*?)<\/dl>/.exec(page.slice(section))?.[1] ?? ''
+  const entries = [...list.matchAll(/<dt[^>]*>([\s\S]*?)<\/dt>\s*<dd[^>]*>([\s\S]*?)<\/dd>/g)].map((match) => ({
+    game: stripTags(match[1] ?? ''),
+    text: stripTags(match[2] ?? ''),
+  }))
+  const realDescriptions = entries.filter(({ text }) => /\p{L}{3}/u.test(text) && !PLACEHOLDER_DESCRIPTION.test(text))
+  const fromMainGames = realDescriptions.filter(({ game }) => !SPIN_OFF_GAMES.test(game))
+  return (fromMainGames.at(-1) ?? realDescriptions.at(-1))?.text ?? null
+}
+
+const withPokemonPrefix = (genus: string) => (genus && !genus.startsWith('Pokémon') ? `Pokémon ${genus}` : genus)
+
 function toStoredPokemon({ pokemon, species }: { pokemon: ApiPokemon; species: ApiSpecies }): StoredPokemon {
   const frenchFlavorTexts = inLanguage(species.flavor_text_entries, 'fr')
   const englishFlavorTexts = inLanguage(species.flavor_text_entries, 'en')
@@ -155,7 +195,7 @@ function toStoredPokemon({ pokemon, species }: { pokemon: ApiPokemon; species: A
     id: pokemon.id,
     fr: inLanguage(species.names, 'fr')[0]?.name ?? species.name,
     en: inLanguage(species.names, 'en')[0]?.name ?? species.name,
-    genus,
+    genus: withPokemonPrefix(genus),
     types: pokemon.types
       .toSorted((a, b) => a.slot - b.slot)
       .map(({ type }) => type.name as TypeKey) as StoredPokemon['types'],
@@ -166,7 +206,6 @@ function toStoredPokemon({ pokemon, species }: { pokemon: ApiPokemon; species: A
       .toSorted((a, b) => a.slot - b.slot)
       .map(({ ability, is_hidden }) => [frenchAbilityNames.get(ability.url) ?? ability.name, is_hidden ? 1 : 0]),
     desc: cleanFlavorText(flavorText),
-    ...(frenchFlavorTexts.length === 0 ? { descEn: 1 as const } : {}),
     gen: GENERATION_NUMBERS[species.generation.name] ?? 0,
     rare: species.is_mythical ? 2 : species.is_legendary ? 1 : 0,
     baby: species.is_baby ? 1 : 0,
@@ -174,6 +213,21 @@ function toStoredPokemon({ pokemon, species }: { pokemon: ApiPokemon; species: A
   }
 }
 
-const pokedex: StoredPokedex = { pokemon: fetched.map(toStoredPokemon), chains }
+const storedPokemon = fetched.map(toStoredPokemon)
+const idsWithoutFrenchDescription = new Set(
+  fetched
+    .filter(({ species }) => inLanguage(species.flavor_text_entries, 'fr').length === 0)
+    .map(({ pokemon }) => pokemon.id),
+)
+
+console.info('Descriptions françaises manquantes (Poképédia)…')
+for (const pokemon of storedPokemon.filter((stored) => idsWithoutFrenchDescription.has(stored.id))) {
+  const description = await frenchDescriptionFromPokepedia(pokemon.fr)
+  if (description) pokemon.desc = description
+  else console.info(`  pas de description française pour #${pokemon.id} ${pokemon.fr}`)
+  await new Promise((resolve) => setTimeout(resolve, POKEPEDIA_DELAY_MS))
+}
+
+const pokedex: StoredPokedex = { pokemon: storedPokemon, chains }
 writeFileSync(OUTPUT_FILE, JSON.stringify(pokedex))
 console.info(`OK : ${OUTPUT_FILE} (${pokedex.pokemon.length} Pokémon, ${chains.length} chaînes)`)

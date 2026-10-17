@@ -33,7 +33,6 @@ function toDetail(stored: StoredPokemon): PokemonDetail {
     stats: { hp, attack, defense, specialAttack, specialDefense, speed },
     abilities: stored.ab.map(([name, hidden]) => ({ name, hidden: hidden === 1 })),
     description: stored.desc,
-    descriptionIsEnglish: stored.descEn === 1,
     generation: stored.gen,
     rarity: RARITY_BY_CODE[stored.rare] ?? null,
     isBaby: stored.baby === 1,
