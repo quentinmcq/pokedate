@@ -1,0 +1,20 @@
+# Fast checks on staged files only; slower whole-project checks before pushing.
+# Skip once with `LEFTHOOK=0 git commit …` (CI still runs everything).
+pre-commit:
+  piped: true
+  jobs:
+    - name: format
+      glob: '*.{ts,mjs,vue,json,jsonc,scss,md,yml,yaml}'
+      run: bunx oxfmt {staged_files}
+      stage_fixed: true
+    - name: lint
+      glob: '*.{ts,mjs,vue}'
+      run: bunx oxlint {staged_files}
+
+pre-push:
+  parallel: true
+  jobs:
+    - name: typecheck
+      run: bun run typecheck
+    - name: unit tests
+      run: bun run test:unit
