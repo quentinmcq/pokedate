@@ -2,11 +2,13 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "pokedate",
   "compatibility_date": "2026-10-01",
-  // Site 100 % statique : Cloudflare sert le dossier public/ tel quel
+  "compatibility_flags": ["nodejs_compat"],
+  // Généré par `nuxt build` (preset cloudflare_module)
+  "main": "./.output/server/index.mjs",
   "assets": {
-    "directory": "./public"
+    "directory": "./.output/public",
+    "binding": "ASSETS",
   },
-  "routes": [
-    { "pattern": "pokedate.quentin-macq.dev", "custom_domain": true }
-  ]
+  "observability": { "enabled": true },
+  "routes": [{ "pattern": "pokedate.quentin-macq.dev", "custom_domain": true }],
 }
