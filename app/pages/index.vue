@@ -15,6 +15,17 @@ const formError = ref('')
 const revealCount = ref(0)
 const resultSection = useTemplateRef<HTMLElement>('resultSection')
 
+const DATE_FIELD_NAMES = { day: 'jour', month: 'mois', year: 'annee' } as const
+
+const submittedWithoutJavaScript = parseDateFieldValue({
+  day: String(route.query[DATE_FIELD_NAMES.day] ?? ''),
+  month: String(route.query[DATE_FIELD_NAMES.month] ?? ''),
+  year: String(route.query[DATE_FIELD_NAMES.year] ?? ''),
+})
+// Before hydration the form is submitted natively (GET ?jour=…&mois=…&annee=…): show the result anyway.
+if (submittedWithoutJavaScript.ok)
+  await navigateTo({ query: { date: toIsoDate(submittedWithoutJavaScript.date) } }, { replace: true })
+
 const selectedDate = computed(() => parseIsoDate(route.query.date))
 watch(selectedDate, (date) => date && (dateInput.value = toDateFieldValue(date)), { immediate: true })
 
@@ -95,13 +106,19 @@ usePageSeo({
 
 <template>
   <div>
-    <form class="hero" autocomplete="off" novalidate @submit.prevent="submitDate">
+    <form class="hero" action="/" method="get" autocomplete="off" novalidate @submit.prevent="submitDate">
       <h1>Quel Pokémon<br />se cache dans ta date&nbsp;?</h1>
       <p class="lead">
         Le dernier chiffre du <b>jour</b>, du <b>mois</b> et de l'<b>année</b> forment le numéro de ton Pokémon. Essaie
         avec ta date de naissance&nbsp;!
       </p>
-      <DateField v-model="dateInput" legend="Ta date" error-id="date-error" :invalid="!!formError" />
+      <DateField
+        v-model="dateInput"
+        legend="Ta date"
+        error-id="date-error"
+        :invalid="!!formError"
+        :field-names="DATE_FIELD_NAMES"
+      />
       <p id="date-error" class="field-error" role="alert">{{ formError }}</p>
       <div class="actions">
         <button class="btn btn--primary" type="submit">Révéler mon Pokémon</button>

@@ -1,5 +1,5 @@
 export default defineNuxtPlugin((nuxtApp) => {
   const { loadDiscoveries } = usePokedex()
-  // After hydration, so the server render and the first client render stay identical.
-  nuxtApp.hook('app:mounted', loadDiscoveries)
+  // Once every async page has hydrated (later than app:mounted), so server and client markup match.
+  nuxtApp.hook('app:suspense:resolve', loadDiscoveries)
 })

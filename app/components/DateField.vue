@@ -6,6 +6,7 @@ const props = defineProps<{
   legend?: string
   errorId?: string
   invalid?: boolean
+  fieldNames?: Record<keyof DateFieldValue, string>
 }>()
 const date = defineModel<DateFieldValue>({ required: true })
 
@@ -47,6 +48,26 @@ function onPaste(event: ClipboardEvent) {
 }
 
 const selectContent = (event: FocusEvent) => (event.target as HTMLInputElement).select()
+
+// Inputs are bound by attribute so hydration never wipes what was typed before it; the
+// DOM is then kept in sync by hand when the value changes programmatically (paste, prefill).
+const readInput = (index: number) => inputs.value?.[index]?.value ?? ''
+
+function syncInputsWith(value: DateFieldValue) {
+  DATE_PARTS.forEach((part, index) => {
+    const input = inputs.value?.[index]
+    if (input && input.value !== value[part.key]) input.value = value[part.key]
+  })
+}
+
+watch(date, syncInputsWith)
+
+onMounted(() => {
+  const typedBeforeHydration: DateFieldValue = { day: readInput(0), month: readInput(1), year: readInput(2) }
+  const hasTypedValue = DATE_PARTS.some((part) => typedBeforeHydration[part.key] !== date.value[part.key])
+  if (hasTypedValue && Object.values(typedBeforeHydration).some(Boolean)) date.value = typedBeforeHydration
+  else syncInputsWith(date.value)
+})
 </script>
 
 <template>
@@ -60,10 +81,11 @@ const selectContent = (event: FocusEvent) => (event.target as HTMLInputElement).
           ref="inputs"
           class="date-field__input"
           inputmode="numeric"
+          :name="props.fieldNames?.[part.key]"
           :autocomplete="part.autocomplete"
           :maxlength="part.maxLength"
           :placeholder="part.placeholder"
-          :value="date[part.key]"
+          :value.attr="date[part.key]"
           :aria-invalid="props.invalid || undefined"
           :aria-describedby="props.errorId"
           required
