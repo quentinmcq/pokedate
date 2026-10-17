@@ -71,7 +71,7 @@ test.describe('Mon Pokémon', () => {
 
   test('le menu ramène au dernier Pokémon révélé', async ({ page }) => {
     await revealDate(page, '17', '10', '2026')
-    await page.getByRole('navigation', { name: 'Navigation principale' }).getByRole('link', { name: 'Duel' }).click()
+    await page.getByRole('navigation', { name: 'Navigation principale' }).getByRole('link', { name: 'Défis' }).click()
     await expect(page).toHaveURL('/duel')
     await page
       .getByRole('navigation', { name: 'Navigation principale' })
@@ -109,7 +109,7 @@ test.describe('Mon Pokémon', () => {
   test('une date miroir fait apparaître un Pokémon rare', async ({ page }) => {
     await revealDate(page, '04', '04', '1990')
     const banner = page.locator('.banner')
-    await expect(banner).toContainText('Date miroir')
+    await expect(banner).toContainText('Ta date est une date miroir : 04/04')
     await banner.click()
     await expect(page).toHaveURL(/\/pokemon\/10\d\d-/)
   })

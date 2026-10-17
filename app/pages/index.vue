@@ -168,9 +168,10 @@ usePageSeo({
         :to="pokemonPath(mirrorPokemon)"
         :image-src="artworkUrl(mirrorPokemon.id)"
         icon="lucide:moon-star"
-        title="Date miroir ! Le jour et le mois sont identiques."
+        :title="`Ta date est une date miroir : ${padNumber(selectedDate.day)}/${padNumber(selectedDate.month)} !`"
       >
-        Un Pokémon rare surgit : <strong>{{ mirrorPokemon.name }}</strong
+        Le jour et le mois de ta date sont identiques, alors un Pokémon rare surgit en bonus&nbsp;:
+        <strong>{{ mirrorPokemon.name }}</strong
         >. Touche pour le découvrir.
       </HighlightBanner>
     </section>

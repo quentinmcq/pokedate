@@ -76,7 +76,7 @@ const examples = computed(() => exampleDatesForPokemon(props.pokemonId).map(shor
         <dd>{{ examples }}</dd>
       </div>
     </dl>
-    <NuxtLink to="/" class="btn btn--primary btn--sm">Tester ta date</NuxtLink>
+    <NuxtLink to="/" class="btn btn--ghost btn--sm">Tester ta date</NuxtLink>
   </section>
 </template>
 
