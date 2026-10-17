@@ -1,5 +1,5 @@
 import type { PokemonDetail, TypeKey } from '../types/pokemon'
-import { statTotal, typeEffectiveness } from './pokemon'
+import { formatNumber, POKEMON_TYPES, statTotal, typeEffectiveness } from './pokemon'
 
 export type Fighter = Pick<PokemonDetail, 'id' | 'types' | 'stats'>
 export type DuelSide = 'A' | 'B'
@@ -61,12 +61,38 @@ export function resolveDuel(fighterA: Fighter, fighterB: Fighter): DuelOutcome {
 }
 
 export function describeEffectiveness(multiplier: number) {
-  if (multiplier === 0) return "n'a aucun effet"
-  if (multiplier >= 4) return 'est ultra efficace'
-  if (multiplier >= 2) return 'est super efficace'
-  if (multiplier < 1) return "n'est pas très efficace…"
-  return 'touche normalement'
+  const factor = `(×${formatNumber(multiplier, 2)})`
+  if (multiplier >= 4) return `c'est ultra efficace ${factor} !`
+  if (multiplier >= 2) return `c'est super efficace ${factor} !`
+  if (multiplier < 1) return `ce n'est pas très efficace ${factor}…`
+  return `efficacité normale ${factor}.`
 }
 
 export const describeKnockOut = (turns: number) =>
-  turns === Infinity ? 'ne peut pas le toucher' : `le met K.O. en ${turns} tour${turns > 1 ? 's' : ''}`
+  turns === 1 ? 'tombe K.O. dès le premier coup' : `tombe K.O. en ${turns} coups`
+
+export function describeAttack(attackerName: string, defenderName: string, attack: AttackSummary) {
+  const move = `${attackerName} lance une attaque ${POKEMON_TYPES[attack.type].label}`
+  if (attack.turnsToKnockOut === Infinity) return `${move}, mais elle n'a aucun effet sur ${defenderName}.`
+  return `${move} : ${describeEffectiveness(attack.multiplier)} ${defenderName} ${describeKnockOut(attack.turnsToKnockOut)}.`
+}
+
+const otherSide = (side: DuelSide): DuelSide => (side === 'A' ? 'B' : 'A')
+
+export function describeDuelTempo(
+  fighters: Record<DuelSide, Fighter & { name: string }>,
+  { attackOfA, attackOfB, firstStriker, winner }: DuelOutcome,
+) {
+  if (fighters.A.id === fighters.B.id) return 'Même Pokémon, mêmes stats : impossible de les départager.'
+  if (!winner) return "Aucun des deux ne peut toucher l'autre."
+  const first = fighters[firstStriker]
+  const second = fighters[otherSide(firstStriker)]
+  const opening =
+    fighters.A.stats.speed === fighters.B.stats.speed
+      ? `Vitesse égale : ${first.name}, plus costaud, frappe en premier`
+      : `${first.name} est plus rapide et frappe en premier`
+  if (winner !== firstStriker) return `${opening}, mais ${second.name} le met K.O. plus vite.`
+  return attackOfA.turnsToKnockOut === attackOfB.turnsToKnockOut
+    ? `${opening} : à nombre de coups égal, ça fait la différence.`
+    : `${opening} et met ${second.name} K.O. plus vite.`
+}

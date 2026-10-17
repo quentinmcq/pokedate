@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { DateFieldValue } from '#shared/types/pokemon'
 import type { DateFieldKey } from '#shared/utils/date'
-import type { AttackSummary, DuelSide } from '#shared/utils/duel'
+import type { DuelSide } from '#shared/utils/duel'
 
 const route = useRoute()
 const router = useRouter()
@@ -64,18 +64,11 @@ const verdictIcon = computed(() => {
   return 'lucide:handshake'
 })
 
-const describeAttack = (attackerName: string, attack: AttackSummary) => {
-  const type = POKEMON_TYPES[attack.type]
-  const multiplier = formatNumber(attack.multiplier, 2)
-  return `${attackerName} attaque en ${type.label} : ça ${describeEffectiveness(attack.multiplier)} (×${multiplier}) et ${describeKnockOut(attack.turnsToKnockOut)}.`
-}
-
-const firstStrikeText = computed(() => {
-  if (!outcome.value || !pokemonA.value || !pokemonB.value) return ''
-  const firstStriker = outcome.value.firstStriker === 'A' ? pokemonA.value : pokemonB.value
-  const sameSpeed = pokemonA.value.stats.speed === pokemonB.value.stats.speed
-  return `${firstStriker.name} est ${sameSpeed ? 'aussi rapide mais plus costaud' : 'plus rapide'} et frappe en premier.`
-})
+const tempoText = computed(() =>
+  outcome.value && pokemonA.value && pokemonB.value
+    ? describeDuelTempo({ A: pokemonA.value, B: pokemonB.value }, outcome.value)
+    : '',
+)
 
 watchEffect(() => {
   const accentPokemon = outcome.value?.winner === 'B' ? pokemonB.value : pokemonA.value
@@ -181,9 +174,9 @@ usePageSeo({
       <div class="verdict">
         <h2 id="verdict"><Icon :name="verdictIcon" aria-hidden="true" /> {{ verdictTitle }}</h2>
         <ul>
-          <li>{{ describeAttack(pokemonA.name, outcome.attackOfA) }}</li>
-          <li>{{ describeAttack(pokemonB.name, outcome.attackOfB) }}</li>
-          <li>{{ firstStrikeText }}</li>
+          <li>{{ describeAttack(pokemonA.name, pokemonB.name, outcome.attackOfA) }}</li>
+          <li>{{ describeAttack(pokemonB.name, pokemonA.name, outcome.attackOfB) }}</li>
+          <li>{{ tempoText }}</li>
         </ul>
       </div>
       <div class="actions actions--spaced">

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { Fighter } from '../../shared/utils/duel'
-import { computeAttack, describeEffectiveness, describeKnockOut, resolveDuel } from '../../shared/utils/duel'
+import { computeAttack, describeAttack, describeDuelTempo, resolveDuel } from '../../shared/utils/duel'
 
 const fighter = (
   id: number,
@@ -45,18 +45,34 @@ describe('resolveDuel', () => {
   })
 })
 
+const named = <T extends Fighter>(pokemon: T, name: string) => ({ ...pokemon, name })
+
 describe('textes du combat', () => {
-  it('décrit l’efficacité', () => {
-    expect(describeEffectiveness(0)).toContain('aucun effet')
-    expect(describeEffectiveness(4)).toContain('ultra')
-    expect(describeEffectiveness(2)).toContain('super')
-    expect(describeEffectiveness(0.5)).toContain('pas très')
-    expect(describeEffectiveness(1)).toContain('normalement')
+  it('décrit une attaque, son efficacité et le K.O.', () => {
+    expect(describeAttack('Racaillou', 'Pikachu', computeAttack(racaillou, pikachu))).toBe(
+      "Racaillou lance une attaque Sol : c'est super efficace (×2) ! Pikachu tombe K.O. dès le premier coup.",
+    )
+    expect(
+      describeAttack('Ronflex', 'Rattata', { type: 'normal', multiplier: 1, damage: 10, turnsToKnockOut: 3 }),
+    ).toBe('Ronflex lance une attaque Normal : efficacité normale (×1). Rattata tombe K.O. en 3 coups.')
+    expect(describeAttack('Pikachu', 'Racaillou', computeAttack(pikachu, racaillou))).toBe(
+      "Pikachu lance une attaque Électrik, mais elle n'a aucun effet sur Racaillou.",
+    )
   })
 
-  it('décrit le K.O.', () => {
-    expect(describeKnockOut(1)).toBe('le met K.O. en 1 tour')
-    expect(describeKnockOut(3)).toBe('le met K.O. en 3 tours')
-    expect(describeKnockOut(Infinity)).toBe('ne peut pas le toucher')
+  it('explique qui frappe en premier et pourquoi il gagne ou perd', () => {
+    const fighters = { A: named(ectoplasma, 'Ectoplasma'), B: named(ronflex, 'Ronflex') }
+    const outcome = resolveDuel(ectoplasma, ronflex)
+    expect(describeDuelTempo(fighters, { ...outcome, winner: 'B' })).toBe(
+      'Ectoplasma est plus rapide et frappe en premier, mais Ronflex le met K.O. plus vite.',
+    )
+    expect(describeDuelTempo(fighters, { ...outcome, winner: 'A' })).toMatch(/^Ectoplasma est plus rapide/)
+  })
+
+  it('gère le match miroir et le match nul', () => {
+    const mirror = { A: named(ronflex, 'Ronflex'), B: named(ronflex, 'Ronflex') }
+    expect(describeDuelTempo(mirror, resolveDuel(ronflex, ronflex))).toContain('impossible de les départager')
+    const ghosts = { A: named(fantominus, 'Fantominus'), B: named(rattata, 'Rattata') }
+    expect(describeDuelTempo(ghosts, resolveDuel(fantominus, rattata))).toBe("Aucun des deux ne peut toucher l'autre.")
   })
 })
