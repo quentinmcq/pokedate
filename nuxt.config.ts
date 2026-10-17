@@ -19,6 +19,7 @@ export default defineNuxtConfig({
     public: {
       siteUrl: 'https://pokedate.quentin-macq.workers.dev',
       portfolioUrl: 'https://quentin-macq.dev',
+      cloudflareAnalyticsToken: '',
     },
   },
 
@@ -66,14 +67,14 @@ export default defineNuxtConfig({
       contentSecurityPolicy: {
         'default-src': ["'self'"],
         'base-uri': ["'none'"],
-        'connect-src': ["'self'"],
+        'connect-src': ["'self'", 'https://cloudflareinsights.com'],
         'font-src': ["'self'"],
         'form-action': ["'self'"],
         'frame-ancestors': ["'none'"],
         'img-src': ["'self'", 'data:'],
         'media-src': ["'self'"],
         'object-src': ["'none'"],
-        'script-src': ["'self'", "'strict-dynamic'", "'nonce-{{nonce}}'"],
+        'script-src': ["'self'", 'https://static.cloudflareinsights.com', "'strict-dynamic'", "'nonce-{{nonce}}'"],
         'script-src-attr': ["'none'"],
         'style-src': ["'self'", "'unsafe-inline'"],
         'upgrade-insecure-requests': true,

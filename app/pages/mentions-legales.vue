@@ -1,5 +1,6 @@
 <script setup lang="ts">
-const { portfolioUrl } = useRuntimeConfig().public
+const { portfolioUrl, cloudflareAnalyticsToken } = useRuntimeConfig().public
+const hasAudienceMeasurement = !!cloudflareAnalyticsToken
 
 usePageSeo({
   title: 'Mentions légales',
@@ -58,7 +59,14 @@ usePageSeo({
           Ton Pokédex est enregistré dans ton navigateur (stockage local) et ne quitte jamais ton appareil. Tu peux
           l'effacer en supprimant les données du site dans ton navigateur.
         </li>
-        <li>
+        <li v-if="hasAudienceMeasurement">
+          Aucun cookie, aucun traceur publicitaire. Les visites sont comptées par
+          <a href="https://www.cloudflare.com/web-analytics/" target="_blank" rel="noopener">Cloudflare Web Analytics</a
+          >, qui ne dépose aucun cookie, ne stocke rien sur ton appareil et ne conserve ni ton adresse IP ni les
+          paramètres des adresses (donc jamais ta date). Seules des statistiques globales en ressortent : pages vues,
+          pays, type d'appareil, site d'origine. Les polices, images et sons sont servis par le site lui-même.
+        </li>
+        <li v-else>
           Aucun cookie, aucune mesure d'audience, aucun traceur publicitaire. Les polices, images et sons sont servis
           par le site lui-même, sans appel à un service tiers.
         </li>

@@ -22,6 +22,12 @@ bun run dev
 | `bun run deploy`   | Vérifications puis mise en ligne (Cloudflare)      |
 | `bun run data`     | Régénère `server/data/pokemon.json` depuis PokeAPI |
 
+## Mesure d'audience
+
+[Cloudflare Web Analytics](https://www.cloudflare.com/web-analytics/), sans cookie. Le script ne se charge que
+sur le domaine de `siteUrl` et seulement si le jeton du site est défini, dans les `vars` de `wrangler.jsonc` :
+`NUXT_PUBLIC_CLOUDFLARE_ANALYTICS_TOKEN`.
+
 ## Qualité
 
 | Quand        | Quoi                                    |
