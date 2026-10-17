@@ -1,5 +1,7 @@
 <script setup lang="ts">
 const { caughtCount } = usePokedex()
+const homePath = useRememberedPath('/')
+const duelPath = useRememberedPath('/duel')
 </script>
 
 <template>
@@ -9,8 +11,8 @@ const { caughtCount } = usePokedex()
       <span>Poké<b>Date</b></span>
     </NuxtLink>
     <nav class="site-nav" aria-label="Navigation principale">
-      <NuxtLink to="/" exact-active-class="is-active">Mon Pokémon</NuxtLink>
-      <NuxtLink to="/duel" active-class="is-active">Duel</NuxtLink>
+      <NuxtLink :to="homePath" exact-active-class="is-active">Mon Pokémon</NuxtLink>
+      <NuxtLink :to="duelPath" active-class="is-active">Duel</NuxtLink>
       <NuxtLink to="/pokedex" active-class="is-active">
         Pokédex
         <span class="pill"

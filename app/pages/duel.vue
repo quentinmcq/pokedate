@@ -9,6 +9,7 @@ const { applyTypes, resetAccent } = usePageAccent()
 const shareLink = useShareLink()
 const absoluteUrl = useAbsoluteUrl()
 const { recordDiscovery } = usePokedex()
+rememberCurrentPath('/duel')
 
 const duelQuery = computed(() => parseDuelQuery(route.query))
 const hasBothPokemon = computed(() => !!duelQuery.value.pokemonIdA && !!duelQuery.value.pokemonIdB)

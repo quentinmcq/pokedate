@@ -8,6 +8,7 @@ const { resetAccent } = usePageAccent()
 const absoluteUrl = useAbsoluteUrl()
 const { portfolioUrl } = useRuntimeConfig().public
 const { recordDiscovery } = usePokedex()
+rememberCurrentPath('/')
 
 const RANDOM_DATE_START = new Date(1950, 0, 1).getTime()
 

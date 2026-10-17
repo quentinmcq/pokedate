@@ -69,6 +69,20 @@ test.describe('Mon Pokémon', () => {
     await expect(page.locator('.site-nav .pill')).toContainText('0')
   })
 
+  test('le menu ramène au dernier Pokémon révélé', async ({ page }) => {
+    await revealDate(page, '17', '10', '2026')
+    await page.getByRole('navigation', { name: 'Navigation principale' }).getByRole('link', { name: 'Duel' }).click()
+    await expect(page).toHaveURL('/duel')
+    await page
+      .getByRole('navigation', { name: 'Navigation principale' })
+      .getByRole('link', { name: 'Mon Pokémon' })
+      .click()
+    await expect(page).toHaveURL(/\?date=2026-10-17$/)
+    await expect(page.getByRole('heading', { level: 2, name: /Muplodocus/ })).toBeVisible()
+    await page.getByRole('link', { name: 'PokéDate, accueil' }).click()
+    await expect(page).toHaveURL('/')
+  })
+
   test('une date miroir fait apparaître un Pokémon rare', async ({ page }) => {
     await revealDate(page, '04', '04', '1990')
     const banner = page.locator('.banner')
