@@ -78,8 +78,8 @@ watchEffect(() => {
 
 function celebrate() {
   if (!outcome.value || !pokemonA.value || !pokemonB.value) return
-  recordDiscovery(pokemonA.value.id, { shiny: duelQuery.value.shinyA })
-  recordDiscovery(pokemonB.value.id, { shiny: duelQuery.value.shinyB })
+  recordDiscovery(pokemonA.value.id, { caught: true, shiny: duelQuery.value.shinyA })
+  recordDiscovery(pokemonB.value.id, { caught: true, shiny: duelQuery.value.shinyB })
   const winner = winnerPokemon.value
   if (winner) setTimeout(() => launchConfetti(['#ffd23f', typeColor(winner.types[0]), '#fff']), 900)
 }

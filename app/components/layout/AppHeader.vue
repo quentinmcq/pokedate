@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const { discoveredCount } = usePokedex()
+const { caughtCount } = usePokedex()
 </script>
 
 <template>
@@ -14,8 +14,7 @@ const { discoveredCount } = usePokedex()
       <NuxtLink to="/pokedex" active-class="is-active">
         Pokédex
         <span class="pill"
-          ><span class="visually-hidden">, </span>{{ discoveredCount
-          }}<span class="visually-hidden"> découverts</span></span
+          ><span class="visually-hidden">, </span>{{ caughtCount }}<span class="visually-hidden"> attrapés</span></span
         >
       </NuxtLink>
     </nav>

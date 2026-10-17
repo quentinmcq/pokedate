@@ -79,6 +79,14 @@ test.describe('Pokédex', () => {
     await expect(page).toHaveURL('/')
   })
 
+  test('une fiche consultée compte comme vue, pas comme attrapée', async ({ page }) => {
+    await gotoHydrated(page, '/pokemon/25-pikachu')
+    await gotoHydrated(page, '/pokedex')
+    await expect(page.locator('.dex-stats')).toContainText('0 / 1025 attrapés')
+    await expect(page.locator('.dex-stats')).toContainText('1 vu')
+    await expect(page.locator('.dex-cell--seen')).toContainText('Pikachu')
+  })
+
   test('peut afficher les 1025 cases', async ({ page }) => {
     await revealDate(page, '17', '10', '2026')
     await gotoHydrated(page, '/pokedex')

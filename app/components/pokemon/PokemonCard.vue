@@ -8,8 +8,9 @@ const props = withDefaults(
     shiny?: boolean
     animate?: boolean
     headingLevel?: 'h1' | 'h2'
+    catchOnReveal?: boolean
   }>(),
-  { date: null, shiny: false, animate: false, headingLevel: 'h2' },
+  { date: null, shiny: false, animate: false, headingLevel: 'h2', catchOnReveal: false },
 )
 
 const REVEAL_DELAY_MS = 1300
@@ -55,7 +56,7 @@ function reveal() {
 
 let revealTimer: ReturnType<typeof setTimeout> | undefined
 onMounted(() => {
-  isNewDiscovery.value = recordDiscovery(props.pokemon.id, { shiny: isShinyShown.value })
+  isNewDiscovery.value = recordDiscovery(props.pokemon.id, { caught: props.catchOnReveal, shiny: isShinyShown.value })
   if (props.animate) revealTimer = setTimeout(reveal, REVEAL_DELAY_MS)
   else requestAnimationFrame(() => requestAnimationFrame(reveal))
 })

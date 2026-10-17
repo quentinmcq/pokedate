@@ -30,6 +30,7 @@ if (submittedWithoutJavaScript.ok)
   await navigateTo({ query: { date: toIsoDate(submittedWithoutJavaScript.date) } }, { replace: true })
 
 const selectedDate = computed(() => parseIsoDate(route.query.date))
+const isRandomDraw = computed(() => route.query.hasard === '1')
 watch(selectedDate, (date) => date && (dateInput.value = toDateFieldValue(date)), { immediate: true })
 
 const pokemonId = computed(() => (selectedDate.value ? pokemonIdFromDate(selectedDate.value) : null))
@@ -41,16 +42,17 @@ const [{ data: pokemon }, { data: mirrorPokemon }] = await Promise.all([
   usePokemonDetail(mirrorPokemonId),
 ])
 
-const recordMirrorPokemon = () => mirrorPokemon.value && recordDiscovery(mirrorPokemon.value.id)
+const recordMirrorPokemon = () =>
+  mirrorPokemon.value && recordDiscovery(mirrorPokemon.value.id, { caught: !isRandomDraw.value })
 onMounted(recordMirrorPokemon)
 watch(mirrorPokemon, recordMirrorPokemon)
 watchEffect(() => !pokemon.value && resetAccent())
 
-async function revealPokemonFor(date: CalendarDate) {
+async function revealPokemonFor(date: CalendarDate, { isRandom = false } = {}) {
   formError.value = ''
   invalidDatePart.value = null
   revealCount.value++
-  await router.push({ query: { date: toIsoDate(date) } })
+  await router.push({ query: { date: toIsoDate(date), ...(isRandom ? { hasard: '1' } : {}) } })
   await nextTick()
   resultSection.value?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   resultSection.value?.focus({ preventScroll: true })
@@ -67,7 +69,12 @@ function submitDate() {
 const revealToday = () => revealPokemonFor(todayAsCalendarDate())
 
 const revealRandomDate = () =>
-  revealPokemonFor(todayAsCalendarDate(new Date(RANDOM_DATE_START + Math.random() * (Date.now() - RANDOM_DATE_START))))
+  revealPokemonFor(
+    todayAsCalendarDate(new Date(RANDOM_DATE_START + Math.random() * (Date.now() - RANDOM_DATE_START))),
+    {
+      isRandom: true,
+    },
+  )
 
 const revealedPokemon = computed(() => (selectedDate.value ? pokemon.value : null))
 
@@ -143,6 +150,7 @@ usePageSeo({
         :pokemon="pokemon"
         :date="selectedDate"
         :shiny="isShiny"
+        :catch-on-reveal="!isRandomDraw"
         animate
       />
       <HighlightBanner

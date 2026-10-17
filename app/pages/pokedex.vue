@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const { discoveries, discoveredCount, shinyCount, isLoaded } = usePokedex()
+const { discoveries, seenCount, caughtCount, shinyCount, isLoaded, discoveryStateOf } = usePokedex()
 const { resetAccent } = usePageAccent()
 resetAccent()
 
@@ -10,8 +10,8 @@ const totalCount = computed(() => entries.value?.length ?? POKEMON_COUNT)
 const visibleEntries = computed(() =>
   (entries.value ?? []).filter((entry) => !showOnlyDiscovered.value || discoveries.value[entry.id]),
 )
-const isEmpty = computed(() => isLoaded.value && discoveredCount.value === 0)
-const completionPercent = computed(() => (discoveredCount.value / totalCount.value) * 100)
+const isEmpty = computed(() => isLoaded.value && seenCount.value === 0)
+const completionPercent = computed(() => (caughtCount.value / totalCount.value) * 100)
 
 usePageSeo({
   title: 'Mon Pokédex',
@@ -25,25 +25,25 @@ usePageSeo({
     <div class="hero">
       <h1>Ton Pokédex</h1>
       <p class="lead">
-        Chaque Pokémon révélé (le tien, ceux de tes potes, les duels…) est enregistré ici, dans ton navigateur.
-        Attrape-les tous&nbsp;!
+        Chaque date que tu entres (la tienne, celles de tes potes, les duels…) attrape son Pokémon. Ceux que tu croises
+        au hasard ou sur leur fiche sont seulement vus. Attrape-les tous&nbsp;!
       </p>
       <template v-if="!isEmpty">
         <div
           class="progress"
           role="progressbar"
           aria-label="Progression du Pokédex"
-          :aria-valuenow="discoveredCount"
+          :aria-valuenow="caughtCount"
           aria-valuemin="0"
           :aria-valuemax="totalCount"
-          :aria-valuetext="`${discoveredCount} Pokémon découverts sur ${totalCount}`"
+          :aria-valuetext="`${caughtCount} Pokémon attrapés sur ${totalCount}`"
         >
           <div class="progress__fill" :style="{ width: `${completionPercent}%` }" />
         </div>
         <p class="dex-stats">
-          {{ discoveredCount }} / {{ totalCount }} découverts ({{ formatNumber(completionPercent) }} %)<template
-            v-if="shinyCount"
-          >
+          {{ caughtCount }} / {{ totalCount }} attrapés ({{ formatNumber(completionPercent) }} %) · {{ seenCount }} vu{{
+            seenCount > 1 ? 's' : ''
+          }}<template v-if="shinyCount">
             · {{ shinyCount }} shiny <Icon name="lucide:sparkles" aria-hidden="true"
           /></template>
         </p>
@@ -63,7 +63,7 @@ usePageSeo({
 
     <ul v-else class="dex-grid">
       <li v-for="entry in visibleEntries" :key="entry.id">
-        <PokemonTile :pokemon="entry" :discovered="!!discoveries[entry.id]" :shiny="discoveries[entry.id]?.shiny" />
+        <PokemonTile :pokemon="entry" :state="discoveryStateOf(entry.id)" :shiny="discoveries[entry.id]?.shiny" />
       </li>
     </ul>
   </div>

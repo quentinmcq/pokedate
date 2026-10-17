@@ -1,21 +1,27 @@
 <script setup lang="ts">
 import type { PokemonSummary } from '#shared/types/pokemon'
+import type { DiscoveryState } from '~/composables/usePokedex'
 
-const props = withDefaults(defineProps<{ pokemon: PokemonSummary; shiny?: boolean; discovered?: boolean }>(), {
+const props = withDefaults(defineProps<{ pokemon: PokemonSummary; shiny?: boolean; state?: DiscoveryState }>(), {
   shiny: false,
-  discovered: true,
+  state: 'caught',
 })
 const link = computed(() => ({ path: pokemonPath(props.pokemon), query: props.shiny ? { shiny: '1' } : {} }))
 </script>
 
 <template>
-  <div v-if="!discovered" class="dex-cell dex-cell--unknown">
+  <div v-if="state === 'unknown'" class="dex-cell dex-cell--unknown">
     <span class="dex-cell__unknown" aria-hidden="true">?</span>
     <span><span class="visually-hidden">Pas encore découvert : </span>#{{ padNumber(pokemon.id, 4) }}</span>
   </div>
-  <NuxtLink v-else class="dex-cell" :class="{ 'dex-cell--shiny': shiny }" :to="link">
+  <NuxtLink
+    v-else
+    class="dex-cell"
+    :class="{ 'dex-cell--shiny': shiny, 'dex-cell--seen': state === 'seen' }"
+    :to="link"
+  >
     <img loading="lazy" decoding="async" :src="spriteUrl(pokemon.id, shiny)" alt="" width="72" height="72" />
-    <b>{{ pokemon.name }}</b>
+    <b><span v-if="state === 'seen'" class="visually-hidden">Vu, pas encore attrapé : </span>{{ pokemon.name }}</b>
     <span>#{{ padNumber(pokemon.id, 4) }}</span>
   </NuxtLink>
 </template>

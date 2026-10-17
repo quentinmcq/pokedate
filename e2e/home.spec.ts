@@ -61,6 +61,14 @@ test.describe('Mon Pokémon', () => {
     await expect(page.locator('.mon-card')).toBeVisible()
   })
 
+  test('« Au hasard » montre un Pokémon sans l’attraper', async ({ page }) => {
+    await gotoHydrated(page, '/')
+    await page.getByRole('button', { name: /Au hasard/ }).click()
+    await expect(page).toHaveURL(/\?date=\d{4}-\d{2}-\d{2}&hasard=1$/)
+    await expect(page.locator('.mon-card')).toBeVisible()
+    await expect(page.locator('.site-nav .pill')).toContainText('0')
+  })
+
   test('une date miroir fait apparaître un Pokémon rare', async ({ page }) => {
     await revealDate(page, '04', '04', '1990')
     const banner = page.locator('.banner')
