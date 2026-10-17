@@ -17,3 +17,11 @@ dist
 .DS_Store
 .idea
 *.log
+
+# Images et cris générés par `bun run sprites` (trop lourds pour le dépôt)
+generated
+
+# Tests
+test-results
+playwright-report
+coverage

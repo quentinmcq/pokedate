@@ -1,39 +1,66 @@
-// https://nuxt.com/docs/api/configuration/nuxt-config
+import { cpSync, existsSync } from 'node:fs'
+import { fileURLToPath } from 'node:url'
+
+const GENERATED = fileURLToPath(new URL('./generated', import.meta.url))
+const ONE_MONTH = 60 * 60 * 24 * 30
+
 export default defineNuxtConfig({
-  compatibilityDate: '2026-10-01',
+  compatibilityDate: '2026-10-17',
   devtools: { enabled: true },
 
+  modules: ['@nuxt/fonts'],
+
   css: ['~/assets/scss/main.scss'],
+
+  runtimeConfig: {
+    public: {
+      siteUrl: 'https://pokedate.quentin-macq.workers.dev',
+      portfolioUrl: 'https://quentin-macq.dev',
+    },
+  },
 
   app: {
     head: {
       htmlAttrs: { lang: 'fr' },
-      title: 'PokéDate',
       meta: [
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
         { name: 'theme-color', content: '#14162b' },
-        {
-          name: 'description',
-          content:
-            "Entre une date, découvre ton Pokémon : le dernier chiffre du jour, du mois et de l'année donnent son numéro.",
-        },
-        { property: 'og:site_name', content: 'PokéDate' },
+        { name: 'color-scheme', content: 'dark' },
       ],
-      link: [
-        { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' },
-        { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
-        { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' },
-        {
-          rel: 'stylesheet',
-          href: 'https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=JetBrains+Mono:wght@500;700&display=swap',
-        },
-      ],
+      link: [{ rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' }],
     },
+    pageTransition: { name: 'page', mode: 'out-in' },
+  },
+
+  fonts: {
+    defaults: { subsets: ['latin', 'latin-ext'] },
+    families: [
+      { name: 'Bricolage Grotesque', provider: 'google', weights: [400, 600, 800], global: true },
+      { name: 'JetBrains Mono', provider: 'google', weights: [500, 700], global: true },
+    ],
   },
 
   routeRules: {
-    // Les données ne changent qu'à la régénération du JSON
     '/api/**': { headers: { 'cache-control': 'public, max-age=3600, s-maxage=86400' } },
+    '/sprites/**': {
+      headers: { 'cache-control': `public, max-age=${ONE_MONTH}, stale-while-revalidate=${ONE_MONTH}` },
+    },
+    '/cries/**': { headers: { 'cache-control': `public, max-age=${ONE_MONTH}` } },
+  },
+
+  $development: {
+    nitro: { publicAssets: [{ dir: GENERATED, baseURL: '/' }] },
+  },
+
+  hooks: {
+    'nitro:init'(nitro) {
+      nitro.hooks.hook('compiled', () => {
+        if (nitro.options.dev) return
+        if (!existsSync(GENERATED))
+          throw new Error('Dossier generated/ absent : lance `bun run sprites` avant le build')
+        cpSync(GENERATED, nitro.options.output.publicDir, { recursive: true })
+      })
+    },
   },
 
   nitro: {
