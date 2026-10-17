@@ -83,11 +83,14 @@ test.describe('Mon Pokémon', () => {
     await expect(page.getByLabel('Jour')).toBeVisible()
   })
 
-  test('la FAQ s’ouvre et se ferme', async ({ page }) => {
+  test('la FAQ n’ouvre qu’une réponse à la fois', async ({ page }) => {
     await gotoHydrated(page, '/')
-    const question = page.getByText('Comment PokéDate trouve mon Pokémon ?')
-    await question.click()
+    const questions = page.locator('.faq details')
+    await questions.nth(0).locator('summary').click()
     await expect(page.getByText(/Le 17\/10\/2026 donne 7, 0 et 6/)).toBeVisible()
+    await questions.nth(1).locator('summary').click()
+    await expect(questions.nth(1)).toHaveAttribute('open', '')
+    await expect(questions.nth(0)).not.toHaveAttribute('open', '')
   })
 })
 

@@ -170,7 +170,7 @@ usePageSeo({
     <section class="section" aria-labelledby="faq">
       <h2 id="faq" class="section__title">Questions fréquentes</h2>
       <div class="faq">
-        <details v-for="item in HOME_FAQ" :key="item.question">
+        <details v-for="item in HOME_FAQ" :key="item.question" name="faq">
           <summary>{{ item.question }}</summary>
           <p>{{ item.answer }}</p>
         </details>
