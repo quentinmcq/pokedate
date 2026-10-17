@@ -5,29 +5,44 @@
   "scripts": {
     "dev": "nuxt dev",
     "build": "nuxt build",
-    "preview": "nuxt build && wrangler dev",
-    "deploy": "nuxt build && wrangler deploy",
+    "preview": "bun run sprites && nuxt build && wrangler dev",
+    "deploy": "bun run sprites && nuxt build && wrangler deploy",
     "postinstall": "nuxt prepare",
     "typecheck": "nuxt typecheck",
     "lint": "oxlint",
     "lint:fix": "oxlint --fix",
     "fmt": "oxfmt",
     "fmt:check": "oxfmt --check",
-    "check": "bun run lint && bun run fmt:check && bun run typecheck",
-    "data": "bun scripts/fetch-pokemon.mjs server/data/pokemon.json"
+    "check": "bun run lint && bun run fmt:check && bun run typecheck && bun run test:unit",
+    "data": "bun scripts/fetch-pokemon.mjs server/data/pokemon.json",
+    "sprites": "bun scripts/fetch-sprites.mjs",
+    "test": "bun run test:unit && bun run test:e2e",
+    "test:unit": "vitest run",
+    "test:watch": "vitest",
+    "test:e2e": "nuxt build && playwright test"
   },
   "dependencies": {
-    "nuxt": "^4.6.0",
-    "vue": "^3.5.0",
-    "vue-router": "^5.0.0"
+    "@nuxt/fonts": "^1.0.1",
+    "nuxt": "^4.6.2",
+    "nuxt-security": "^2.6.0",
+    "vue": "^3.5.44",
+    "vue-router": "^5.4.0"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.11.4",
+    "@nuxt/test-utils": "^4.3.4",
+    "@playwright/test": "^1.64.1",
+    "@types/node": "^24",
+    "@vue/test-utils": "^2.5.1",
+    "happy-dom": "^21.0.3",
     "oxfmt": "^0.73.0",
     "oxlint": "^1.88.0",
-    "sass-embedded": "^1.105.0",
-    "typescript": "^5.9.0",
-    "vue-tsc": "^3.0.0",
-    "wrangler": "^4.151.0"
+    "sass-embedded": "^1.105.2",
+    "sharp": "^0.35.5",
+    "typescript": "^6.0.3",
+    "vitest": "^5.0.5",
+    "vue-tsc": "^3.3.13",
+    "wrangler": "^4.151.1"
   },
   "packageManager": "bun@1.4.3"
 }
