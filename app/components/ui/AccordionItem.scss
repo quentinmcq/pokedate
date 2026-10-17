@@ -1,0 +1,47 @@
+@use '../../assets/scss/abstracts/functions' as *;
+@use '../../assets/scss/abstracts/mixins' as *;
+
+.accordion {
+  @include surface(2);
+  border-radius: radius('lg');
+  padding: 0 space(5);
+  transition: border-color duration('base');
+
+  &:hover {
+    border-color: color('text-subtle');
+  }
+
+  &__question {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: space(4);
+    padding: space(4) 0;
+    font-weight: weight('bold');
+    cursor: pointer;
+    list-style: none;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    @include focus-ring;
+
+    &::-webkit-details-marker {
+      display: none;
+    }
+  }
+
+  &__icon {
+    flex-shrink: 0;
+    font-size: font-size('xl');
+    color: color('highlight');
+    transition: transform duration('medium') ease('standard');
+  }
+
+  &[open]:not(&--enhanced) &__icon,
+  &--expanded &__icon {
+    transform: rotate(45deg);
+  }
+
+  &__answer {
+    overflow: hidden;
+  }
+}
