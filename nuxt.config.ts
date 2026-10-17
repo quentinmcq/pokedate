@@ -105,6 +105,14 @@ export default defineNuxtConfig({
   },
 
   hooks: {
+    // nuxt-security registers these handlers even when disabled; dropping them keeps the xss
+    // library and two no-op middlewares out of the Worker.
+    'nitro:config'(nitroConfig) {
+      const disabledSecurityHandlers = /nuxt-security\/dist\/runtime\/server\/middleware\/(xssValidator|rateLimiter)/
+      nitroConfig.handlers = nitroConfig.handlers?.filter(
+        (handler) => !disabledSecurityHandlers.test(handler?.handler ?? ''),
+      )
+    },
     // generated/ holds 6,000+ files: copying it after the Worker is compiled keeps Nitro from
     // inlining their manifest in the bundle. hook() adds to the Cloudflare preset's own
     // 'compiled' hook (which writes _headers) instead of replacing it.
