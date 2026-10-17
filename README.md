@@ -18,7 +18,7 @@ En ligne : https://pokedate.quentin-macq.dev
 | `bun install`      | Installe les dépendances                                  |
 | `bun run dev`      | Serveur de dev sur http://localhost:3000                  |
 | `bun run preview`  | Build + test dans le vrai runtime Cloudflare (`wrangler`) |
-| `bun run deploy`   | Build + mise en ligne sur pokedate.quentin-macq.dev       |
+| `bun run deploy`   | Build + mise en ligne sur Cloudflare Workers              |
 | `bun run check`    | Lint + vérification du formatage + types                  |
 | `bun run lint:fix` | Corrige ce qu'oxlint sait corriger                        |
 | `bun run fmt`      | Formate tout le code                                      |

@@ -10,5 +10,8 @@
     "binding": "ASSETS",
   },
   "observability": { "enabled": true },
-  "routes": [{ "pattern": "pokedate.quentin-macq.dev", "custom_domain": true }],
+  // Adresse workers.dev en attendant un nom de domaine dédié. Pour en brancher un :
+  // "routes": [{ "pattern": "mondomaine.fr", "custom_domain": true }],
+  "workers_dev": true,
+  "preview_urls": false,
 }
