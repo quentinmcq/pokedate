@@ -2,7 +2,7 @@
 
 Le dernier chiffre du jour, du mois et de l'année d'une date donnent un Pokémon : 17/10/2026 → 7·0·6 → **#706 Muplodocus**.
 
-https://pokedate.quentin-macq.workers.dev
+https://pokedate.fr
 
 ## Démarrer
 

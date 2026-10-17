@@ -17,7 +17,7 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
-      siteUrl: 'https://pokedate.quentin-macq.workers.dev',
+      siteUrl: 'https://pokedate.fr',
       portfolioUrl: 'https://quentin-macq.dev',
       cloudflareAnalyticsToken: '',
     },

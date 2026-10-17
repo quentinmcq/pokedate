@@ -9,6 +9,11 @@
     "binding": "ASSETS",
   },
   "observability": { "enabled": true, "logs": { "enabled": true, "invocation_logs": false } },
+  "routes": [
+    { "pattern": "pokedate.fr", "custom_domain": true },
+    { "pattern": "www.pokedate.fr", "custom_domain": true },
+  ],
   "workers_dev": true,
+  "dev": { "host": "localhost" },
   "preview_urls": false,
 }
