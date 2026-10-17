@@ -5,6 +5,18 @@
     "correctness": "error",
     "suspicious": "warn"
   },
-  "env": { "browser": true, "node": true, "es2024": true },
-  "ignorePatterns": [".nuxt/**", ".output/**", "node_modules/**", "server/data/**"]
+  "env": {
+    "browser": true,
+    "node": true,
+    "es2024": true
+  },
+  "ignorePatterns": [".nuxt/**", ".output/**", "node_modules/**", "server/data/**"],
+  "rules": {
+    "no-underscore-dangle": [
+      "warn",
+      {
+        "allow": ["__vue_app__"]
+      }
+    ]
+  }
 }
