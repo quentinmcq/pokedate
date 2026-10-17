@@ -1,0 +1,19 @@
+# Dépendances / build
+node_modules
+.output
+.nuxt
+.nitro
+.cache
+dist
+
+# Cloudflare
+.wrangler
+.dev.vars
+
+# Divers
+.env
+.env.*
+!.env.example
+.DS_Store
+.idea
+*.log
