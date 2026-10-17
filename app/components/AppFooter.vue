@@ -12,7 +12,8 @@ const { portfolioUrl } = useRuntimeConfig().public
         <NuxtLink to="/pokemon">Les 1025 Pokémon</NuxtLink>
       </nav>
       <p class="site-footer__author">
-        Fait avec ❤️ par <a :href="portfolioUrl" target="_blank" rel="noopener">Quentin Macq</a>
+        Fait avec <Icon name="lucide:heart" class="site-footer__heart" aria-label="amour" /> par
+        <a :href="portfolioUrl" target="_blank" rel="noopener">Quentin Macq</a>
       </p>
       <p class="site-footer__legal">
         Données : <a href="https://pokeapi.co" target="_blank" rel="noopener">PokeAPI</a>. Pokémon © Nintendo / Game

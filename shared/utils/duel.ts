@@ -61,9 +61,9 @@ export function resolveDuel(fighterA: Fighter, fighterB: Fighter): DuelOutcome {
 }
 
 export function describeEffectiveness(multiplier: number) {
-  if (multiplier === 0) return "n'a aucun effet 🚫"
-  if (multiplier >= 4) return 'est ultra efficace 💥'
-  if (multiplier >= 2) return 'est super efficace 💥'
+  if (multiplier === 0) return "n'a aucun effet"
+  if (multiplier >= 4) return 'est ultra efficace'
+  if (multiplier >= 2) return 'est super efficace'
   if (multiplier < 1) return "n'est pas très efficace…"
   return 'touche normalement'
 }

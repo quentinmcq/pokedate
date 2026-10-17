@@ -1,4 +1,5 @@
 <script setup lang="ts">
+// One page instance per Pokémon, so `pokemon` below can be a plain constant.
 definePageMeta({ key: (route) => route.path })
 
 const route = useRoute()
@@ -19,8 +20,7 @@ if (!pokemon)
 const canonicalPath = pokemonPath(pokemon)
 if (route.path !== canonicalPath) await navigateTo({ path: canonicalPath, query: route.query }, { redirectCode: 301 })
 
-const isShinyRequested = ref(false)
-onMounted(() => (isShinyRequested.value = route.query.shiny === '1'))
+const isShinyRequested = route.query.shiny === '1'
 const isSharedLink = route.query.partage === '1'
 
 usePageSeo({
@@ -56,7 +56,10 @@ usePageSeo({
     <NuxtLink v-if="isSharedLink" class="banner banner--top" to="/">
       <img :src="spriteUrl(pokemon.id)" alt="" width="64" height="64" />
       <div>
-        <b>🎉 Un·e ami·e est tombé·e sur {{ pokemon.name }} avec sa date&nbsp;!</b>
+        <b
+          ><Icon name="lucide:party-popper" aria-hidden="true" /> Un·e ami·e est tombé·e sur {{ pokemon.name }} avec sa
+          date&nbsp;!</b
+        >
         <span>Et toi, quel Pokémon se cache dans ta date ? Touche pour le découvrir.</span>
       </div>
     </NuxtLink>

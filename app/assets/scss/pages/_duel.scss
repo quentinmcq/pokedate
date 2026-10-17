@@ -92,6 +92,7 @@
     font-size: font-size('xl');
 
     small {
+      margin-left: space(1);
       color: color('text-muted');
       font-size: font-size('sm');
     }
@@ -127,6 +128,10 @@
       opacity: 0.5;
       filter: grayscale(0.8) drop-shadow(0 12px 16px rgba(0, 0, 0, 0.4));
     }
+  }
+
+  &__shiny {
+    color: color('highlight');
   }
 
   &__crown {

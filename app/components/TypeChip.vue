@@ -11,7 +11,7 @@ const typeStyle = computed(() => POKEMON_TYPES[props.type])
     :class="{ 'type-chip--sm': small }"
     :style="{ '--c': typeStyle.color, '--ink': typeStyle.textColor }"
   >
-    <span aria-hidden="true">{{ typeStyle.emoji }}</span> {{ typeStyle.label
+    <Icon :name="typeStyle.icon" class="type-chip__icon" aria-hidden="true" /> {{ typeStyle.label
     }}<span v-if="multiplier !== undefined" class="type-chip__mult">{{ formatMultiplier(multiplier) }}</span>
   </span>
 </template>

@@ -10,7 +10,7 @@ test.describe('Duel', () => {
     await fillDate(page, '.duel-form__side >> nth=1', '25', '07', '1998')
     await page.getByRole('button', { name: /Lancer le combat/ }).click()
 
-    await expect(page.locator('#verdict')).toHaveText('🏆 Léa gagne avec Méios !')
+    await expect(page.locator('#verdict')).toHaveText('Léa gagne avec Méios !')
     await expect(page.locator('.fighter--win')).toContainText('Méios')
     await expect(page).toHaveURL(/pa=235&pb=578/)
     expect(page.url()).not.toMatch(/1995|1998/)

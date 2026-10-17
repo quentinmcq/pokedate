@@ -47,15 +47,21 @@ const fighterResult = (side: DuelSide) => {
 
 const verdictTitle = computed(() => {
   if (!outcome.value || !pokemonA.value || !pokemonB.value) return ''
-  if (winnerPokemon.value) return `🏆 ${winnerName.value} gagne avec ${winnerPokemon.value.name} !`
-  if (pokemonA.value.id === pokemonB.value.id) return '🪞 Match miroir : même Pokémon, égalité parfaite !'
-  return '🤝 Match nul !'
+  if (winnerPokemon.value) return `${winnerName.value} gagne avec ${winnerPokemon.value.name} !`
+  if (pokemonA.value.id === pokemonB.value.id) return 'Match miroir : même Pokémon, égalité parfaite !'
+  return 'Match nul !'
+})
+
+const verdictIcon = computed(() => {
+  if (winnerPokemon.value) return 'lucide:trophy'
+  if (pokemonA.value?.id === pokemonB.value?.id) return 'lucide:flip-horizontal-2'
+  return 'lucide:handshake'
 })
 
 const describeAttack = (attackerName: string, attack: AttackSummary) => {
   const type = POKEMON_TYPES[attack.type]
   const multiplier = formatNumber(attack.multiplier, 2)
-  return `${attackerName} attaque en ${type.emoji} ${type.label} : ça ${describeEffectiveness(attack.multiplier)} (×${multiplier}) et ${describeKnockOut(attack.turnsToKnockOut)}.`
+  return `${attackerName} attaque en ${type.label} : ça ${describeEffectiveness(attack.multiplier)} (×${multiplier}) et ${describeKnockOut(attack.turnsToKnockOut)}.`
 }
 
 const firstStrikeText = computed(() => {
@@ -110,7 +116,7 @@ function shareDuel() {
       ? `${winnerName.value} gagne le duel PokéDate avec ${winnerPokemon.value.name} ! Revanche ?`
       : 'Match nul au duel PokéDate ! Revanche ?',
     url: `${absoluteUrl('/duel')}?${query}`,
-    copiedMessage: 'Lien du duel copié 📋',
+    copiedMessage: 'Lien du duel copié',
   })
 }
 
@@ -159,7 +165,9 @@ usePageSeo({
       </div>
       <p id="duel-error" class="field-error" role="alert">{{ formError }}</p>
       <div class="actions">
-        <button class="btn btn--primary" type="submit">Lancer le combat <span aria-hidden="true">⚔️</span></button>
+        <button class="btn btn--primary" type="submit">
+          <Icon name="lucide:swords" aria-hidden="true" /> Lancer le combat
+        </button>
       </div>
       <p class="field-hint">Seuls les Pokémon apparaissent dans le lien du duel, jamais vos dates.</p>
     </form>
@@ -190,7 +198,7 @@ usePageSeo({
       </div>
 
       <div class="verdict">
-        <h2 id="verdict">{{ verdictTitle }}</h2>
+        <h2 id="verdict"><Icon :name="verdictIcon" aria-hidden="true" /> {{ verdictTitle }}</h2>
         <ul>
           <li>{{ describeAttack(pokemonA.name, outcome.attackOfA) }}</li>
           <li>{{ describeAttack(pokemonB.name, outcome.attackOfB) }}</li>
@@ -198,7 +206,9 @@ usePageSeo({
         </ul>
       </div>
       <div class="actions actions--spaced">
-        <button class="btn btn--primary btn--sm" type="button" @click="shareDuel">Partager le duel 📤</button>
+        <button class="btn btn--primary btn--sm" type="button" @click="shareDuel">
+          <Icon name="lucide:share-2" aria-hidden="true" /> Partager le duel
+        </button>
       </div>
     </section>
   </div>

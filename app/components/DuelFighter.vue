@@ -20,12 +20,13 @@ defineProps<{
     ]"
     :style="{ '--accent': typeColor(pokemon.types[0]) }"
   >
-    <span v-if="result === 'win'" class="fighter__crown" aria-hidden="true">👑</span>
+    <Icon v-if="result === 'win'" name="lucide:crown" class="fighter__crown" aria-hidden="true" />
     <img :src="artworkUrl(pokemon.id, shiny)" :alt="pokemon.name" width="160" height="160" />
     <div class="fighter__player">{{ playerName }}</div>
     <h2 class="fighter__name">
       <NuxtLink :to="pokemonPath(pokemon)">{{ pokemon.name }}</NuxtLink
-      >{{ shiny ? ' ✨' : '' }} <small>#{{ pokemon.id }}</small>
+      ><Icon v-if="shiny" name="lucide:sparkles" class="fighter__shiny" aria-label="shiny" />
+      <small>#{{ pokemon.id }}</small>
     </h2>
     <div class="chip-list"><TypeChip v-for="type in pokemon.types" :key="type" :type="type" small /></div>
     <div class="fighter__power">

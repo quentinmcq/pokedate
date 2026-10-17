@@ -102,7 +102,7 @@ describe('comparaisons amusantes', () => {
 
   it('compte le poids en baguettes', () => {
     expect(describeWeight(0.1)).toContain('Plus léger')
-    expect(describeWeight(0.3)).toBe('≈ 1 baguette 🥖')
-    expect(describeWeight(6.5)).toBe('≈ 26 baguettes 🥖')
+    expect(describeWeight(0.3)).toBe('≈ 1 baguette')
+    expect(describeWeight(6.5)).toBe('≈ 26 baguettes')
   })
 })

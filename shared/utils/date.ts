@@ -8,6 +8,7 @@ export function pokemonIdFromDate({ day, month, year }: CalendarDate) {
   return id === 0 ? 1000 : id
 }
 
+// Deterministic, so a given date is shiny (or not) for everyone.
 function fnv1aHash(text: string) {
   let hash = 2166136261
   for (const character of text) {
@@ -50,7 +51,7 @@ export function parseDateFieldValue(value: DateFieldValue): DateParseResult {
   if (!isValidCalendarDate(date))
     return {
       ok: false,
-      error: `Le ${padNumber(date.day)}/${padNumber(date.month)} n'existe pas… même chez les Pokémon 😅`,
+      error: `Le ${padNumber(date.day)}/${padNumber(date.month)} n'existe pas… même chez les Pokémon.`,
     }
   return { ok: true, date }
 }

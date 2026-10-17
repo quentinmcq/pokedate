@@ -10,7 +10,7 @@ export const cryUrl = (id: number) => `/cries/${id}.ogg`
 export interface PokemonTypeStyle {
   label: string
   color: string
-  emoji: string
+  icon: string
   textColor: string
 }
 
@@ -18,24 +18,24 @@ const DARK_TEXT = '#14162b'
 const LIGHT_TEXT = '#ffffff'
 
 export const POKEMON_TYPES: Record<TypeKey, PokemonTypeStyle> = {
-  normal: { label: 'Normal', color: '#9FA19F', emoji: '⭐', textColor: DARK_TEXT },
-  fire: { label: 'Feu', color: '#D92B23', emoji: '🔥', textColor: LIGHT_TEXT },
-  water: { label: 'Eau', color: '#2980EF', emoji: '💧', textColor: DARK_TEXT },
-  electric: { label: 'Électrik', color: '#E0AE00', emoji: '⚡', textColor: DARK_TEXT },
-  grass: { label: 'Plante', color: '#3FA129', emoji: '🌿', textColor: DARK_TEXT },
-  ice: { label: 'Glace', color: '#3DCEF3', emoji: '❄️', textColor: DARK_TEXT },
-  fighting: { label: 'Combat', color: '#FF8000', emoji: '🥊', textColor: DARK_TEXT },
-  poison: { label: 'Poison', color: '#9141CB', emoji: '☠️', textColor: LIGHT_TEXT },
-  ground: { label: 'Sol', color: '#915121', emoji: '⛰️', textColor: LIGHT_TEXT },
-  flying: { label: 'Vol', color: '#81B9EF', emoji: '🪶', textColor: DARK_TEXT },
-  psychic: { label: 'Psy', color: '#EF4179', emoji: '🔮', textColor: DARK_TEXT },
-  bug: { label: 'Insecte', color: '#91A119', emoji: '🐛', textColor: DARK_TEXT },
-  rock: { label: 'Roche', color: '#AFA981', emoji: '🪨', textColor: DARK_TEXT },
-  ghost: { label: 'Spectre', color: '#704170', emoji: '👻', textColor: LIGHT_TEXT },
-  dragon: { label: 'Dragon', color: '#5060E1', emoji: '🐉', textColor: LIGHT_TEXT },
-  dark: { label: 'Ténèbres', color: '#624D4E', emoji: '🌙', textColor: LIGHT_TEXT },
-  steel: { label: 'Acier', color: '#60A1B8', emoji: '⚙️', textColor: DARK_TEXT },
-  fairy: { label: 'Fée', color: '#EF70EF', emoji: '✨', textColor: DARK_TEXT },
+  normal: { label: 'Normal', color: '#9FA19F', icon: 'lucide:circle-dot', textColor: DARK_TEXT },
+  fire: { label: 'Feu', color: '#D92B23', icon: 'lucide:flame', textColor: LIGHT_TEXT },
+  water: { label: 'Eau', color: '#2980EF', icon: 'lucide:droplet', textColor: DARK_TEXT },
+  electric: { label: 'Électrik', color: '#E0AE00', icon: 'lucide:zap', textColor: DARK_TEXT },
+  grass: { label: 'Plante', color: '#3FA129', icon: 'lucide:leaf', textColor: DARK_TEXT },
+  ice: { label: 'Glace', color: '#3DCEF3', icon: 'lucide:snowflake', textColor: DARK_TEXT },
+  fighting: { label: 'Combat', color: '#FF8000', icon: 'lucide:hand-fist', textColor: DARK_TEXT },
+  poison: { label: 'Poison', color: '#9141CB', icon: 'lucide:flask-conical', textColor: LIGHT_TEXT },
+  ground: { label: 'Sol', color: '#915121', icon: 'lucide:mountain', textColor: LIGHT_TEXT },
+  flying: { label: 'Vol', color: '#81B9EF', icon: 'lucide:feather', textColor: DARK_TEXT },
+  psychic: { label: 'Psy', color: '#EF4179', icon: 'lucide:eye', textColor: DARK_TEXT },
+  bug: { label: 'Insecte', color: '#91A119', icon: 'lucide:bug', textColor: DARK_TEXT },
+  rock: { label: 'Roche', color: '#AFA981', icon: 'lucide:mountain-snow', textColor: DARK_TEXT },
+  ghost: { label: 'Spectre', color: '#704170', icon: 'lucide:ghost', textColor: LIGHT_TEXT },
+  dragon: { label: 'Dragon', color: '#5060E1', icon: 'lucide:gem', textColor: LIGHT_TEXT },
+  dark: { label: 'Ténèbres', color: '#624D4E', icon: 'lucide:moon', textColor: LIGHT_TEXT },
+  steel: { label: 'Acier', color: '#60A1B8', icon: 'lucide:shield', textColor: DARK_TEXT },
+  fairy: { label: 'Fée', color: '#EF70EF', icon: 'lucide:wand-sparkles', textColor: DARK_TEXT },
 }
 
 export const TYPE_KEYS = Object.keys(POKEMON_TYPES) as TypeKey[]
@@ -204,17 +204,17 @@ const AVERAGE_HUMAN_HEIGHT_METERS = 1.7
 const BAGUETTE_WEIGHT_KG = 0.25
 
 export function describeHeight(heightMeters: number) {
-  if (heightMeters <= 0.3) return 'Tient dans ta poche 👖'
-  if (heightMeters <= 0.7) return 'Tient dans ton sac à dos 🎒'
+  if (heightMeters <= 0.3) return 'Tient dans ta poche'
+  if (heightMeters <= 0.7) return 'Tient dans ton sac à dos'
   if (heightMeters < 1.4) return "T'arrive à peu près à la taille"
-  if (heightMeters <= 2) return 'À peu près ta hauteur 🧍'
-  return `${formatNumber(heightMeters / AVERAGE_HUMAN_HEIGHT_METERS)}× ta taille 🦒`
+  if (heightMeters <= 2) return 'À peu près ta hauteur'
+  return `${formatNumber(heightMeters / AVERAGE_HUMAN_HEIGHT_METERS)}× ta taille`
 }
 
 export function describeWeight(weightKg: number) {
-  if (weightKg < BAGUETTE_WEIGHT_KG) return "Plus léger qu'une baguette 🥖"
+  if (weightKg < BAGUETTE_WEIGHT_KG) return "Plus léger qu'une baguette"
   const baguettes = Math.round(weightKg / BAGUETTE_WEIGHT_KG)
-  return `≈ ${formatNumber(baguettes, 0)} baguette${baguettes > 1 ? 's' : ''} 🥖`
+  return `≈ ${formatNumber(baguettes, 0)} baguette${baguettes > 1 ? 's' : ''}`
 }
 
 export const slugify = (text: string) =>

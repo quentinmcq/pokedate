@@ -47,6 +47,10 @@
     }
   }
 
+  &__heart {
+    color: color('brand');
+  }
+
   &__legal {
     flex-basis: 100%;
     margin: 0;

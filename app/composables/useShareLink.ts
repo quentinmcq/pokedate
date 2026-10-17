@@ -7,7 +7,7 @@ interface ShareOptions {
 export function useShareLink() {
   const { showToast } = useToast()
 
-  return async ({ text, url, copiedMessage = 'Lien copié, envoie-le à tes potes 📋' }: ShareOptions) => {
+  return async ({ text, url, copiedMessage = 'Lien copié, envoie-le à tes potes' }: ShareOptions) => {
     if (navigator.share) {
       await navigator.share({ title: 'PokéDate', text, url }).catch(() => {})
       return

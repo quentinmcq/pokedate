@@ -107,7 +107,7 @@ usePageSeo({
         <button class="btn btn--primary" type="submit">Révéler mon Pokémon</button>
         <button class="btn btn--ghost" type="button" @click="revealToday">Aujourd'hui</button>
         <button class="btn btn--ghost" type="button" @click="revealRandomDate">
-          <span aria-hidden="true">🎲</span> Au hasard
+          <Icon name="lucide:dices" aria-hidden="true" /> Au hasard
         </button>
       </div>
     </form>
@@ -124,7 +124,7 @@ usePageSeo({
       <NuxtLink v-if="mirrorPokemon" class="banner" :to="pokemonPath(mirrorPokemon)">
         <img :src="artworkUrl(mirrorPokemon.id)" alt="" width="64" height="64" loading="lazy" />
         <div>
-          <b>🌌 Date miroir ! Le jour et le mois sont identiques.</b>
+          <b><Icon name="lucide:moon-star" aria-hidden="true" /> Date miroir ! Le jour et le mois sont identiques.</b>
           <span
             >Un Pokémon rare surgit : <strong>{{ mirrorPokemon.name }}</strong
             >. Touche pour le découvrir.</span

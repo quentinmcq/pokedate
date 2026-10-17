@@ -42,8 +42,8 @@ usePageSeo({
         {{ discoveredCount }} / {{ totalCount }} découverts ({{ formatNumber(completionPercent) }} %)<template
           v-if="shinyCount"
         >
-          · {{ shinyCount }} shiny ✨</template
-        >
+          · {{ shinyCount }} shiny <Icon name="lucide:sparkles" aria-hidden="true"
+        /></template>
       </p>
       <label class="toggle"
         ><input v-model="showOnlyDiscovered" type="checkbox" /> Afficher seulement les découverts</label

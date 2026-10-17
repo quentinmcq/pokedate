@@ -24,6 +24,7 @@
   },
   "dependencies": {
     "@nuxt/fonts": "^1.0.1",
+    "@nuxt/icon": "^2.5.1",
     "nuxt": "^4.6.2",
     "nuxt-security": "^2.6.0",
     "vue": "^3.5.44",
@@ -31,6 +32,7 @@
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.11.4",
+    "@iconify-json/lucide": "^1.2.145",
     "@nuxt/test-utils": "^4.3.4",
     "@playwright/test": "^1.64.1",
     "@types/node": "^24",

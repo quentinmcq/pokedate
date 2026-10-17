@@ -67,7 +67,7 @@ function revealNow() {
 }
 
 function playCry(event: MouseEvent) {
-  new Audio(cryUrl(props.pokemon.id)).play().catch(() => showToast('Cri indisponible sur ce navigateur 🙉'))
+  new Audio(cryUrl(props.pokemon.id)).play().catch(() => showToast('Cri indisponible sur ce navigateur'))
   ;(event.currentTarget as HTMLElement).animate([{ transform: 'scale(1.3)' }, { transform: 'scale(1)' }], 300)
 }
 
@@ -131,11 +131,11 @@ function sharePokemon() {
           class="mon-card__sparkle"
           aria-hidden="true"
           :style="{ left: `${sparkle.left}%`, top: `${sparkle.top}%`, animationDelay: `${sparkle.delay}s` }"
-          >✦</span
-        >
+          ><Icon name="lucide:sparkle"
+        /></span>
         <div class="mon-card__tools">
           <button class="icon-btn" type="button" title="Écouter son cri" aria-label="Écouter son cri" @click="playCry">
-            🔊
+            <Icon name="lucide:volume-2" aria-hidden="true" />
           </button>
           <button
             class="icon-btn"
@@ -145,10 +145,12 @@ function sharePokemon() {
             aria-label="Afficher la version shiny"
             @click="toggleShiny"
           >
-            ✨
+            <Icon name="lucide:sparkles" aria-hidden="true" />
           </button>
         </div>
-        <span v-if="date && shiny" class="mon-card__shiny-badge">✨ Shiny ! 1 date sur 20</span>
+        <span v-if="date && shiny" class="mon-card__shiny-badge"
+          ><Icon name="lucide:sparkles" aria-hidden="true" /> Shiny ! 1 date sur 20</span
+        >
       </div>
 
       <div class="mon-card__info">
@@ -215,9 +217,11 @@ function sharePokemon() {
         </section>
 
         <div class="mon-card__actions">
-          <button class="btn btn--primary btn--sm" type="button" @click="sharePokemon">Partager 📤</button>
+          <button class="btn btn--primary btn--sm" type="button" @click="sharePokemon">
+            <Icon name="lucide:share-2" aria-hidden="true" /> Partager
+          </button>
           <NuxtLink v-if="date" class="btn btn--ghost btn--sm" :to="{ path: '/duel', query: { a: toIsoDate(date) } }"
-            >Défier un ami ⚔️</NuxtLink
+            ><Icon name="lucide:swords" aria-hidden="true" /> Défier un ami</NuxtLink
           >
           <NuxtLink v-if="date" class="btn btn--ghost btn--sm" :to="pokemonPath(pokemon)">Voir sa fiche</NuxtLink>
         </div>

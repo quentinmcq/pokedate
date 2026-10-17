@@ -1,5 +1,6 @@
 import { cpSync, existsSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
+import { POKEMON_TYPES } from './shared/utils/pokemon'
 
 const GENERATED = fileURLToPath(new URL('./generated', import.meta.url))
 const ONE_MONTH = 60 * 60 * 24 * 30
@@ -8,7 +9,7 @@ export default defineNuxtConfig({
   compatibilityDate: '2026-10-17',
   devtools: { enabled: true },
 
-  modules: ['@nuxt/fonts', 'nuxt-security'],
+  modules: ['@nuxt/fonts', '@nuxt/icon', 'nuxt-security'],
 
   css: ['~/assets/scss/main.scss'],
 
@@ -40,11 +41,24 @@ export default defineNuxtConfig({
     ],
   },
 
+  icon: {
+    mode: 'svg',
+    provider: 'none',
+    serverBundle: false,
+    fallbackToApi: false,
+    clientBundle: {
+      scan: true,
+      icons: Object.values(POKEMON_TYPES).map((type) => type.icon),
+    },
+  },
+
   security: {
     nonce: true,
     sri: true,
     removeLoggers: false,
+    // The in-memory limiter is per isolate on Workers: rate limiting belongs to Cloudflare.
     rateLimiter: false,
+    // Vue already escapes rendered text; the validator would reject legitimate player names.
     xssValidator: false,
     headers: {
       contentSecurityPolicy: {
@@ -91,6 +105,9 @@ export default defineNuxtConfig({
   },
 
   hooks: {
+    // generated/ holds 6,000+ files: copying it after the Worker is compiled keeps Nitro from
+    // inlining their manifest in the bundle. hook() adds to the Cloudflare preset's own
+    // 'compiled' hook (which writes _headers) instead of replacing it.
     'nitro:init'(nitro) {
       nitro.hooks.hook('compiled', () => {
         if (nitro.options.dev) return
