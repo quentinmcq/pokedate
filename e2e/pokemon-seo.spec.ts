@@ -4,7 +4,7 @@ import { gotoHydrated } from './helpers'
 const meta = (name: string) => `meta[name="${name}"], meta[property="${name}"]`
 
 test.describe('Fiches Pokémon', () => {
-  test('redirige l’ancienne adresse vers l’adresse lisible', async ({ page }) => {
+  test('redirige l’ancienne adresse vers l’adresse lisible', { tag: '@server' }, async ({ page }) => {
     const response = await page.goto('/pokemon/25')
     expect(response?.request().redirectedFrom()?.url()).toMatch(/\/pokemon\/25$/)
     await expect(page).toHaveURL('/pokemon/25-pikachu')
@@ -19,7 +19,7 @@ test.describe('Fiches Pokémon', () => {
     await expect(page).toHaveURL('/pokemon/172-pichu')
   })
 
-  test('renvoie une vraie 404 pour un Pokémon inexistant', async ({ page }) => {
+  test('renvoie une vraie 404 pour un Pokémon inexistant', { tag: '@server' }, async ({ page }) => {
     const response = await page.goto('/pokemon/2000-inconnu')
     expect(response?.status()).toBe(404)
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Un Pokémon sauvage a fui…')
@@ -50,7 +50,7 @@ test.describe('Fiches Pokémon', () => {
   })
 })
 
-test.describe('Référencement', () => {
+test.describe('Référencement', { tag: '@server' }, () => {
   test('chaque fiche a un titre, une description et une image d’aperçu', async ({ page }) => {
     await gotoHydrated(page, '/pokemon/706-muplodocus')
     await expect(page).toHaveTitle('Muplodocus (n° 706) : types, stats, faiblesses et évolutions · PokéDate')

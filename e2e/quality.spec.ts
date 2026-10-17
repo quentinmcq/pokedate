@@ -12,7 +12,7 @@ const PAGES = [
   '/mentions-legales',
 ]
 
-test.describe('Sécurité', () => {
+test.describe('Sécurité', { tag: '@server' }, () => {
   test('envoie les en-têtes de sécurité', async ({ request }) => {
     const headers = (await request.get('/')).headers()
     expect(headers['content-security-policy']).toContain("frame-ancestors 'none'")
@@ -95,7 +95,7 @@ test.describe('Affichage', () => {
   })
 })
 
-test.describe('Hydratation', () => {
+test.describe('Hydratation', { tag: '@server' }, () => {
   for (const path of [...PAGES, '/pokemon/2000-inconnu']) {
     test(`aucun écart serveur / navigateur avec un Pokédex déjà rempli : ${path}`, async ({ page }) => {
       await page.addInitScript(() =>

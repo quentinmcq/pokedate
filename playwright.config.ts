@@ -8,6 +8,8 @@ export default defineConfig({
   fullyParallel: true,
   forbidOnly: isCI,
   retries: isCI ? 1 : 0,
+  // Private repositories get 2-core runners, where Playwright would default to a single worker.
+  workers: isCI ? 3 : undefined,
   reporter: isCI ? [['github'], ['html', { open: 'never' }]] : [['list']],
   use: {
     baseURL: `http://localhost:${PORT}`,
@@ -16,7 +18,7 @@ export default defineConfig({
   },
   projects: [
     { name: 'desktop', use: { ...devices['Desktop Chrome'] } },
-    { name: 'mobile', use: { ...devices['Pixel 7'] } },
+    { name: 'mobile', use: { ...devices['Pixel 7'] }, grepInvert: /@server/ },
   ],
   webServer: {
     command: `bunx wrangler dev --port ${PORT} --ip 127.0.0.1 --show-interactive-dev-session=false`,
