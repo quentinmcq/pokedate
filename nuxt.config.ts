@@ -100,6 +100,19 @@ export default defineNuxtConfig({
     },
   },
 
+  typescript: {
+    nodeTsConfig: {
+      include: [
+        '../playwright.config.ts',
+        '../vitest.config.ts',
+        '../e2e/**/*',
+        '../test/unit/**/*',
+        '../scripts/**/*',
+      ],
+      compilerOptions: { types: ['node'] },
+    },
+  },
+
   nitro: {
     preset: 'cloudflare_module',
   },
