@@ -6,10 +6,8 @@ const { portfolioUrl } = useRuntimeConfig().public
   <footer class="site-footer">
     <div class="site-footer__inner">
       <nav class="site-footer__nav" aria-label="Liens du site">
-        <NuxtLink to="/">Mon Pokémon</NuxtLink>
         <NuxtLink to="/duel">Duel</NuxtLink>
         <NuxtLink to="/tournoi">Tournoi</NuxtLink>
-        <NuxtLink to="/pokedex">Pokédex</NuxtLink>
         <NuxtLink to="/pokemon">Les 1025 Pokémon</NuxtLink>
         <NuxtLink to="/tirages">Derniers tirages</NuxtLink>
         <NuxtLink to="/mentions-legales">Mentions légales</NuxtLink>
