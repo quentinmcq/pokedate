@@ -44,6 +44,21 @@
     font-size: font-size('xl');
   }
 
+  &__public {
+    margin: 0 0 space(4);
+    padding: space(3) space(4);
+    border-radius: radius('lg');
+    background: color-mix(in srgb, var(--color-highlight) 12%, transparent);
+    font-size: font-size('sm');
+    line-height: 1.5;
+
+    svg {
+      margin-right: space(1);
+      vertical-align: -0.15em;
+      color: color('highlight');
+    }
+  }
+
   &__preview {
     margin: 0 0 space(4);
     color: color('text-muted');

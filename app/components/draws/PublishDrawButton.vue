@@ -79,13 +79,13 @@ async function publish() {
     @click="openDialog"
   >
     <Icon :name="status === 'published' ? 'lucide:check' : 'lucide:radio-tower'" aria-hidden="true" />
-    {{ status === 'published' ? 'Publié' : 'Publier' }}
+    {{ status === 'published' ? 'Ajouté aux tirages' : 'Ajouter aux tirages' }}
   </button>
 
   <dialog ref="dialog" class="publish-dialog" aria-labelledby="publish-dialog-title" @click.self="closeDialog">
     <div class="publish-dialog__content">
       <h2 id="publish-dialog-title" class="publish-dialog__title">
-        {{ status === 'published' ? "C'est publié !" : 'Publier ton tirage' }}
+        {{ status === 'published' ? "C'est publié !" : 'Ajouter aux derniers tirages' }}
       </h2>
 
       <template v-if="status === 'published'">
@@ -101,6 +101,11 @@ async function publish() {
       </template>
 
       <form v-else novalidate @submit.prevent="publish">
+        <p class="publish-dialog__public">
+          <Icon name="lucide:globe" aria-hidden="true" /> Visible par tout le monde sur la page
+          <NuxtLink to="/tirages" class="text-link" target="_blank">Derniers tirages</NuxtLink>, pendant 7 jours au
+          plus.
+        </p>
         <p class="publish-dialog__preview">
           <b>{{ previewName }}</b> a tiré {{ drawSummary }}.
         </p>
@@ -117,8 +122,7 @@ async function publish() {
         />
         <p id="publish-error" class="field-error" role="alert">{{ errorMessage }}</p>
         <p id="publish-note" class="publish-dialog__note">
-          Laisse vide pour rester anonyme. Le pseudo, le Pokémon et l'heure seront visibles par tous dans les derniers
-          tirages pendant 7 jours au plus. Ta date n'est jamais envoyée.
+          Laisse vide pour rester anonyme. Seuls le pseudo, le Pokémon et l'heure sont publiés, jamais ta date.
         </p>
         <div class="publish-dialog__actions">
           <button class="btn btn--primary btn--sm" type="submit" :disabled="status === 'sending'">
