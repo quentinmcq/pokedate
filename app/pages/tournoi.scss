@@ -236,6 +236,31 @@
   }
 }
 
+// Shaped like an empty player row: it belongs to the list, and the launch button stays the only main action.
+.players__add {
+  width: 100%;
+  min-height: 52px;
+  margin-bottom: space(2);
+  border: 2px dashed color('line');
+  border-radius: radius('lg');
+  color: color('text-muted');
+  font-size: font-size('sm');
+  transition:
+    border-color duration('base'),
+    color duration('base');
+
+  &:hover:not(:disabled),
+  &:focus-visible {
+    border-color: color('highlight');
+    color: color('text');
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: default;
+  }
+}
+
 .player-row-enter-active {
   transition:
     opacity duration('medium') ease('standard'),

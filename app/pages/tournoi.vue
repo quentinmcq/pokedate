@@ -295,7 +295,7 @@ usePageSeo({
           </button>
         </li>
       </TransitionGroup>
-      <button class="btn btn--ghost btn--sm players__add" type="button" :disabled="!canAddPlayer" @click="addPlayer">
+      <button class="btn players__add" type="button" :disabled="!canAddPlayer" @click="addPlayer">
         <Icon name="lucide:user-plus" aria-hidden="true" />
         {{
           canAddPlayer ? t('tournament.addPlayer') : t('tournament.maxPlayers', { max: TOURNAMENT_PLAYER_LIMITS.max })
