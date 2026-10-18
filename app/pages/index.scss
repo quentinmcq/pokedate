@@ -112,6 +112,19 @@
       font-size: font-size('lg');
       margin-bottom: space(1);
     }
+
+    // On phones the number sits beside the title instead of on its own line.
+    @include bp(small) {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      column-gap: space(3);
+      padding: space(4);
+
+      &::before {
+        grid-row: span 2;
+        margin-bottom: 0;
+      }
+    }
   }
 }
 

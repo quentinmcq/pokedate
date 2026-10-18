@@ -278,7 +278,7 @@ usePageSeo({
         </li>
         <li>
           <strong>{{ t('home.stepChallengeTitle') }}</strong
-          ><i18n-t keypath="home.stepChallengeText" scope="global">
+          ><i18n-t keypath="home.stepChallengeText" tag="span" scope="global">
             <template #duel
               ><NuxtLinkLocale to="/duel" class="text-link">{{ t('home.stepChallengeDuel') }}</NuxtLinkLocale></template
             >

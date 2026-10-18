@@ -155,19 +155,19 @@
     "stepDateTitle": "Entre une date",
     "stepDateText": "Ton anniversaire, celui de tes potes ou n'importe quel jour qui compte pour toi.",
     "stepDigitsTitle": "Trois chiffres, un Pokémon",
-    "stepDigitsText": "Les derniers chiffres du jour, du mois et de l'année donnent un numéro entre 1 et 1000.",
+    "stepDigitsText": "Le 25/12/1999 donne 5, 2 et 9 : le n° 529, Rototaupe. 000 donne le n° 1000.",
     "stepChallengeTitle": "Défie tes potes",
     "stepChallengeText": "Lance un {duel} et complète ton {pokedex} au fil des dates.",
     "stepChallengeDuel": "duel",
     "faqTitle": "Questions fréquentes",
     "dailyTitle": "Pokémon du jour : {name}",
-    "dailyText": "Le {date} donne le n° {number}. Reviens demain pour découvrir le suivant.",
-    "dailyTextShiny": "Le {date} donne le n° {number}, et en version shiny ! Reviens demain pour découvrir le suivant."
+    "dailyText": "Le {date} donne le n° {number}. Reviens demain pour découvrir le suivant.",
+    "dailyTextShiny": "Le {date} donne le n° {number}, et en version shiny ! Reviens demain pour découvrir le suivant."
   },
   "faq": {
     "rule": {
       "question": "Comment PokéDate trouve mon Pokémon ?",
-      "answer": "On prend le dernier chiffre du jour, du mois et de l'année de ta date, et on les met bout à bout. Le 17/10/2026 donne 7, 0 et 6 : c'est le Pokémon n° 706, Muplodocus. Si les trois chiffres sont 0, tu tombes sur le n° 1000."
+      "answer": "On prend le dernier chiffre du jour, du mois et de l'année de ta date, et on les met bout à bout. Le 17/10/2026 donne 7, 0 et 6 : c'est le Pokémon n° 706, Muplodocus. Si les trois chiffres sont 0, tu tombes sur le n° 1000."
     },
     "birthday": {
       "question": "Quel Pokémon suis-je selon ma date de naissance ?",
@@ -178,7 +178,7 @@
       "answer": "C'est une version aux couleurs rares. Environ une date sur vingt donne un Pokémon shiny, et c'est toujours la même pour une date donnée : à toi de voir si la tienne en fait partie."
     },
     "bonus": {
-      "question": "Comment trouver les Pokémon n° 1001 à 1025 ?",
+      "question": "Comment trouver les Pokémon n° 1001 à 1025 ?",
       "answer": "Ils ne sortent pas avec la règle habituelle. Il faut une « date miroir », où le jour et le mois sont identiques (01/01, 02/02… 12/12) : un de ces Pokémon rares apparaît alors en bonus."
     },
     "privacy": {
@@ -346,12 +346,12 @@
   },
   "pokemonPage": {
     "typesSeparator": " et ",
-    "metaIntro": "{name} (n° {id}), {genusLowercase} de type {types}.",
-    "metaIntroWithGeneration": "{name} (n° {id}), {genusLowercase} de type {types}, génération {generation}.",
+    "metaIntro": "{name} (n° {id}), {genusLowercase} de type {types}.",
+    "metaIntroWithGeneration": "{name} (n° {id}), {genusLowercase} de type {types}, génération {generation}.",
     "notFound": "Ce Pokémon n'existe pas (encore ?)",
-    "seoTitle": "{name} (n° {id}) : types, stats, faiblesses et évolutions",
+    "seoTitle": "{name} (n° {id}) : types, stats, faiblesses et évolutions",
     "sharedTitle": "Quelqu'un est tombé sur {name} avec sa date ! Et toi ?",
-    "shareTitle": "{name}, n° {id}",
+    "shareTitle": "{name}, n° {id}",
     "home": "Accueil",
     "breadcrumb": "Fil d'Ariane",
     "sharedBannerTitle": "Quelqu'un est tombé sur {name} avec sa date !",
@@ -426,7 +426,7 @@
     "hostAddress": "101 Townsend St, San Francisco, CA 94107, États-Unis",
     "ipTitle": "Propriété intellectuelle",
     "ipTrademarks": "Pokémon et les noms, images et sons associés sont des marques et des œuvres de Nintendo, Game Freak et The Pokémon Company. PokéDate est un projet de fan, sans lien avec ces sociétés et sans but commercial.",
-    "ipSources": "Les données et les images proviennent de {pokeapi}. Les descriptions du Pokédex des Pokémon les plus récents (n° 899 à 1025) viennent de {pokepedia}, sous licence {licence}.",
+    "ipSources": "Les données et les images proviennent de {pokeapi}. Les descriptions du Pokédex des Pokémon les plus récents (n° 899 à 1025) viennent de {pokepedia}, sous licence {licence}.",
     "licenceUrl": "https://creativecommons.org/licenses/by-nc-sa/3.0/deed.fr",
     "ipRequests": "Pour toute demande concernant un contenu, écris à l'éditeur : il sera retiré rapidement si nécessaire.",
     "dataTitle": "Données personnelles",

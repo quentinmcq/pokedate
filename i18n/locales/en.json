@@ -155,19 +155,19 @@
     "stepDateTitle": "Enter a date",
     "stepDateText": "Your birthday, your friends' birthdays or any day that matters to you.",
     "stepDigitsTitle": "Three digits, one Pokémon",
-    "stepDigitsText": "The last digits of the day, month and year give a number between 1 and 1000.",
+    "stepDigitsText": "25/12/1999 gives 5, 2 and 9: no. 529, Drilbur. 000 gives no. 1000.",
     "stepChallengeTitle": "Challenge your friends",
     "stepChallengeText": "Start a {duel} and fill your {pokedex} date after date.",
     "stepChallengeDuel": "duel",
     "faqTitle": "Frequently asked questions",
     "dailyTitle": "Pokémon of the day: {name}",
-    "dailyText": "{date} gives no. {number}. Come back tomorrow to discover the next one.",
-    "dailyTextShiny": "{date} gives no. {number}, in its shiny version! Come back tomorrow to discover the next one."
+    "dailyText": "{date} gives no. {number}. Come back tomorrow to discover the next one.",
+    "dailyTextShiny": "{date} gives no. {number}, in its shiny version! Come back tomorrow to discover the next one."
   },
   "faq": {
     "rule": {
       "question": "How does PokéDate find my Pokémon?",
-      "answer": "We take the last digit of the day, the month and the year of your date and put them side by side. 17/10/2026 gives 7, 0 and 6: that's Pokémon no. 706, Goodra. If all three digits are 0, you get no. 1000."
+      "answer": "We take the last digit of the day, the month and the year of your date and put them side by side. 17/10/2026 gives 7, 0 and 6: that's Pokémon no. 706, Goodra. If all three digits are 0, you get no. 1000."
     },
     "birthday": {
       "question": "Which Pokémon am I based on my birth date?",
@@ -178,7 +178,7 @@
       "answer": "It's a version with rare colours. About one date in twenty gives a shiny Pokémon, and it's always the same for a given date: see if yours is one of them."
     },
     "bonus": {
-      "question": "How do I find Pokémon no. 1001 to 1025?",
+      "question": "How do I find Pokémon no. 1001 to 1025?",
       "answer": "They don't come out with the usual rule. You need a “mirror date”, where the day and the month are the same (01/01, 02/02… 12/12): one of these rare Pokémon then appears as a bonus."
     },
     "privacy": {
@@ -346,12 +346,12 @@
   },
   "pokemonPage": {
     "typesSeparator": "/",
-    "metaIntro": "{name} (no. {id}), the {genus}, a {types}-type Pokémon.",
-    "metaIntroWithGeneration": "{name} (no. {id}), the {genus}, a {types}-type Pokémon from generation {generation}.",
+    "metaIntro": "{name} (no. {id}), the {genus}, a {types}-type Pokémon.",
+    "metaIntroWithGeneration": "{name} (no. {id}), the {genus}, a {types}-type Pokémon from generation {generation}.",
     "notFound": "This Pokémon doesn't exist (yet?)",
-    "seoTitle": "{name} (no. {id}): types, stats, weaknesses and evolutions",
+    "seoTitle": "{name} (no. {id}): types, stats, weaknesses and evolutions",
     "sharedTitle": "Someone got {name} with their date! What about you?",
-    "shareTitle": "{name}, no. {id}",
+    "shareTitle": "{name}, no. {id}",
     "home": "Home",
     "breadcrumb": "Breadcrumb",
     "sharedBannerTitle": "Someone got {name} with their date!",
@@ -426,7 +426,7 @@
     "hostAddress": "101 Townsend St, San Francisco, CA 94107, United States",
     "ipTitle": "Intellectual property",
     "ipTrademarks": "Pokémon and the related names, images and sounds are trademarks and works of Nintendo, Game Freak and The Pokémon Company. PokéDate is a fan project, unaffiliated with these companies and non-commercial.",
-    "ipSources": "Data and images come from {pokeapi}. The French Pokédex descriptions of the most recent Pokémon (no. 899 to 1025) come from {pokepedia}, under the {licence} licence.",
+    "ipSources": "Data and images come from {pokeapi}. The French Pokédex descriptions of the most recent Pokémon (no. 899 to 1025) come from {pokepedia}, under the {licence} licence.",
     "licenceUrl": "https://creativecommons.org/licenses/by-nc-sa/3.0/",
     "ipRequests": "For any request about some content, write to the publisher: it will be removed quickly if needed.",
     "dataTitle": "Personal data",

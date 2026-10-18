@@ -68,7 +68,7 @@ test.describe('Référencement', { tag: '@server' }, () => {
   test('chaque fiche a un titre, une description et une image d’aperçu', async ({ page }) => {
     await gotoHydrated(page, '/pokemon/706-muplodocus')
     await expect(page).toHaveTitle('Muplodocus (n° 706) : types, stats, faiblesses et évolutions · PokéDate')
-    await expect(page.locator(meta('description'))).toHaveAttribute('content', /Muplodocus \(n° 706\)/)
+    await expect(page.locator(meta('description'))).toHaveAttribute('content', /Muplodocus \(n°\s706\)/)
     await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', /\/pokemon\/706-muplodocus$/)
     await expect(page.locator(meta('og:image'))).toHaveAttribute('content', /\/sprites\/og\/706\.jpg$/)
     await expect(page.locator(meta('robots'))).toHaveAttribute('content', /^index/)
