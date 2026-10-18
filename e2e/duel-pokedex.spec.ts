@@ -123,6 +123,16 @@ test.describe('Pokédex', () => {
     await otherDevice.close()
   })
 
+  test('fête le premier objectif et le montre dans le Pokédex', async ({ page }) => {
+    await revealDate(page, '17', '10', '2026')
+    await expect(page.locator('.toast--visible')).toContainText('Objectif atteint : Premier Pokémon !', {
+      timeout: 6000,
+    })
+    await gotoHydrated(page, '/pokedex')
+    await expect(page.getByRole('heading', { name: 'Tes objectifs' })).toBeVisible()
+    await expect(page.locator('.goals__summary')).toContainText('1 / 22 objectifs atteints')
+  })
+
   test('peut afficher les 1025 cases', async ({ page }) => {
     await revealDate(page, '17', '10', '2026')
     await gotoHydrated(page, '/pokedex')

@@ -4,6 +4,7 @@ import { join, relative, sep } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { ENGLISH_PAGE_PATHS } from './shared/utils/localizedPages'
 import { POKEMON_TYPES } from './shared/utils/pokemon'
+import { GOAL_ICONS } from './shared/utils/pokedexGoals'
 
 const GENERATED = fileURLToPath(new URL('./generated', import.meta.url))
 const SERVICE_WORKER_SOURCE = fileURLToPath(new URL('./service-worker/sw.js', import.meta.url))
@@ -88,7 +89,7 @@ export default defineNuxtConfig({
     fallbackToApi: false,
     clientBundle: {
       scan: true,
-      icons: Object.values(POKEMON_TYPES).map((type) => type.icon),
+      icons: [...Object.values(POKEMON_TYPES).map((type) => type.icon), ...GOAL_ICONS, 'lucide:badge-check'],
     },
   },
 

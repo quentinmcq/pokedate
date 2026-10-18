@@ -440,5 +440,58 @@
   "statsOptOut": {
     "optedOut": "Tes visites ne sont plus comptées ici",
     "optedIn": "Tes visites sont de nouveau comptées"
+  },
+  "goals": {
+    "sectionTitle": "Tes objectifs",
+    "summary": "{done} / {total} objectifs atteints",
+    "showAll": "Voir les {count} objectifs",
+    "done": "Atteint !",
+    "progress": "{current} sur {target}",
+    "reachedOne": "Objectif atteint : {title} !",
+    "reachedMany": "{count} objectifs atteints !",
+    "firstCatch": {
+      "title": "Premier Pokémon",
+      "description": "Attrape ton premier Pokémon en entrant une date."
+    },
+    "collection": {
+      "title": "{count} Pokémon",
+      "description": "Attrape {count} Pokémon différents."
+    },
+    "firstShiny": {
+      "title": "Premier shiny",
+      "description": "Attrape un Pokémon shiny : 1 date sur 20 environ."
+    },
+    "shinies": {
+      "title": "{count} shiny",
+      "description": "Attrape {count} Pokémon shiny."
+    },
+    "allTypes": {
+      "title": "Tous les types",
+      "description": "Attrape au moins un Pokémon de chacun des {target} types."
+    },
+    "legendary": {
+      "title": "Légende vivante",
+      "description": "Attrape un Pokémon légendaire."
+    },
+    "mythical": {
+      "title": "Fabuleux !",
+      "description": "Attrape un Pokémon fabuleux."
+    },
+    "bonus": {
+      "title": "Date miroir",
+      "description": "Attrape un Pokémon bonus avec une date miroir (le 04/04, le 12/12…)."
+    },
+    "kantoStarters": {
+      "title": "Starters de Kanto",
+      "description": "Attrape Bulbizarre, Salamèche et Carapuce."
+    },
+    "eeveeFamily": {
+      "title": "La famille d'Évoli",
+      "description": "Attrape Évoli et ses 8 évolutions."
+    },
+    "generation": {
+      "title": "Génération {roman} complète",
+      "description": "Attrape les {target} Pokémon de {region}."
+    }
   }
 }

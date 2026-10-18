@@ -79,6 +79,8 @@ usePageSeo({
       </template>
     </div>
 
+    <PokedexGoals v-if="isLoaded && !isEmpty" :entries="entries" />
+
     <div v-if="isEmpty" class="empty-state">
       <PokeBall :size="56" />
       <p>{{ t('pokedex.empty') }}</p>

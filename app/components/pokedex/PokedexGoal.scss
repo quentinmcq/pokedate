@@ -1,0 +1,68 @@
+@use '../../assets/scss/abstracts/functions' as *;
+
+.goal {
+  display: flex;
+  gap: space(3);
+  height: 100%;
+  padding: space(3) space(4);
+  border: 1px solid color('line');
+  border-radius: radius('lg');
+  background: color('surface-1');
+
+  &__icon {
+    margin-top: 2px;
+    font-size: 1.3rem;
+    color: color('text-muted');
+  }
+
+  &__body {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  }
+
+  &__title {
+    font-size: font-size('sm');
+  }
+
+  &__description {
+    color: color('text-subtle');
+    font-size: font-size('xs');
+    line-height: 1.4;
+  }
+
+  &__bar {
+    display: block;
+    height: 6px;
+    margin-top: space(2);
+    border-radius: radius('pill');
+    background: color('line');
+    overflow: hidden;
+  }
+
+  &__fill {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, color('brand'), color('highlight'));
+  }
+
+  &__count {
+    align-self: flex-end;
+    color: color('text-muted');
+    font-family: var(--font-mono), monospace;
+    font-size: font-size('2xs');
+  }
+
+  &--done {
+    border-color: color-mix(in srgb, color('highlight') 60%, transparent);
+    background: color-mix(in srgb, color('highlight') 10%, color('surface-1'));
+
+    .goal__icon,
+    .goal__count {
+      color: color('highlight');
+    }
+  }
+}

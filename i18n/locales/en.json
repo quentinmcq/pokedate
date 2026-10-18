@@ -440,5 +440,58 @@
   "statsOptOut": {
     "optedOut": "Your visits are no longer counted here",
     "optedIn": "Your visits are counted again"
+  },
+  "goals": {
+    "sectionTitle": "Your goals",
+    "summary": "{done} / {total} goals reached",
+    "showAll": "See all {count} goals",
+    "done": "Reached!",
+    "progress": "{current} of {target}",
+    "reachedOne": "Goal reached: {title}!",
+    "reachedMany": "{count} goals reached!",
+    "firstCatch": {
+      "title": "First Pokémon",
+      "description": "Catch your first Pokémon by entering a date."
+    },
+    "collection": {
+      "title": "{count} Pokémon",
+      "description": "Catch {count} different Pokémon."
+    },
+    "firstShiny": {
+      "title": "First shiny",
+      "description": "Catch a shiny Pokémon: about 1 date in 20."
+    },
+    "shinies": {
+      "title": "{count} shinies",
+      "description": "Catch {count} shiny Pokémon."
+    },
+    "allTypes": {
+      "title": "Every type",
+      "description": "Catch at least one Pokémon of each of the {target} types."
+    },
+    "legendary": {
+      "title": "Living legend",
+      "description": "Catch a Legendary Pokémon."
+    },
+    "mythical": {
+      "title": "Mythical!",
+      "description": "Catch a Mythical Pokémon."
+    },
+    "bonus": {
+      "title": "Mirror date",
+      "description": "Catch a bonus Pokémon with a mirror date (04/04, 12/12…)."
+    },
+    "kantoStarters": {
+      "title": "Kanto starters",
+      "description": "Catch Bulbasaur, Charmander and Squirtle."
+    },
+    "eeveeFamily": {
+      "title": "Eevee's family",
+      "description": "Catch Eevee and its 8 evolutions."
+    },
+    "generation": {
+      "title": "Generation {roman} complete",
+      "description": "Catch all {target} Pokémon from {region}."
+    }
   }
 }
