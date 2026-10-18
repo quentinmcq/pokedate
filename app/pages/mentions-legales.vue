@@ -52,10 +52,10 @@ usePageSeo({
       <ul>
         <li>PokéDate ne demande aucun compte.</li>
         <li>
-          Si tu choisis de publier un tirage, PokéDate enregistre ton pseudo, le numéro du Pokémon et l'heure. Ils sont
-          affichés publiquement sur la page des derniers tirages (les 50 plus récents) et supprimés au bout de 7 jours
-          au plus. Ni ta date ni ton adresse IP ne sont enregistrées ; l'adresse IP sert seulement, sur le moment, à
-          limiter le nombre de publications. Pour faire retirer un tirage plus tôt, écris à l'éditeur.
+          Si tu choisis de publier un tirage, PokéDate enregistre ton pseudo (ou « Anonyme »), le numéro du Pokémon et
+          l'heure. Ils sont affichés publiquement sur la page des derniers tirages (les 50 plus récents) et supprimés au
+          bout de 7 jours au plus. Ni ta date ni ton adresse IP ne sont enregistrées ; l'adresse IP sert seulement, sur
+          le moment, à limiter le nombre de publications. Pour faire retirer un tirage plus tôt, écris à l'éditeur.
         </li>
         <li>
           Les dates saisies servent uniquement à calculer ton Pokémon. Les liens que tu partages ne contiennent jamais

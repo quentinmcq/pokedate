@@ -21,6 +21,12 @@ describe('checkNickname', () => {
     expect(checkNickname('  Max   le   Dresseur ')).toEqual({ ok: true, nickname: 'Max le Dresseur' })
   })
 
+  it('publie en « Anonyme » sans pseudo', () => {
+    expect(checkNickname('')).toEqual({ ok: true, nickname: 'Anonyme' })
+    expect(checkNickname('   ')).toEqual({ ok: true, nickname: 'Anonyme' })
+    expect(checkNickname(undefined)).toEqual({ ok: true, nickname: 'Anonyme' })
+  })
+
   it('refuse les pseudos trop courts ou trop longs', () => {
     expect(isAccepted('A')).toBe(false)
     expect(isAccepted('A'.repeat(21))).toBe(false)

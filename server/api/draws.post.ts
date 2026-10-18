@@ -24,7 +24,8 @@ export default defineEventHandler(async (event) => {
     ? (await PUBLISH_RATE_LIMITER.limit({ key: connectionKey })).success
     : true
   if (!isWithinRateLimit) throw createError({ statusCode: 429, message: 'Doucement ! Réessaie dans une minute.' })
-  if ((await countRecentDrawsOfNickname(DB, nicknameCheck.nickname)) >= NICKNAME_HOURLY_LIMIT)
+  const isAnonymous = nicknameCheck.nickname === ANONYMOUS_NICKNAME
+  if (!isAnonymous && (await countRecentDrawsOfNickname(DB, nicknameCheck.nickname)) >= NICKNAME_HOURLY_LIMIT)
     throw createError({ statusCode: 429, message: 'Ce pseudo a déjà beaucoup publié, réessaie dans une heure.' })
 
   setResponseStatus(event, 201)

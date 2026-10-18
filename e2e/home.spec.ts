@@ -97,24 +97,38 @@ test.describe('Mon Pokémon', () => {
     // Cloudflare always overwrites this header in production; here it gives each run its own rate-limit bucket.
     await page.setExtraHTTPHeaders({ 'cf-connecting-ip': `e2e-${testInfo.project.name}-${Date.now()}` })
     await revealDate(page, '17', '10', '2026')
-    const publish = page.getByRole('region', { name: 'Publier dans les derniers tirages' })
-    await publish.getByLabel('Ton pseudo').fill('C0nnard')
-    await publish.getByRole('button', { name: /Publier Muplodocus/ }).click()
-    await expect(publish.getByRole('alert')).toContainText('ne passe pas')
+    await page.locator('.mon-card').getByRole('button', { name: 'Publier' }).click()
+    const dialog = page.getByRole('dialog', { name: 'Publier ton tirage' })
+    await dialog.getByLabel('Ton pseudo (facultatif)').fill('C0nnard')
+    await dialog.getByRole('button', { name: 'Publier' }).click()
+    await expect(dialog.getByRole('alert')).toContainText('ne passe pas')
 
-    await publish.getByLabel('Ton pseudo').fill(nickname)
-    await publish.getByRole('button', { name: /Publier Muplodocus/ }).click()
-    await expect(publish.getByRole('status')).toContainText("C'est publié")
-    await publish.getByRole('link', { name: 'Voir les derniers tirages' }).click()
+    await dialog.getByLabel('Ton pseudo (facultatif)').fill(nickname)
+    await expect(dialog).toContainText(`${nickname} a tiré Muplodocus`)
+    await dialog.getByRole('button', { name: 'Publier' }).click()
+    await expect(page.getByRole('dialog', { name: "C'est publié !" })).toBeVisible()
+    await page.getByRole('link', { name: 'Voir les derniers tirages' }).click()
     await expect(page).toHaveURL('/tirages')
     await expect(page.locator('.draws__item', { hasText: nickname })).toContainText(`${nickname} a tiré Muplodocus`)
+  })
+
+  test('publie en anonyme sans pseudo', async ({ page }, testInfo) => {
+    await page.setExtraHTTPHeaders({ 'cf-connecting-ip': `e2e-anonymous-${testInfo.project.name}-${Date.now()}` })
+    await revealDate(page, '25', '12', '1995')
+    await page.locator('.mon-card').getByRole('button', { name: 'Publier' }).click()
+    const dialog = page.getByRole('dialog', { name: 'Publier ton tirage' })
+    await expect(dialog).toContainText('Anonyme a tiré')
+    await dialog.getByRole('button', { name: 'Publier' }).click()
+    await expect(page.getByRole('dialog', { name: "C'est publié !" })).toBeVisible()
+    await page.getByRole('button', { name: 'Fermer' }).click()
+    await expect(page.locator('.mon-card').getByRole('button', { name: 'Publié' })).toBeDisabled()
   })
 
   test('« Au hasard » ne propose pas de publier', async ({ page }) => {
     await gotoHydrated(page, '/')
     await page.getByRole('button', { name: /Au hasard/ }).click()
     await expect(page.locator('.mon-card')).toBeVisible()
-    await expect(page.getByRole('region', { name: 'Publier dans les derniers tirages' })).toHaveCount(0)
+    await expect(page.locator('.mon-card').getByRole('button', { name: 'Publier' })).toHaveCount(0)
   })
 
   test('une date miroir fait apparaître un Pokémon rare', async ({ page }) => {

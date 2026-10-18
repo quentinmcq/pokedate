@@ -172,15 +172,16 @@ usePageSeo({
         :shiny="isShiny"
         :new-discovery="isNewDiscovery"
         animate
-      />
-      <PublishDraw
-        v-if="!isRandomDraw"
-        :key="`publish-${toIsoDate(selectedDate)}-${revealCount}`"
-        :pokemon-id="pokemon.id"
-        :pokemon-name="pokemon.name"
-        :shiny="isShiny"
-        :bonus-pokemon="mirrorPokemon ? { id: mirrorPokemon.id, name: mirrorPokemon.name } : null"
-      />
+      >
+        <template v-if="!isRandomDraw" #actions>
+          <PublishDrawButton
+            :pokemon-id="pokemon.id"
+            :pokemon-name="pokemon.name"
+            :shiny="isShiny"
+            :bonus-pokemon="mirrorPokemon ? { id: mirrorPokemon.id, name: mirrorPokemon.name } : null"
+          />
+        </template>
+      </PokemonCard>
       <HighlightBanner
         v-if="mirrorPokemon"
         :to="pokemonPath(mirrorPokemon)"

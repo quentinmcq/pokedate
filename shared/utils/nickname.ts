@@ -60,12 +60,15 @@ const normalized = (text: string) =>
     .toLowerCase()
     .replace(/[0134578]/g, (digit) => LOOKALIKE_LETTERS[digit] ?? digit)
 
+export const ANONYMOUS_NICKNAME = 'Anonyme'
+
 export const cleanNickname = (value: unknown) => (typeof value === 'string' ? value.trim().replace(/\s+/g, ' ') : '')
 
 export type NicknameCheck = { ok: true; nickname: string } | { ok: false; error: string }
 
 export function checkNickname(value: unknown): NicknameCheck {
   const nickname = cleanNickname(value)
+  if (!nickname) return { ok: true, nickname: ANONYMOUS_NICKNAME }
   if (nickname.length < NICKNAME_LENGTH.min) return { ok: false, error: 'Ton pseudo doit faire au moins 2 caractères.' }
   if (nickname.length > NICKNAME_LENGTH.max) return { ok: false, error: 'Ton pseudo doit faire 20 caractères au plus.' }
   if (!ALLOWED_CHARACTERS.test(nickname))

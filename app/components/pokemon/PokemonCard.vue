@@ -174,6 +174,7 @@ function sharePokemon() {
           <NuxtLink v-if="date" class="btn btn--ghost btn--sm" :to="{ path: '/duel', query: { a: toIsoDate(date) } }"
             ><Icon name="lucide:swords" aria-hidden="true" /> Défier un ami</NuxtLink
           >
+          <slot name="actions" />
         </div>
       </header>
 

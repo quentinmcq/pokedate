@@ -308,8 +308,8 @@
     flex-wrap: wrap;
 
     @include bp(phone) {
-      .btn {
-        flex: 1 1 0;
+      :deep(.btn) {
+        flex: 1 1 40%;
       }
     }
   }
