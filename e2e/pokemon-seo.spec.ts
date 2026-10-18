@@ -147,14 +147,9 @@ test.describe('Mesure d’audience', () => {
 
   test('affiche l’activité du jour sur la page des tirages', async ({ page, request, baseURL }) => {
     const headers = { origin: baseURL!, 'cf-connecting-ip': `e2e-activity-${Date.now()}` }
-    for (let reveal = 0; reveal < 3; reveal++)
-      await request.post('/api/events', { data: { name: 'reveal', pokemonId: 25, shiny: reveal === 0 }, headers })
-    // The week's favourite comes from the published draws and needs a Pokémon drawn twice at least.
-    for (let draw = 0; draw < 2; draw++)
-      await request.post('/api/draws', {
-        data: { pokemonId: 25, shiny: false, bonusPokemonId: null, nickname: '' },
-        headers,
-      })
+    // The whole block reads the published draws: two Pikachu, one of them shiny, show every line.
+    for (const shiny of [true, false])
+      await request.post('/api/draws', { data: { pokemonId: 25, shiny, bonusPokemonId: null, nickname: '' }, headers })
     await gotoHydrated(page, '/tirages')
     const activity = page.getByRole('region', { name: "Aujourd'hui sur PokéDate" })
     await expect(activity).toContainText('Pokémon révélés')

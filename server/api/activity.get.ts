@@ -8,13 +8,12 @@ export default defineEventHandler(async (event): Promise<DrawsActivity> => {
   const { DB } = cloudflareBindings(event)
   if (!DB) throw createError({ statusCode: 503, message: "L'activité du jour est indisponible pour le moment." })
 
-  const today = todayInParisIso()
   const todayTotals = await DB.prepare(
-    'SELECT COALESCE(SUM(count), 0) AS reveals, COALESCE(SUM(shiny_count), 0) AS shiny FROM pokemon_reveal_counts WHERE day = ?',
+    'SELECT COUNT(*) AS reveals, COALESCE(SUM(shiny), 0) AS shiny FROM draws WHERE created_at >= ?',
   )
-    .bind(today)
+    .bind(startOfParisDay())
     .first<{ reveals: number; shiny: number }>()
-  // Counted from the published draws, so the favourite always matches the list shown below it.
+  // Like today's numbers, counted from the published draws, so the block always matches the list below it.
   const weekFavourite = await DB.prepare(
     'SELECT pokemon_id, COUNT(*) AS total FROM draws WHERE created_at >= ? GROUP BY pokemon_id HAVING total >= ? ORDER BY total DESC, MAX(created_at) DESC LIMIT 1',
   )

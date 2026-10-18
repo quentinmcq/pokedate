@@ -3,6 +3,15 @@ import type { D1Database } from './cloudflareBindings'
 
 export const todayInParisIso = () => toIsoDate(todayInTimeZone('Europe/Paris'))
 
+// The draws store UTC timestamps: today's ones start at Paris midnight, whatever the daylight saving time.
+export function startOfParisDay(now = new Date()) {
+  const offset = new Intl.DateTimeFormat('en-US', { timeZone: 'Europe/Paris', timeZoneName: 'shortOffset' })
+    .formatToParts(now)
+    .find((part) => part.type === 'timeZoneName')?.value
+  const offsetHours = Number(offset?.replace('GMT', '') || 0)
+  return Date.parse(`${toIsoDate(todayInTimeZone('Europe/Paris', now))}T00:00:00Z`) - offsetHours * 60 * 60 * 1000
+}
+
 export const incrementEventCount = (db: D1Database, name: TrackedEvent, day = todayInParisIso()) =>
   db
     .prepare(
