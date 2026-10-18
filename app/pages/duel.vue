@@ -231,11 +231,12 @@ usePageSeo({
       </template>
       <div class="duel-form">
         <div class="duel-form__side">
+          <span class="duel-form__role" aria-hidden="true">{{ t('duel.you') }}</span>
           <label class="visually-hidden" for="player-name-a">{{ t('challenge.playerName', { number: 1 }) }}</label>
           <input
             id="player-name-a"
             v-model="playerNameInputA"
-            class="text-input"
+            class="text-input duel-form__name"
             :placeholder="t('duel.yourName')"
             :maxlength="PLAYER_NAME_MAX_LENGTH"
           />
@@ -250,11 +251,12 @@ usePageSeo({
         </div>
         <span class="vs-badge" aria-hidden="true">VS</span>
         <div class="duel-form__side">
+          <span class="duel-form__role" aria-hidden="true">{{ t('duel.opponent') }}</span>
           <label class="visually-hidden" for="player-name-b">{{ t('challenge.playerName', { number: 2 }) }}</label>
           <input
             id="player-name-b"
             v-model="playerNameInputB"
-            class="text-input"
+            class="text-input duel-form__name"
             :placeholder="t('duel.opponentName')"
             :maxlength="PLAYER_NAME_MAX_LENGTH"
           />

@@ -210,7 +210,9 @@
     "opponentName": "Their name",
     "start": "Start the fight",
     "totalStats": "Total stats",
-    "speed": "Speed"
+    "speed": "Speed",
+    "you": "You",
+    "opponent": "Your opponent"
   },
   "tournament": {
     "title": "Birthday tournament",

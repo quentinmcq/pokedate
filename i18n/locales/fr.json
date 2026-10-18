@@ -210,7 +210,9 @@
     "opponentName": "Son prénom",
     "start": "Lancer le combat",
     "totalStats": "Total des stats",
-    "speed": "Vitesse"
+    "speed": "Vitesse",
+    "you": "Toi",
+    "opponent": "Ton adversaire"
   },
   "tournament": {
     "title": "Tournoi d'anniversaires",
