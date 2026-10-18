@@ -154,7 +154,7 @@ test.describe('Mesure d’audience', () => {
     await expect(activity).toContainText('Pokémon révélés')
     await expect(activity).toContainText('shiny')
     await expect(activity).toContainText('Le plus tiré cette semaine')
-    await expect(page.getByRole('heading', { name: 'Tirages partagés' })).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Pokémon révélés' })).toBeVisible()
   })
 
   test('compte les actions connues et refuse le reste', { tag: '@server' }, async ({ request, baseURL }) => {

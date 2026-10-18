@@ -38,7 +38,7 @@ const navItems = computed(() => [
     id: 'draws',
     label: t('nav.draws'),
     to: localePath('/tirages'),
-    icon: 'lucide:radio-tower',
+    icon: 'lucide:users-round',
     isActive: pageName.value === 'tirages',
   },
 ])
@@ -101,14 +101,8 @@ watch(
         >
       </NuxtLink>
     </nav>
-    <NuxtLink
-      class="language-switch"
-      :to="switchLocalePath(otherLocale)"
-      :hreflang="otherLocale"
-      :lang="otherLocale"
-      :aria-label="t('nav.otherLanguage')"
-    >
-      <Icon name="lucide:languages" aria-hidden="true" /> {{ otherLocale.toUpperCase() }}
+    <NuxtLink class="language-switch" :to="switchLocalePath(otherLocale)" :hreflang="otherLocale" :lang="otherLocale">
+      <Icon name="lucide:languages" aria-hidden="true" /> {{ t('nav.otherLanguageName') }}
     </NuxtLink>
   </header>
 </template>

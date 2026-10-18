@@ -173,9 +173,8 @@
   border: 1px solid color('line');
   border-radius: radius('pill');
   color: color('text-muted');
-  font-family: var(--font-mono), monospace;
   font-size: font-size('sm');
-  font-weight: weight('bold');
+  font-weight: weight('semibold');
   text-decoration: none;
   transition: color duration('base');
 

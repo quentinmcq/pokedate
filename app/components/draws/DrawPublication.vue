@@ -36,9 +36,9 @@ const shownNickname = computed(() => (nickname.value === ANONYMOUS_NICKNAME ? t(
 const isSaving = ref(false)
 
 const STATUS_ICONS: Record<Status, string> = {
-  waiting: 'lucide:radio-tower',
-  publishing: 'lucide:radio-tower',
-  published: 'lucide:radio-tower',
+  waiting: 'lucide:users-round',
+  publishing: 'lucide:users-round',
+  published: 'lucide:users-round',
   removed: 'lucide:eye-off',
   failed: 'lucide:cloud-off',
   limit: 'lucide:eye-off',

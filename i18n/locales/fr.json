@@ -86,8 +86,8 @@
     "pokedex": "Pokédex",
     "draws": "Tirages",
     "caught": "attrapés",
-    "otherLanguage": "English version",
-    "mainLabel": "Navigation principale"
+    "mainLabel": "Navigation principale",
+    "otherLanguageName": "English"
   },
   "sections": {
     "duel": "1 contre 1",

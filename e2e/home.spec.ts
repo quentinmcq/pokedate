@@ -150,7 +150,7 @@ test.describe('Mon Pokémon', () => {
 
   test('passe en anglais et garde le Pokémon révélé', async ({ page }) => {
     await revealDate(page, '17', '10', '2026')
-    await page.getByRole('link', { name: 'English version' }).click()
+    await page.getByRole('link', { name: 'English' }).click()
     await expect(page).toHaveURL(/\/en\?date=2026-10-17$/)
     await expect(page.getByRole('heading', { level: 2, name: /Goodra/ })).toBeVisible()
     await expect(page.getByRole('button', { name: 'Reveal my Pokémon' })).toBeVisible()
