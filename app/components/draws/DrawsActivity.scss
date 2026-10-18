@@ -33,19 +33,19 @@
     vertical-align: -0.1em;
   }
 
+  // Always stacked, so the layout does not depend on how long the label is in each language.
   &__favourite {
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: column;
     align-items: center;
-    justify-content: center;
-    gap: space(1) space(2);
+    gap: space(1);
     margin: space(3) 0 0;
     color: color('text-muted');
 
     img {
       width: 48px;
       height: 48px;
-      margin-right: -#{space(1)};
+      margin-right: -#{space(2)};
       image-rendering: pixelated;
     }
 
