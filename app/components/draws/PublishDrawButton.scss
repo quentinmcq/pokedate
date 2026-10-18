@@ -1,6 +1,41 @@
 @use '../../assets/scss/abstracts/functions' as *;
 @use '../../assets/scss/abstracts/mixins' as *;
 
+.publish-button--nudge {
+  animation: publish-nudge 1.4s ease('standard') 0.2s 2;
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+}
+
+.publish-hint {
+  flex-basis: 100%;
+  margin: 0;
+  color: color('text-subtle');
+  font-size: font-size('sm');
+  animation: publish-hint-in duration('medium') ease('standard');
+}
+
+@keyframes publish-nudge {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 transparent;
+    border-color: color('line');
+  }
+  40% {
+    box-shadow: 0 0 0 6px color-mix(in srgb, var(--color-highlight) 30%, transparent);
+    border-color: color('highlight');
+  }
+}
+
+@keyframes publish-hint-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+}
+
 .publish-dialog {
   width: calc(100% - #{space(8)});
   max-width: 440px;

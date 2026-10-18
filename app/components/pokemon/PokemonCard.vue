@@ -172,9 +172,9 @@ function sharePokemon() {
             <Icon name="lucide:share-2" aria-hidden="true" /> Partager
           </button>
           <NuxtLink v-if="date" class="btn btn--ghost btn--sm" :to="{ path: '/duel', query: { a: toIsoDate(date) } }"
-            ><Icon name="lucide:swords" aria-hidden="true" /> Lancer un duel</NuxtLink
+            ><Icon name="lucide:swords" aria-hidden="true" /> Défier</NuxtLink
           >
-          <slot name="actions" />
+          <slot name="actions" :revealed="isRevealed" />
         </div>
       </header>
 

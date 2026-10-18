@@ -36,9 +36,9 @@ test.describe('Duel', () => {
     expect(verdictBox!.y).toBeLessThan(rematchBox!.y)
   })
 
-  test('« Lancer un duel » pré-remplit ma date', async ({ page }) => {
+  test('« Défier » pré-remplit ma date', async ({ page }) => {
     await revealDate(page, '17', '10', '2026')
-    await page.getByRole('link', { name: /Lancer un duel/ }).click()
+    await page.getByRole('link', { name: 'Défier', exact: true }).click()
     await expect(page).toHaveURL(/\/duel\?a=2026-10-17/)
     const side = page.locator('.duel-form__side').first()
     await expect(side.getByLabel('Jour')).toHaveValue('17')

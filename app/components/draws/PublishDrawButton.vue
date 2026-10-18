@@ -2,8 +2,14 @@
 import type { PokemonSummary, PublicDraw } from '#shared/types/pokemon'
 
 const props = withDefaults(
-  defineProps<{ pokemonId: number; pokemonName: string; shiny: boolean; bonusPokemon?: PokemonSummary | null }>(),
-  { bonusPokemon: null },
+  defineProps<{
+    pokemonId: number
+    pokemonName: string
+    shiny: boolean
+    bonusPokemon?: PokemonSummary | null
+    nudge?: boolean
+  }>(),
+  { bonusPokemon: null, nudge: false },
 )
 
 const NICKNAME_STORAGE_KEY = 'pokedate.nickname'
@@ -73,6 +79,7 @@ async function publish() {
 <template>
   <button
     class="btn btn--ghost btn--sm publish-button"
+    :class="{ 'publish-button--nudge': nudge && status === 'idle' }"
     type="button"
     :disabled="status === 'published'"
     aria-haspopup="dialog"
@@ -81,6 +88,7 @@ async function publish() {
     <Icon :name="status === 'published' ? 'lucide:check' : 'lucide:radio-tower'" aria-hidden="true" />
     {{ status === 'published' ? 'Ajouté aux tirages' : 'Ajouter aux tirages' }}
   </button>
+  <p v-if="nudge && status === 'idle'" class="publish-hint">Montre-le aux autres joueurs dans les tirages.</p>
 
   <dialog ref="dialog" class="publish-dialog" aria-labelledby="publish-dialog-title" @click.self="closeDialog">
     <div class="publish-dialog__content">

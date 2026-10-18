@@ -173,8 +173,9 @@ usePageSeo({
         :new-discovery="isNewDiscovery"
         animate
       >
-        <template v-if="!isRandomDraw" #actions>
+        <template v-if="!isRandomDraw" #actions="{ revealed }">
           <PublishDrawButton
+            :nudge="revealed"
             :pokemon-id="pokemon.id"
             :pokemon-name="pokemon.name"
             :shiny="isShiny"
