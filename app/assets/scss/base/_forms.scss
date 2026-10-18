@@ -12,6 +12,14 @@
   color: color('text-subtle');
   font-size: font-size('sm');
   margin: space(3) 0 0;
+
+  &--privacy {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: space(2);
+    margin-top: space(6);
+  }
 }
 
 .text-input {

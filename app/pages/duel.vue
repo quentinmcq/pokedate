@@ -252,7 +252,10 @@ usePageSeo({
           <Icon name="lucide:swords" aria-hidden="true" /> Lancer le combat
         </button>
       </div>
-      <p class="field-hint">Seuls les Pokémon apparaissent dans le lien du duel, jamais vos dates.</p>
+      <p class="field-hint field-hint--privacy">
+        <Icon name="lucide:lock" aria-hidden="true" /> Vos dates restent sur cet appareil&nbsp;: le lien ne contient que
+        les Pokémon.
+      </p>
     </form>
   </div>
 </template>
