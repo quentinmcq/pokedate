@@ -6,15 +6,15 @@
   display: flex;
   justify-content: center;
   gap: space(2);
-  flex-wrap: wrap;
-  margin-top: space(6);
+  max-width: 560px;
+  margin: space(6) auto 0;
 
   &__field {
     display: flex;
     align-items: center;
     gap: space(2);
-    flex: 1 1 260px;
-    max-width: 360px;
+    flex: 1 1 auto;
+    min-width: 0;
     min-height: $tap-target;
     padding: 0 space(4);
     background: color('surface-1');
@@ -48,15 +48,24 @@
     }
 
     &--type {
-      flex: 0 1 200px;
+      flex: 0 0 auto;
+      padding-right: space(3);
+
+      select {
+        flex: 0 1 auto;
+        cursor: pointer;
+      }
     }
   }
 
   &__status {
-    min-height: 1.4em;
     margin: space(3) 0 0;
     color: color('text-muted');
     font-size: font-size('sm');
+
+    &:empty {
+      margin: 0;
+    }
   }
 
   &__empty {
@@ -75,6 +84,10 @@
 
 .gen-block {
   margin-top: space(10);
+
+  &:first-of-type {
+    margin-top: space(4);
+  }
 
   h2 {
     font-size: font-size('xl');

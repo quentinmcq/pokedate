@@ -363,7 +363,7 @@
     "lead": "Tout le Pokédex national, génération par génération. Envie de savoir lequel se cache dans ta date ? {test}.",
     "test": "Fais le test",
     "search": "Rechercher un Pokémon",
-    "searchPlaceholder": "Nom ou numéro",
+    "searchPlaceholder": "Nom ou n°",
     "filterType": "Filtrer par type",
     "allTypes": "Tous les types",
     "found": "{count} Pokémon trouvé | {count} Pokémon trouvé | {count} Pokémon trouvés",
