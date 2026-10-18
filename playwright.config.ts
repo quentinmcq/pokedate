@@ -16,6 +16,8 @@ export default defineConfig({
     baseURL: `http://localhost:${PORT}`,
     locale: 'fr-FR',
     trace: 'retain-on-failure',
+    // The offline cache would otherwise answer requests that the tests mock or count.
+    serviceWorkers: 'block',
   },
   projects: [
     { name: 'desktop', use: { ...devices['Desktop Chrome'] } },

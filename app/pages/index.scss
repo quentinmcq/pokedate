@@ -21,6 +21,30 @@
   }
 }
 
+.result-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: space(3);
+  max-width: 420px;
+  margin: 0 auto space(8);
+  padding: space(5) space(4);
+  border: 1px solid color('line');
+  border-radius: radius('lg');
+  background: color('surface-1');
+  text-align: center;
+  color: color('text-muted');
+
+  > .iconify {
+    font-size: 1.75rem;
+    color: color('text');
+  }
+
+  p {
+    margin: 0;
+  }
+}
+
 .section {
   margin-top: space(16);
 

@@ -40,7 +40,7 @@ const pokemonId = computed(() => (selectedDate.value ? pokemonIdFromDate(selecte
 const isShiny = computed(() => !!selectedDate.value && isShinyDate(selectedDate.value))
 const mirrorPokemonId = computed(() => (selectedDate.value ? mirrorPokemonIdForDate(selectedDate.value) : null))
 
-const [{ data: pokemon }, { data: mirrorPokemon }] = await Promise.all([
+const [{ data: pokemon, error: pokemonError, refresh: retryPokemon }, { data: mirrorPokemon }] = await Promise.all([
   usePokemonDetail(pokemonId),
   usePokemonDetail(mirrorPokemonId),
 ])
@@ -195,6 +195,12 @@ usePageSeo({
         >. Touche pour le découvrir.
       </HighlightBanner>
     </section>
+
+    <div v-else-if="selectedDate && pokemonError" class="result-error" role="alert">
+      <Icon name="lucide:wifi-off" aria-hidden="true" />
+      <p>Ton Pokémon n'a pas pu s'afficher. Vérifie ta connexion, puis réessaie.</p>
+      <button class="btn btn--ghost btn--sm" type="button" @click="retryPokemon()">Réessayer</button>
+    </div>
 
     <section class="section" aria-labelledby="how-it-works">
       <h2 id="how-it-works" class="section__title">Comment ça marche&nbsp;?</h2>

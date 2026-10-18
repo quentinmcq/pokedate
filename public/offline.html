@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#14162b" />
+    <meta name="robots" content="noindex" />
+    <title>Hors ligne · PokéDate</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <style>
+      :root {
+        color-scheme: dark;
+      }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        min-height: 100dvh;
+        display: grid;
+        place-items: center;
+        padding: 24px 16px;
+        box-sizing: border-box;
+        font-family:
+          system-ui,
+          -apple-system,
+          'Segoe UI',
+          sans-serif;
+        color: #f4f3ff;
+        background: radial-gradient(700px 400px at 85% -10%, rgba(255, 210, 63, 0.18), transparent 70%), #14162b;
+        text-align: center;
+      }
+      main {
+        max-width: 420px;
+      }
+      h1 {
+        margin: 0 0 12px;
+        font-size: 1.75rem;
+        letter-spacing: -0.02em;
+      }
+      p {
+        margin: 0 0 28px;
+        color: #a9acd6;
+        line-height: 1.5;
+      }
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 12px;
+      }
+      a {
+        display: inline-flex;
+        align-items: center;
+        min-height: 44px;
+        padding: 0 22px;
+        border-radius: 999px;
+        font-weight: 700;
+        text-decoration: none;
+        color: #f4f3ff;
+        border: 1px solid rgba(255, 255, 255, 0.18);
+      }
+      a.primary {
+        background: #ffd23f;
+        border-color: #ffd23f;
+        color: #14162b;
+      }
+      a:focus-visible {
+        outline: 2px solid #ffd23f;
+        outline-offset: 3px;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Tu es hors ligne</h1>
+      <p>
+        Cette page n'est pas encore enregistrée sur ton appareil. Les pages et les Pokémon que tu as déjà vus restent
+        disponibles sans connexion.
+      </p>
+      <div class="actions">
+        <a class="primary" href="">Réessayer</a>
+        <a href="/">Accueil</a>
+      </div>
+    </main>
+  </body>
+</html>

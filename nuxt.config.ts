@@ -1,9 +1,26 @@
-import { cpSync, existsSync } from 'node:fs'
+import { createHash } from 'node:crypto'
+import { cpSync, existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs'
+import { join, relative, sep } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { POKEMON_TYPES } from './shared/utils/pokemon'
 
 const GENERATED = fileURLToPath(new URL('./generated', import.meta.url))
+const SERVICE_WORKER_SOURCE = fileURLToPath(new URL('./service-worker/sw.js', import.meta.url))
 const ONE_MONTH = 60 * 60 * 24 * 30
+
+// The service worker precaches every built script, style and font. Its content changes with each
+// build, so browsers install the new version and it drops the previous cache.
+function writeServiceWorker(publicDir: string) {
+  const precachedAssets = readdirSync(join(publicDir, '_nuxt'), { recursive: true, withFileTypes: true })
+    .filter((entry) => entry.isFile())
+    .map((entry) => `/${relative(publicDir, join(entry.parentPath, entry.name)).split(sep).join('/')}`)
+    .filter((path) => !path.startsWith('/_nuxt/builds/'))
+    .sort()
+  const source = readFileSync(SERVICE_WORKER_SOURCE, 'utf8')
+  const buildId = createHash('sha256').update(source).update(precachedAssets.join()).digest('hex').slice(0, 12)
+  const header = `const BUILD_ID = '${buildId}'\nconst PRECACHED_ASSETS = ${JSON.stringify(precachedAssets)}\n`
+  writeFileSync(join(publicDir, 'sw.js'), header + source)
+}
 
 export default defineNuxtConfig({
   compatibilityDate: '2026-10-17',
@@ -73,6 +90,7 @@ export default defineNuxtConfig({
         'default-src': ["'self'"],
         'base-uri': ["'none'"],
         'connect-src': ["'self'", 'https://cloudflareinsights.com'],
+        'worker-src': ["'self'"],
         'font-src': ["'self'"],
         'form-action': ["'self'"],
         'frame-ancestors': ["'none'"],
@@ -132,6 +150,7 @@ export default defineNuxtConfig({
         if (!existsSync(GENERATED))
           throw new Error('Dossier generated/ absent : lance `bun run sprites` avant le build')
         cpSync(GENERATED, nitro.options.output.publicDir, { recursive: true })
+        writeServiceWorker(nitro.options.output.publicDir)
       })
     },
   },
