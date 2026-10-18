@@ -194,3 +194,61 @@
     transform: translateY(100%);
   }
 }
+
+.nickname-prompt {
+  position: fixed;
+  top: calc(#{space(3)} + env(safe-area-inset-top));
+  left: 50%;
+  z-index: z('toast');
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: space(2) space(3);
+  width: min(480px, calc(100% - #{space(6)}));
+  padding: space(3) space(2) space(4) space(4);
+  border: 1px solid color-mix(in srgb, color('highlight') 50%, transparent);
+  border-radius: radius('lg');
+  background: color-mix(in srgb, color('surface-2') 92%, transparent);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+  transform: translateX(-50%);
+
+  &__icon {
+    font-size: 1.3rem;
+    color: color('highlight');
+  }
+
+  &__text {
+    margin: 0;
+    font-size: font-size('sm');
+    line-height: 1.4;
+  }
+
+  .btn {
+    grid-row: 2;
+    grid-column: 2;
+    justify-self: start;
+  }
+
+  &__close {
+    grid-row: 1;
+    grid-column: 3;
+    border-color: transparent;
+    background: transparent;
+    color: color('text-muted');
+  }
+}
+
+.nickname-prompt-enter-active,
+.nickname-prompt-leave-active {
+  transition:
+    opacity duration('medium') ease('standard'),
+    transform duration('medium') ease('standard');
+}
+
+.nickname-prompt-enter-from,
+.nickname-prompt-leave-to {
+  opacity: 0;
+  transform: translate(-50%, -12px);
+}

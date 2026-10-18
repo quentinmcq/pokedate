@@ -416,7 +416,10 @@
     "nicknameLabel": "Your nickname (optional)",
     "nicknameNote": "Leave it empty to stay anonymous.",
     "autoPublish": "Automatically add my next draws",
-    "save": "Save"
+    "save": "Save",
+    "promptLabel": "Your nickname in the draws",
+    "promptText": "Your Pokémon is in the latest draws, anonymously.",
+    "promptAction": "Pick a nickname"
   },
   "legal": {
     "title": "Legal notice",

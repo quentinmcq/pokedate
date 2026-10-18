@@ -45,6 +45,37 @@ const STATUS_ICONS: Record<Status, string> = {
   disabled: 'lucide:eye-off',
 }
 
+const NICKNAME_PROMPT_STORAGE_KEY = 'pokedate.nickname-prompt-seen'
+const NICKNAME_PROMPT_DURATION_MS = 9000
+
+// On phones the line under the card sits behind the bottom bar: the first publication says it once at the top.
+const isNicknamePromptShown = ref(false)
+let nicknamePromptTimer: ReturnType<typeof setTimeout> | undefined
+
+function hasSeenNicknamePrompt() {
+  try {
+    return localStorage.getItem(NICKNAME_PROMPT_STORAGE_KEY) === '1'
+  } catch {
+    return true
+  }
+}
+
+function showNicknamePrompt() {
+  if (nickname.value !== ANONYMOUS_NICKNAME || hasSeenNicknamePrompt()) return
+  try {
+    localStorage.setItem(NICKNAME_PROMPT_STORAGE_KEY, '1')
+  } catch {}
+  isNicknamePromptShown.value = true
+  nicknamePromptTimer = setTimeout(hideNicknamePrompt, NICKNAME_PROMPT_DURATION_MS)
+}
+
+function hideNicknamePrompt() {
+  clearTimeout(nicknamePromptTimer)
+  isNicknamePromptShown.value = false
+}
+
+onBeforeUnmount(hideNicknamePrompt)
+
 const publishedPokemon = () => ({
   pokemonId: props.pokemonId,
   shiny: props.shiny,
@@ -61,6 +92,7 @@ async function publishNow() {
     publication.value = await publish(publishedPokemon())
     trackEvent('publish')
     status.value = 'published'
+    showNicknamePrompt()
   } catch {
     status.value = 'failed'
   }
@@ -98,6 +130,11 @@ async function republish() {
   isBusy.value = true
   await publishNow()
   isBusy.value = false
+}
+
+function openSettingsFromPrompt() {
+  hideNicknamePrompt()
+  openSettings()
 }
 
 function openSettings() {
@@ -180,6 +217,26 @@ async function saveSettings() {
       </button>
     </div>
   </div>
+
+  <Teleport to="body">
+    <Transition name="nickname-prompt">
+      <aside v-if="isNicknamePromptShown" class="nickname-prompt" :aria-label="t('publication.promptLabel')">
+        <Icon name="lucide:users-round" class="nickname-prompt__icon" aria-hidden="true" />
+        <p class="nickname-prompt__text">{{ t('publication.promptText') }}</p>
+        <button class="btn btn--primary btn--sm" type="button" aria-haspopup="dialog" @click="openSettingsFromPrompt">
+          {{ t('publication.promptAction') }}
+        </button>
+        <button
+          class="icon-btn nickname-prompt__close"
+          type="button"
+          :aria-label="t('common.close')"
+          @click="hideNicknamePrompt"
+        >
+          <Icon name="lucide:x" aria-hidden="true" />
+        </button>
+      </aside>
+    </Transition>
+  </Teleport>
 
   <dialog ref="dialog" class="publish-dialog" aria-labelledby="publish-dialog-title" @click.self="closeSettings">
     <form class="publish-dialog__content" novalidate @submit.prevent="saveSettings">

@@ -416,7 +416,10 @@
     "nicknameLabel": "Ton pseudo (facultatif)",
     "nicknameNote": "Laisse vide pour rester anonyme.",
     "autoPublish": "Ajouter automatiquement mes prochains tirages",
-    "save": "Enregistrer"
+    "save": "Enregistrer",
+    "promptLabel": "Ton pseudo dans les tirages",
+    "promptText": "Ton Pokémon est dans les derniers tirages, en anonyme.",
+    "promptAction": "Choisir un pseudo"
   },
   "legal": {
     "title": "Mentions légales",
