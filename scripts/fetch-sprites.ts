@@ -2,6 +2,8 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import sharp from 'sharp'
 import type { StoredPokedex, StoredPokemon } from '../server/data/storedPokedex'
+import type { Locale } from '../shared/types/pokemon'
+import { LOCALES } from '../shared/utils/localizedPages'
 import { POKEMON_COUNT, POKEMON_TYPES } from '../shared/utils/pokemon'
 import { generateShareFrames } from './shareFrames'
 
@@ -61,7 +63,15 @@ const toSpriteFromArtwork = (image: Buffer) =>
 const XML_ENTITIES: Record<string, string> = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }
 const escapeXml = (text: string) => text.replace(/[&<>"]/g, (character) => XML_ENTITIES[character] ?? character)
 
-function shareImageBackground({ id, fr: name, types }: StoredPokemon) {
+const SHARE_IMAGE_TEXTS: Record<Locale, { folder: string; number: string; tagline: string }> = {
+  fr: { folder: 'og', number: 'N°', tagline: 'Quel Pokémon se cache dans ta date ?' },
+  en: { folder: 'og-en', number: 'No.', tagline: 'Which Pokémon hides in your date?' },
+}
+
+function shareImageBackground(pokemon: StoredPokemon, locale: Locale) {
+  const { id, types } = pokemon
+  const name = pokemon[locale]
+  const texts = SHARE_IMAGE_TEXTS[locale]
   const [primaryType, secondaryType = primaryType] = types
   const primaryColor = POKEMON_TYPES[primaryType].color
   const secondaryColor = POKEMON_TYPES[secondaryType].color
@@ -74,16 +84,16 @@ function shareImageBackground({ id, fr: name, types }: StoredPokemon) {
   <rect width="1200" height="630" fill="#14162b"/>
   <rect width="1200" height="630" fill="url(#type)" opacity="0.55"/>
   <rect width="1200" height="630" fill="url(#halo)"/>
-  <text x="70" y="250" font-family="Menlo, monospace" font-size="44" font-weight="700" fill="#ffd23f">N° ${String(id).padStart(4, '0')}</text>
+  <text x="70" y="250" font-family="Menlo, monospace" font-size="44" font-weight="700" fill="#ffd23f">${texts.number} ${String(id).padStart(4, '0')}</text>
   <text x="70" y="340" font-family="Helvetica, Arial, sans-serif" font-size="${nameFontSize}" font-weight="800" fill="#f4f3ff">${escapeXml(name)}</text>
   <text x="70" y="520" font-family="Helvetica, Arial, sans-serif" font-size="30" font-weight="700" fill="#f4f3ff">Poké<tspan fill="#ffd23f">Date</tspan></text>
-  <text x="70" y="562" font-family="Helvetica, Arial, sans-serif" font-size="26" fill="#a9acd6">Quel Pokémon se cache dans ta date ?</text>
+  <text x="70" y="562" font-family="Helvetica, Arial, sans-serif" font-size="26" fill="#a9acd6">${texts.tagline}</text>
 </svg>`)
 }
 
-async function toShareImage(pokemon: StoredPokemon, artwork: Buffer) {
+async function toShareImage(pokemon: StoredPokemon, artwork: Buffer, locale: Locale) {
   const resizedArtwork = await sharp(artwork).resize(540, 540, { fit: 'contain', background: TRANSPARENT }).toBuffer()
-  return sharp(shareImageBackground(pokemon))
+  return sharp(shareImageBackground(pokemon, locale))
     .composite([{ input: resizedArtwork, left: 610, top: 45 }])
     .jpeg({ quality: 82, mozjpeg: true })
     .toBuffer()
@@ -97,10 +107,17 @@ async function downloadArtwork(id: number, shiny: boolean) {
   return artwork
 }
 
-async function generateShareImage(pokemon: StoredPokemon) {
-  const path = outputPath('sprites', 'og', `${pokemon.id}.jpg`)
-  if (existsSync(path)) return
-  writeOutput(path, await toShareImage(pokemon, await downloadArtwork(pokemon.id, false)))
+async function generateShareImages(pokemon: StoredPokemon) {
+  const missingLocales = LOCALES.filter(
+    (locale) => !existsSync(outputPath('sprites', SHARE_IMAGE_TEXTS[locale].folder, `${pokemon.id}.jpg`)),
+  )
+  if (!missingLocales.length) return
+  const artwork = await downloadArtwork(pokemon.id, false)
+  for (const locale of missingLocales)
+    writeOutput(
+      outputPath('sprites', SHARE_IMAGE_TEXTS[locale].folder, `${pokemon.id}.jpg`),
+      await toShareImage(pokemon, artwork, locale),
+    )
 }
 
 async function generateImages(id: number, shiny: boolean) {
@@ -125,7 +142,7 @@ async function generateCry(id: number) {
 }
 
 async function generatePokemonAssets(pokemon: StoredPokemon) {
-  await generateShareImage(pokemon)
+  await generateShareImages(pokemon)
   await generateImages(pokemon.id, false)
   await generateImages(pokemon.id, true)
   await generateCry(pokemon.id)
@@ -145,7 +162,7 @@ await Promise.all(
 await generateShareFrames(OUTPUT_DIR)
 
 console.info(
-  `OK : ${POKEMON_COUNT} Pokémon dans generated/sprites (art, mini, og), generated/cries et les fonds de partage dans generated/og`,
+  `OK : ${POKEMON_COUNT} Pokémon dans generated/sprites (art, mini, og, og-en), generated/cries et les fonds de partage dans generated/og`,
 )
 if (report.spritesBuiltFromArtwork)
   console.info(`Sprites fabriqués à partir de l'artwork : ${report.spritesBuiltFromArtwork}`)
