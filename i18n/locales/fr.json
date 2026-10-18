@@ -159,7 +159,10 @@
     "stepChallengeTitle": "Défie tes potes",
     "stepChallengeText": "Lance un {duel} et complète ton {pokedex} au fil des dates.",
     "stepChallengeDuel": "duel",
-    "faqTitle": "Questions fréquentes"
+    "faqTitle": "Questions fréquentes",
+    "dailyTitle": "Pokémon du jour : {name}",
+    "dailyText": "Le {date} donne le n° {number}. Reviens demain pour découvrir le suivant.",
+    "dailyTextShiny": "Le {date} donne le n° {number}, et en version shiny ! Reviens demain pour découvrir le suivant."
   },
   "faq": {
     "rule": {

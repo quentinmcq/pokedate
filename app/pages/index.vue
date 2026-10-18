@@ -43,10 +43,28 @@ const pokemonId = computed(() => (selectedDate.value ? pokemonIdFromDate(selecte
 const isShiny = computed(() => !!selectedDate.value && isShinyDate(selectedDate.value))
 const mirrorPokemonId = computed(() => (selectedDate.value ? mirrorPokemonIdForDate(selectedDate.value) : null))
 
-const [{ data: pokemon, error: pokemonError, refresh: retryPokemon }, { data: mirrorPokemon }] = await Promise.all([
+const todayInParis = useState('today-in-paris', () => todayInTimeZone('Europe/Paris'))
+const isTodayShiny = computed(() => isShinyDate(todayInParis.value))
+
+const [
+  { data: pokemon, error: pokemonError, refresh: retryPokemon },
+  { data: mirrorPokemon },
+  { data: pokemonOfTheDay },
+] = await Promise.all([
   usePokemonDetail(pokemonId),
   usePokemonDetail(mirrorPokemonId),
+  usePokemonDetail(() => pokemonIdFromDate(todayInParis.value)),
 ])
+
+const pokemonOfTheDayLink = computed(() =>
+  pokemonOfTheDay.value
+    ? `${pokemonPath(pokemonOfTheDay.value)}${isTodayShiny.value ? '?shiny=1' : ''}`
+    : localePath('/'),
+)
+const formattedToday = computed(() => {
+  const { day, month, year } = todayInParis.value
+  return `${padNumber(day)}/${padNumber(month)}/${year}`
+})
 
 const isNewDiscovery = ref(false)
 
@@ -226,6 +244,22 @@ usePageSeo({
       <p>{{ t('home.loadError') }}</p>
       <button class="btn btn--ghost btn--sm" type="button" @click="retryPokemon()">{{ t('common.retry') }}</button>
     </div>
+
+    <HighlightBanner
+      v-if="!selectedDate && pokemonOfTheDay"
+      class="pokemon-of-the-day"
+      :to="pokemonOfTheDayLink"
+      :image-src="artworkUrl(pokemonOfTheDay.id, isTodayShiny)"
+      icon="lucide:calendar-days"
+      :title="t('home.dailyTitle', { name: pokemonOfTheDay.name })"
+    >
+      {{
+        t(isTodayShiny ? 'home.dailyTextShiny' : 'home.dailyText', {
+          date: formattedToday,
+          number: pokemonOfTheDay.id,
+        })
+      }}
+    </HighlightBanner>
 
     <section class="section" aria-labelledby="how-it-works">
       <h2 id="how-it-works" class="section__title">{{ t('home.howTitle') }}</h2>

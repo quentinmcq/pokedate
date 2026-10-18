@@ -159,7 +159,10 @@
     "stepChallengeTitle": "Challenge your friends",
     "stepChallengeText": "Start a {duel} and fill your {pokedex} date after date.",
     "stepChallengeDuel": "duel",
-    "faqTitle": "Frequently asked questions"
+    "faqTitle": "Frequently asked questions",
+    "dailyTitle": "Pokémon of the day: {name}",
+    "dailyText": "{date} gives no. {number}. Come back tomorrow to discover the next one.",
+    "dailyTextShiny": "{date} gives no. {number}, in its shiny version! Come back tomorrow to discover the next one."
   },
   "faq": {
     "rule": {
