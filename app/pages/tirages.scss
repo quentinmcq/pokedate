@@ -1,10 +1,22 @@
 @use '../assets/scss/abstracts/functions' as *;
 @use '../assets/scss/abstracts/mixins' as *;
 
+.draws-title {
+  max-width: 720px;
+  margin: space(10) auto 0;
+  font-size: font-size('xl');
+}
+
+.draws-hint {
+  max-width: 720px;
+  margin: space(1) auto 0;
+  color: color('text-subtle');
+  font-size: font-size('sm');
+}
+
 .draws-empty {
-  margin: space(8) auto 0;
-  max-width: 40ch;
-  text-align: center;
+  margin: space(4) auto 0;
+  max-width: 720px;
   color: color('text-muted');
 }
 

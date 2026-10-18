@@ -1,0 +1,68 @@
+@use '../../assets/scss/abstracts/functions' as *;
+
+.activity {
+  max-width: 720px;
+  margin: space(6) auto 0;
+  padding: space(5);
+  border: 1px solid color-mix(in srgb, var(--color-highlight) 35%, var(--color-line));
+  border-radius: radius('xl');
+  background: color-mix(in srgb, var(--color-highlight) 7%, var(--color-surface-2));
+  text-align: center;
+
+  &__title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: space(2);
+    margin: 0 0 space(2);
+    font-size: font-size('lg');
+  }
+
+  &__numbers {
+    margin: 0;
+    color: color('text-muted');
+
+    b {
+      color: color('text');
+    }
+  }
+
+  &__sparkle {
+    margin-left: space(1);
+    color: color('highlight');
+    vertical-align: -0.1em;
+  }
+
+  &__favourite {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: space(1) space(2);
+    margin: space(3) 0 0;
+    color: color('text-muted');
+
+    img {
+      width: 40px;
+      height: 40px;
+      image-rendering: pixelated;
+    }
+
+    a {
+      color: color('highlight');
+      font-weight: weight('bold');
+    }
+  }
+
+  &__pokemon {
+    display: inline-flex;
+    align-items: center;
+    gap: space(2);
+    white-space: nowrap;
+  }
+
+  &__count {
+    font-family: var(--font-mono), monospace;
+    font-size: font-size('sm');
+  }
+}

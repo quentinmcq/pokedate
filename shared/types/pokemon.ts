@@ -84,3 +84,9 @@ export interface PublicDraw {
   nickname: string
   createdAt: string
 }
+
+export interface DrawsActivity {
+  todayReveals: number
+  todayShiny: number
+  weekFavourite: (PokemonSummary & { count: number }) | null
+}

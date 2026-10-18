@@ -24,8 +24,9 @@ export function useIsCountedVisit() {
 
 export function useTrackEvent() {
   const isCountedVisit = useIsCountedVisit()
-  return (name: TrackedEvent) => {
+  return (name: TrackedEvent, revealedPokemon?: { pokemonId: number; shiny: boolean }) => {
     if (!isCountedVisit()) return
-    navigator.sendBeacon?.('/api/events', new Blob([JSON.stringify({ name })], { type: 'application/json' }))
+    const payload = JSON.stringify({ name, ...revealedPokemon })
+    navigator.sendBeacon?.('/api/events', new Blob([payload], { type: 'application/json' }))
   }
 }

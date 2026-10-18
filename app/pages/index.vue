@@ -63,7 +63,7 @@ async function revealPokemonFor(date: CalendarDate, { isRandom = false } = {}) {
   formError.value = ''
   invalidDatePart.value = null
   revealCount.value++
-  trackEvent(isRandom ? 'random' : 'reveal')
+  trackEvent(isRandom ? 'random' : 'reveal', { pokemonId: pokemonIdFromDate(date), shiny: isShinyDate(date) })
   await router.push({ query: { date: toIsoDate(date), ...(isRandom ? { hasard: '1' } : {}) } })
   await scrollToResult()
 }

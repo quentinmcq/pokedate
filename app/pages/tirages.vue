@@ -1,12 +1,19 @@
 <script setup lang="ts">
-import type { PublicDraw } from '#shared/types/pokemon'
+import type { DrawsActivity, PublicDraw } from '#shared/types/pokemon'
 
 const REFRESH_INTERVAL_MS = 30_000
 
 const { resetAccent } = usePageAccent()
 resetAccent()
 
-const { data: draws, error, refresh } = await useFetch<PublicDraw[]>('/api/draws', { key: 'public-draws' })
+const [{ data: draws, error, refresh: refreshDraws }, { data: activity, refresh: refreshActivity }] = await Promise.all(
+  [
+    useFetch<PublicDraw[]>('/api/draws', { key: 'public-draws' }),
+    useFetch<DrawsActivity>('/api/activity', { key: 'draws-activity' }),
+  ],
+)
+
+const refreshPage = () => Promise.all([refreshDraws(), refreshActivity()])
 
 const timeFormat = new Intl.DateTimeFormat('fr-FR', {
   timeZone: 'Europe/Paris',
@@ -19,13 +26,13 @@ const drawnAt = (draw: PublicDraw) => timeFormat.format(new Date(draw.createdAt)
 
 let refreshTimer: ReturnType<typeof setInterval> | undefined
 onMounted(() => {
-  refreshTimer = setInterval(() => document.visibilityState === 'visible' && refresh(), REFRESH_INTERVAL_MS)
+  refreshTimer = setInterval(() => document.visibilityState === 'visible' && refreshPage(), REFRESH_INTERVAL_MS)
 })
 onBeforeUnmount(() => clearInterval(refreshTimer))
 
 usePageSeo({
   title: 'Derniers tirages',
-  description: 'Les derniers Pokémon révélés et publiés par les joueurs de PokéDate.',
+  description: "L'activité du jour sur PokéDate et les tirages partagés par les joueurs.",
   noindex: true,
 })
 </script>
@@ -34,11 +41,13 @@ usePageSeo({
   <div>
     <div class="hero">
       <h1>Derniers tirages</h1>
-      <p class="lead">
-        Les Pokémon que les joueurs ont choisi de publier, du plus récent au plus ancien. Ils restent ici 7 jours au
-        plus.
-      </p>
+      <p class="lead">L'activité du jour et les tirages que les joueurs ont choisi de partager.</p>
     </div>
+
+    <DrawsActivity v-if="activity" :activity="activity" />
+
+    <h2 class="draws-title">Tirages partagés</h2>
+    <p class="draws-hint">Du plus récent au plus ancien, 7 jours au plus.</p>
 
     <p v-if="error" class="draws-empty">Les derniers tirages sont indisponibles pour le moment.</p>
     <p v-else-if="!draws?.length" class="draws-empty">

@@ -134,6 +134,18 @@ test.describe('Mesure d’audience', () => {
     expect(await page.evaluate(() => localStorage.getItem('pokedate.stats-off'))).toBeNull()
   })
 
+  test('affiche l’activité du jour sur la page des tirages', async ({ page, request, baseURL }) => {
+    const headers = { origin: baseURL!, 'cf-connecting-ip': `e2e-activity-${Date.now()}` }
+    for (let reveal = 0; reveal < 3; reveal++)
+      await request.post('/api/events', { data: { name: 'reveal', pokemonId: 25, shiny: reveal === 0 }, headers })
+    await gotoHydrated(page, '/tirages')
+    const activity = page.getByRole('region', { name: "Aujourd'hui sur PokéDate" })
+    await expect(activity).toContainText('Pokémon révélés')
+    await expect(activity).toContainText('shiny')
+    await expect(activity).toContainText('Le plus tiré cette semaine')
+    await expect(page.getByRole('heading', { name: 'Tirages partagés' })).toBeVisible()
+  })
+
   test('compte les actions connues et refuse le reste', { tag: '@server' }, async ({ request, baseURL }) => {
     const headers = { origin: baseURL! }
     expect((await request.post('/api/events', { data: { name: 'duel' }, headers })).status()).toBe(204)
