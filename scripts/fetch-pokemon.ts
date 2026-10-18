@@ -92,6 +92,13 @@ const cleanFlavorText = (text: string) =>
     .replace(/\s+/g, ' ')
     .trim()
 
+// French typography: no line break inside « » or before ? ! : ;
+const withFrenchSpaces = (text: string) =>
+  text
+    .replace(/« +/g, '«\u00a0')
+    .replace(/ +»/g, '\u00a0»')
+    .replace(/ +([?!:;])/g, '\u00a0$1')
+
 const idFromResourceUrl = (url: string) => Number(url.split('/').filter(Boolean).pop())
 
 const GENERATION_NUMBERS: Record<string, number> = {
@@ -211,7 +218,7 @@ function toStoredPokemon({ pokemon, species }: { pokemon: ApiPokemon; species: A
       is_hidden ? 1 : 0,
     ]),
     abEn: sortedAbilities.map(({ ability }) => englishAbilityNames.get(ability.url) ?? ability.name),
-    desc: cleanFlavorText(flavorText),
+    desc: withFrenchSpaces(cleanFlavorText(flavorText)),
     descEn: cleanFlavorText(englishFlavorTexts.at(-1)?.flavor_text ?? ''),
     genusEn: englishGenus,
     gen: GENERATION_NUMBERS[species.generation.name] ?? 0,
@@ -231,7 +238,7 @@ const idsWithoutFrenchDescription = new Set(
 console.info('Descriptions françaises manquantes (Poképédia)…')
 for (const pokemon of storedPokemon.filter((stored) => idsWithoutFrenchDescription.has(stored.id))) {
   const description = await frenchDescriptionFromPokepedia(pokemon.fr)
-  if (description) pokemon.desc = description
+  if (description) pokemon.desc = withFrenchSpaces(description)
   else console.info(`  pas de description française pour #${pokemon.id} ${pokemon.fr}`)
   await new Promise((resolve) => setTimeout(resolve, POKEPEDIA_DELAY_MS))
 }
