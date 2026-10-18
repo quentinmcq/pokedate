@@ -161,6 +161,7 @@
   list-style: none;
 
   &__row {
+    position: relative;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
@@ -182,6 +183,35 @@
   }
 
   &__remove {
+    position: absolute;
+    top: space(2);
+    right: space(2);
     font-size: 1rem;
+
+    &--hidden {
+      visibility: hidden;
+    }
   }
+}
+
+.player-row-enter-active,
+.player-row-leave-active {
+  transition:
+    opacity duration('medium') ease('standard'),
+    transform duration('medium') ease('standard');
+}
+
+.player-row-enter-from,
+.player-row-leave-to {
+  opacity: 0;
+  transform: translateY(-8px);
+}
+
+.player-row-leave-active {
+  position: absolute;
+  width: 100%;
+}
+
+.player-row-move {
+  transition: transform duration('medium') ease('standard');
 }

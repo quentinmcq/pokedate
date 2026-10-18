@@ -204,7 +204,7 @@ usePageSeo({
       <h2 id="tournament-form-title" class="tournament-form__title">
         {{ ranking.length ? 'Un nouveau tournoi ?' : 'Les joueurs' }}
       </h2>
-      <ol class="players">
+      <TransitionGroup tag="ol" name="player-row" class="players">
         <li v-for="(draft, index) in drafts" :key="draft.key" class="players__row">
           <span class="players__number" aria-hidden="true">{{ index + 1 }}</span>
           <label class="visually-hidden" :for="`player-name-${draft.key}`">Prénom du joueur {{ index + 1 }}</label>
@@ -224,8 +224,9 @@ usePageSeo({
             :invalid-part="invalidPart?.draftKey === draft.key ? invalidPart.part : null"
           />
           <button
-            v-if="canRemovePlayer"
             class="icon-btn players__remove"
+            :class="{ 'players__remove--hidden': !canRemovePlayer }"
+            :disabled="!canRemovePlayer"
             type="button"
             :aria-label="`Retirer le joueur ${index + 1}`"
             @click="removePlayer(draft.key)"
@@ -233,7 +234,7 @@ usePageSeo({
             <Icon name="lucide:x" aria-hidden="true" />
           </button>
         </li>
-      </ol>
+      </TransitionGroup>
       <button v-if="canAddPlayer" class="btn btn--ghost btn--sm players__add" type="button" @click="addPlayer">
         <Icon name="lucide:user-plus" aria-hidden="true" /> Ajouter un joueur
       </button>

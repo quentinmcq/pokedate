@@ -173,6 +173,28 @@ test.describe('Tournoi', () => {
     await expect(page.locator('.site-nav .pill')).toContainText('3')
   })
 
+  test('remonte jusqu’au classement dès le premier lancement', async ({ page }) => {
+    await page.route('**/api/pokemon/**', async (route) => {
+      await new Promise((resolve) => setTimeout(resolve, 1500))
+      await route.continue()
+    })
+    await gotoHydrated(page, '/tournoi')
+    const dates = [
+      ['12', '03', '1995'],
+      ['25', '07', '1998'],
+      ['17', '10', '2026'],
+    ] as const
+    for (const [index, [day, month, year]] of dates.entries())
+      await fillDate(page, `.players__row >> nth=${index}`, day, month, year)
+    await page.getByRole('button', { name: /Lancer le tournoi/ }).click()
+    await expect(page.locator('.ranking__row')).toHaveCount(3, { timeout: 8000 })
+    await expect
+      .poll(() =>
+        page.evaluate(() => Math.round(document.querySelector('.tournament-result')!.getBoundingClientRect().top)),
+      )
+      .toBeLessThan(120)
+  })
+
   test('ajoute et retire des joueurs entre 3 et 8', async ({ page }) => {
     await gotoHydrated(page, '/tournoi')
     await expect(page.getByRole('button', { name: /Retirer le joueur/ })).toHaveCount(0)
