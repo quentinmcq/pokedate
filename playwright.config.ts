@@ -9,7 +9,7 @@ export default defineConfig({
   fullyParallel: true,
   forbidOnly: isCI,
   retries: isCI ? 1 : 0,
-  // CI runs desktop and mobile in two parallel jobs on 2-core runners.
+  // CI runs mobile and two desktop shards in parallel jobs on 2-core runners.
   workers: isCI ? 2 : undefined,
   reporter: isCI ? [['github'], ['html', { open: 'never' }]] : [['list']],
   use: {

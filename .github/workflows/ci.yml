@@ -28,15 +28,19 @@ jobs:
       - run: bun run test:unit
 
   e2e:
-    name: Tests fonctionnels (${{ matrix.project }})
+    name: Tests fonctionnels (${{ matrix.project }} ${{ matrix.shard }})
     runs-on: ubuntu-latest
     concurrency:
-      group: e2e-${{ github.ref }}-${{ matrix.project }}
+      group: e2e-${{ github.ref }}-${{ matrix.project }}-${{ matrix.shard }}
       cancel-in-progress: true
     strategy:
       fail-fast: false
+      # The desktop suite is the longest: two shards run it on twice as many 2-core runners.
       matrix:
-        project: [desktop, mobile]
+        include:
+          - { project: desktop, shard: 1/2 }
+          - { project: desktop, shard: 2/2 }
+          - { project: mobile, shard: 1/1 }
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
@@ -48,14 +52,17 @@ jobs:
         with:
           path: generated
           key: sprites-${{ hashFiles('scripts/fetch-sprites.ts', 'server/data/pokemon.json') }}
+          # The script skips the files that already exist: an older cache leaves only the new ones to fetch.
+          # Rename the prefix in both keys to regenerate everything when existing images must change.
+          restore-keys: sprites-
       - run: bun run sprites
       - run: bunx playwright install --with-deps --only-shell chromium
       - run: bun run build
-      - run: bunx playwright test --project=${{ matrix.project }}
+      - run: bunx playwright test --project=${{ matrix.project }} --shard=${{ matrix.shard }}
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: failure()
         with:
-          name: playwright-report-${{ matrix.project }}
+          name: playwright-report-${{ matrix.project }}-${{ strategy.job-index }}
           path: playwright-report
           retention-days: 7
 
@@ -81,6 +88,9 @@ jobs:
         with:
           path: generated
           key: sprites-${{ hashFiles('scripts/fetch-sprites.ts', 'server/data/pokemon.json') }}
+          # The script skips the files that already exist: an older cache leaves only the new ones to fetch.
+          # Rename the prefix in both keys to regenerate everything when existing images must change.
+          restore-keys: sprites-
       - run: bun run sprites
       - run: bun run build
       - run: bunx wrangler deploy
