@@ -6,7 +6,7 @@
   --bottom-nav-space: 0px;
 
   @media (max-width: map.get(t.$breakpoints, 'small')) {
-    --bottom-nav-space: calc(65px + env(safe-area-inset-bottom));
+    --bottom-nav-space: calc(82px + env(safe-area-inset-bottom));
   }
 
   @each $name, $value in t.$colors {

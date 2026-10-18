@@ -79,35 +79,35 @@
 
   @include bp(small) {
     position: fixed;
-    inset: auto 0 0;
+    inset: auto space(3) calc(#{space(2)} + env(safe-area-inset-bottom));
     z-index: z('header');
     justify-content: space-around;
-    gap: 0;
-    padding: space(1) space(2) calc(#{space(1)} + env(safe-area-inset-bottom));
-    border: 0;
-    border-top: 1px solid color('line');
-    border-radius: 0;
-    background: color-mix(in srgb, var(--color-surface-1) 92%, transparent);
-    backdrop-filter: blur(14px);
+    gap: 2px;
+    padding: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 28px;
+    background: color-mix(in srgb, var(--color-surface-1) 72%, transparent);
+    -webkit-backdrop-filter: blur(22px) saturate(180%);
+    backdrop-filter: blur(22px) saturate(180%);
+    box-shadow:
+      0 12px 32px rgba(0, 0, 0, 0.45),
+      inset 0 1px 0 rgba(255, 255, 255, 0.16);
 
     &__link {
+      position: relative;
       flex: 1;
       flex-direction: column;
       justify-content: center;
       gap: 2px;
-      min-height: 56px;
+      min-height: 52px;
       padding: space(1);
-      border-radius: radius('lg');
+      border-radius: 22px;
       font-size: font-size('2xs');
 
       &.is-active {
-        background: transparent;
+        background: rgba(255, 255, 255, 0.12);
         color: color('highlight');
       }
-    }
-
-    &__link {
-      position: relative;
     }
 
     &__icon {
