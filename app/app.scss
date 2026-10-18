@@ -7,11 +7,14 @@
   transform: translate(-50%, calc(100% + 40px + var(--bottom-nav-space)));
   background: color('text');
   color: color('on-light');
+  width: max-content;
+  max-width: min(420px, calc(100% - #{space(8)}));
   padding: space(3) space(5);
-  border-radius: radius('pill');
+  border-radius: radius('lg');
   font-weight: weight('bold');
+  line-height: 1.4;
+  text-align: center;
   z-index: z('toast');
-  max-width: calc(100% - 32px);
   visibility: hidden;
   transition:
     transform 0.35s ease('spring'),

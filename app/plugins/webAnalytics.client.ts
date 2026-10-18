@@ -11,11 +11,7 @@ export default defineNuxtPlugin((nuxtApp) => {
     const preference = router.currentRoute.value.query[STATS_QUERY_KEY]
     if (preference !== 'off' && preference !== 'on') return
     setStatsOptOut(preference === 'off')
-    showToast(
-      preference === 'off'
-        ? 'Tes visites ne sont plus comptées sur ce navigateur'
-        : 'Tes visites sont de nouveau comptées',
-    )
+    showToast(preference === 'off' ? 'Tes visites ne sont plus comptées ici' : 'Tes visites sont de nouveau comptées')
     router.replace({ query: { ...router.currentRoute.value.query, [STATS_QUERY_KEY]: undefined } })
   }
 
