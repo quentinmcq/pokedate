@@ -130,7 +130,6 @@ usePageSeo({
 
 <template>
   <div>
-    <ChallengeSwitch />
     <div class="hero" :class="{ 'tournament-heading': ranking.length }">
       <h1>Tournoi d'anniversaires</h1>
       <p v-if="!ranking.length" class="lead">

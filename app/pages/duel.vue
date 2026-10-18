@@ -150,7 +150,6 @@ usePageSeo({
 
 <template>
   <div>
-    <ChallengeSwitch />
     <div v-if="hasResult" class="hero duel-heading">
       <h1>Duel d'anniversaires</h1>
     </div>

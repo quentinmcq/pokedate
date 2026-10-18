@@ -1,18 +1,39 @@
 @use '../../assets/scss/abstracts/functions' as *;
 
 .challenge-switch {
-  display: flex;
+  --switch-padding: #{space(1)};
+
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   width: fit-content;
   margin: space(6) auto 0;
-  padding: space(1);
-  gap: space(1);
+  padding: var(--switch-padding);
   border: 1px solid color('line');
   border-radius: radius('pill');
   background: rgba(0, 0, 0, 0.25);
 
+  &__indicator {
+    position: absolute;
+    top: var(--switch-padding);
+    bottom: var(--switch-padding);
+    left: var(--switch-padding);
+    width: calc(50% - var(--switch-padding));
+    border-radius: radius('pill');
+    background: color('highlight');
+    transform: translateX(calc(var(--active-index) * 100%));
+    transition: transform duration('medium') ease('standard');
+
+    @media (prefers-reduced-motion: reduce) {
+      transition: none;
+    }
+  }
+
   &__option {
+    position: relative;
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 6px;
     min-height: 40px;
     padding: space(2) space(4);
@@ -20,16 +41,14 @@
     font-weight: weight('semibold');
     color: color('text-muted');
     text-decoration: none;
-    transition:
-      color duration('base'),
-      background duration('base');
+    white-space: nowrap;
+    transition: color duration('medium') ease('standard');
 
     &:hover {
       color: color('text');
     }
 
     &.is-active {
-      background: color('highlight');
       color: color('on-light');
     }
   }
