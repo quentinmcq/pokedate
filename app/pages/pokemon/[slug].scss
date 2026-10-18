@@ -37,11 +37,12 @@
     display: flex;
     align-items: center;
     gap: space(2);
+    flex: 0 1 50%;
+    min-width: 0;
     @include surface(2);
     border-radius: radius('pill');
     padding: space(2) space(4) space(2) space(2);
     text-decoration: none;
-    font-weight: weight('semibold');
     min-height: $tap-target;
     transition: border-color duration('base');
 
@@ -50,21 +51,37 @@
     }
 
     img {
+      flex: none;
       width: 40px;
       height: 40px;
       image-rendering: pixelated;
     }
+  }
 
-    span {
-      color: color('text-muted');
-      font-family: var(--font-mono), monospace;
-      font-size: font-size('xs');
-    }
+  &__text {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    line-height: 1.25;
+  }
+
+  &__number {
+    color: color('text-muted');
+    font-family: var(--font-mono), monospace;
+    font-size: font-size('xs');
+  }
+
+  // A long name such as Serpente-Eau is cut with an ellipsis instead of breaking out of its pill.
+  &__name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   &__next {
     margin-left: auto;
     flex-direction: row-reverse;
+    text-align: right;
     padding: space(2) space(2) space(2) space(4) !important;
   }
 }

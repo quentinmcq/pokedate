@@ -276,7 +276,7 @@
     "monthRule": "the month ends with {digit} ({choices});",
     "singleMonthRule": "the month is {month};",
     "yearRule": "the year ends with {digit} ({choices}).",
-    "bonus": "{name} is a bonus Pokémon: it only appears with a {mirrorDate}, when the day and the month are the same (04/04, 12/12…). The day and the year decide which of the 25 bonus Pokémon appears.",
+    "bonus": "{name} is a bonus Pokémon: it only appears with a {mirrorDate}, when the day and the month are the same (04/04, 12/12…).",
     "mirrorDate": "mirror date",
     "next": "Next date",
     "today": "Today!",

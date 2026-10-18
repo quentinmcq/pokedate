@@ -78,11 +78,17 @@ usePageSeo({
     <nav class="pager" :aria-label="t('pokemonPage.neighbours')">
       <NuxtLinkLocale v-if="pokemon.previous" :to="pokemonPath(pokemon.previous)" rel="prev">
         <img :src="spriteUrl(pokemon.previous.id)" alt="" width="40" height="40" loading="lazy" />
-        <span>← #{{ pokemon.previous.id }}</span> {{ pokemon.previous.name }}
+        <span class="pager__text"
+          ><span class="pager__number">← #{{ pokemon.previous.id }}</span
+          ><b class="pager__name">{{ pokemon.previous.name }}</b></span
+        >
       </NuxtLinkLocale>
       <NuxtLinkLocale v-if="pokemon.next" class="pager__next" :to="pokemonPath(pokemon.next)" rel="next">
         <img :src="spriteUrl(pokemon.next.id)" alt="" width="40" height="40" loading="lazy" />
-        <span>#{{ pokemon.next.id }} →</span> {{ pokemon.next.name }}
+        <span class="pager__text"
+          ><span class="pager__number">#{{ pokemon.next.id }} →</span
+          ><b class="pager__name">{{ pokemon.next.name }}</b></span
+        >
       </NuxtLinkLocale>
     </nav>
   </div>
