@@ -83,3 +83,13 @@
     line-height: 1.6;
   }
 }
+
+.actions__break {
+  display: none;
+
+  @include bp(small) {
+    display: block;
+    flex-basis: 100%;
+    height: 0;
+  }
+}

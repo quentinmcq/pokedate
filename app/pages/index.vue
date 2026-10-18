@@ -146,6 +146,7 @@ usePageSeo({
       <p id="date-error" class="field-error" role="alert">{{ formError }}</p>
       <div class="actions">
         <button class="btn btn--primary" type="submit">Révéler mon Pokémon</button>
+        <span class="actions__break" aria-hidden="true" />
         <button class="btn btn--ghost" type="button" @click="revealToday">Aujourd'hui</button>
         <button class="btn btn--ghost" type="button" @click="revealRandomDate">
           <Icon name="lucide:dices" aria-hidden="true" /> Au hasard
