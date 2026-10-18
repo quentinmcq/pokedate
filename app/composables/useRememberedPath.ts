@@ -1,12 +1,17 @@
-type RememberedSection = 'home' | 'challenges'
+type RememberedSection = 'home' | 'challenges' | 'pokedex'
 
 const SECTION_PATHS: Record<RememberedSection, readonly string[]> = {
   home: ['/'],
   challenges: ['/duel', '/tournoi'],
+  pokedex: ['/pokedex', '/pokemon'],
 }
 
 const useRememberedPaths = () =>
-  useState<Record<RememberedSection, string>>('remembered-paths', () => ({ home: '/', challenges: '/duel' }))
+  useState<Record<RememberedSection, string>>('remembered-paths', () => ({
+    home: '/',
+    challenges: '/duel',
+    pokedex: '/pokedex',
+  }))
 
 export const isSectionPath = (section: RememberedSection, path: string) => SECTION_PATHS[section].includes(path)
 

@@ -5,6 +5,7 @@ const route = useRoute()
 const { caughtCount } = usePokedex()
 const homePath = useRememberedPath('home')
 const challengesPath = useRememberedPath('challenges')
+const pokedexPath = useRememberedPath('pokedex')
 
 const navItems = computed(() => [
   {
@@ -21,7 +22,7 @@ const navItems = computed(() => [
   },
   {
     label: 'Pokédex',
-    to: '/pokedex',
+    to: pokedexPath.value,
     icon: 'lucide:book-open',
     isActive: route.path === '/pokedex' || route.path.startsWith('/pokemon'),
     showsCaughtCount: true,

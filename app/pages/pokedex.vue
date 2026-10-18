@@ -3,6 +3,7 @@ import type { Discoveries } from '~/composables/usePokedex'
 
 const { discoveries, seenCount, caughtCount, shinyCount, isLoaded, discoveryStateOf } = usePokedex()
 const { resetAccent } = usePageAccent()
+rememberCurrentPath('pokedex')
 resetAccent()
 
 const { data: entries } = await usePokedexEntries()
@@ -67,9 +68,6 @@ usePageSeo({
           }}<template v-if="shinyCount">
             · {{ shinyCount }} shiny <Icon name="lucide:sparkles" aria-hidden="true"
           /></template>
-        </p>
-        <p class="dex-browse">
-          <NuxtLink to="/pokemon" class="text-link">Parcourir les 1025 Pokémon</NuxtLink>
         </p>
         <label class="toggle"
           ><input v-model="showOnlyDiscovered" type="checkbox" /> Masquer les Pokémon jamais vus</label

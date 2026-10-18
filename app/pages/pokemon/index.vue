@@ -2,6 +2,7 @@
 import type { TypeKey } from '#shared/types/pokemon'
 
 const { resetAccent } = usePageAccent()
+rememberCurrentPath('pokedex')
 resetAccent()
 
 const { data: entries } = await usePokedexEntries()

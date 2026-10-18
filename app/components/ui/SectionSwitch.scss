@@ -1,6 +1,7 @@
 @use '../../assets/scss/abstracts/functions' as *;
+@use '../../assets/scss/abstracts/mixins' as *;
 
-.challenge-switch {
+.section-switch {
   --switch-padding: #{space(1)};
 
   position: relative;
@@ -50,6 +51,17 @@
 
     &.is-active {
       color: color('on-light');
+    }
+
+    @include bp(phone) {
+      padding: space(2) space(3);
+      font-size: font-size('sm');
+    }
+  }
+
+  &__icon {
+    @include bp(phone) {
+      display: none;
     }
   }
 }
