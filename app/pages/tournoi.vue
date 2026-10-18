@@ -84,26 +84,35 @@ const scrollToResult = useScrollToResult(resultSection)
 
 const canAddPlayer = computed(() => drafts.value.length < TOURNAMENT_PLAYER_LIMITS.max)
 const canRemovePlayer = computed(() => drafts.value.length > TOURNAMENT_PLAYER_LIMITS.min)
-const PLAYER_ROW_GAP_PX = 12
-
 function collapsePlayerRow(element: Element, done: () => void) {
   const row = element as HTMLElement
   if (matchMedia('(prefers-reduced-motion: reduce)').matches) return done()
+  const style = getComputedStyle(row)
+  const FOLDED_BOX_PROPERTIES = [
+    'height',
+    'paddingTop',
+    'paddingBottom',
+    'marginBottom',
+    'borderTopWidth',
+    'borderBottomWidth',
+  ] as const
   row.style.overflow = 'hidden'
   row
     .animate(
       [
-        { height: `${row.offsetHeight}px`, opacity: 1, transform: 'scale(1)' },
         {
-          height: '0px',
-          paddingTop: '0px',
-          paddingBottom: '0px',
-          marginBottom: `-${PLAYER_ROW_GAP_PX}px`,
+          ...Object.fromEntries(FOLDED_BOX_PROPERTIES.map((property) => [property, style[property]])),
+          height: `${row.offsetHeight}px`,
+          opacity: 1,
+          transform: 'scale(1)',
+        },
+        {
+          ...Object.fromEntries(FOLDED_BOX_PROPERTIES.map((property) => [property, '0px'])),
           opacity: 0,
           transform: 'scale(0.96)',
         },
       ],
-      { duration: 450, easing: 'cubic-bezier(0.2, 0, 0, 1)' },
+      { duration: 450, easing: 'cubic-bezier(0.2, 0, 0, 1)', fill: 'forwards' },
     )
     .finished.then(done, done)
 }
