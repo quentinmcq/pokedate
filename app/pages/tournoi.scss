@@ -138,7 +138,7 @@
 
 .tournament-form {
   max-width: 720px;
-  margin: space(8) auto 0;
+  margin: space(5) auto 0;
   text-align: center;
 
   &--rematch {
@@ -176,13 +176,43 @@
   }
 
   &__number {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: color('highlight');
+    color: color('on-light');
     font-family: var(--font-mono), monospace;
+    font-size: font-size('sm');
     font-weight: weight('bold');
-    color: color('highlight');
   }
 
+  // Lighter than a heading, so it reads as a field to fill in.
   &__name {
     max-width: 180px;
+    font-size: font-size('md');
+    font-weight: weight('semibold');
+    border-bottom-style: solid;
+  }
+
+  // On phones the number sits on the left, the name and the date stacked beside it.
+  @include bp(small) {
+    &__row {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: space(2) space(3);
+      padding: space(3) space(10) space(3) space(3);
+    }
+
+    &__number {
+      grid-row: span 2;
+    }
+
+    &__name {
+      max-width: none;
+    }
   }
 
   &__remove {
