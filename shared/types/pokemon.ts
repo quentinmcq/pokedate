@@ -47,9 +47,10 @@ export interface PokemonSummary {
 
 export interface PokedexEntry extends PokemonSummary {
   types: PokemonTypes
+  rarity?: Exclude<Rarity, null>
 }
 
-export interface PokemonDetail extends PokedexEntry {
+export interface PokemonDetail extends Omit<PokedexEntry, 'rarity'> {
   otherLanguageName: string
   genus: string
   heightMeters: number

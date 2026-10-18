@@ -13,7 +13,8 @@ function toSummary(stored: StoredPokemon, locale: Locale): PokemonSummary {
 }
 
 function toEntry(stored: StoredPokemon, locale: Locale): PokedexEntry {
-  return { ...toSummary(stored, locale), types: stored.types }
+  const rarity = RARITY_BY_CODE[stored.rare]
+  return { ...toSummary(stored, locale), types: stored.types, ...(rarity ? { rarity } : {}) }
 }
 
 const findStored = (id: number) => (Number.isInteger(id) ? storedPokemon[id - 1] : undefined)
@@ -28,7 +29,8 @@ function toDetail(stored: StoredPokemon, locale: Locale): PokemonDetail {
   const evolutionIds = evolutionChains[stored.evo] ?? [[stored.id]]
   const isEnglish = locale === 'en'
   return {
-    ...toEntry(stored, locale),
+    ...toSummary(stored, locale),
+    types: stored.types,
     otherLanguageName: stored[OTHER_LOCALE[locale]],
     genus: isEnglish ? stored.genusEn : stored.genus,
     heightMeters: stored.h,
