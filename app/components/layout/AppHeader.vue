@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { ComponentPublicInstance } from 'vue'
+
 const route = useRoute()
 const { caughtCount } = usePokedex()
 const homePath = useRememberedPath('home')
@@ -26,6 +28,31 @@ const navItems = computed(() => [
   },
   { label: 'Tirages', to: '/tirages', icon: 'lucide:radio-tower', isActive: route.path === '/tirages' },
 ])
+
+const nav = useTemplateRef<HTMLElement>('nav')
+const navLinks = useTemplateRef<ComponentPublicInstance[]>('navLinks')
+const indicator = ref<{ left: number; width: number } | null>(null)
+const isIndicatorAnimated = ref(false)
+
+function placeIndicator() {
+  const activeIndex = navItems.value.findIndex((item) => item.isActive)
+  const activeLink = navLinks.value?.[activeIndex]?.$el as HTMLElement | undefined
+  indicator.value = activeLink ? { left: activeLink.offsetLeft, width: activeLink.offsetWidth } : null
+}
+
+let navResizeObserver: ResizeObserver | undefined
+onMounted(() => {
+  placeIndicator()
+  // The first placement is instant; only later moves slide.
+  requestAnimationFrame(() => requestAnimationFrame(() => (isIndicatorAnimated.value = true)))
+  navResizeObserver = new ResizeObserver(placeIndicator)
+  if (nav.value) navResizeObserver.observe(nav.value)
+})
+onBeforeUnmount(() => navResizeObserver?.disconnect())
+watch(
+  () => route.path,
+  () => nextTick(placeIndicator),
+)
 </script>
 
 <template>
@@ -34,9 +61,16 @@ const navItems = computed(() => [
       <PokeBall class="logo__ball" />
       <span>Poké<b>Date</b></span>
     </NuxtLink>
-    <nav class="site-nav" aria-label="Navigation principale">
+    <nav ref="nav" class="site-nav" :class="{ 'site-nav--measured': indicator }" aria-label="Navigation principale">
+      <span
+        class="site-nav__indicator"
+        :class="{ 'site-nav__indicator--animated': isIndicatorAnimated }"
+        :style="indicator ? { transform: `translateX(${indicator.left}px)`, width: `${indicator.width}px` } : undefined"
+        aria-hidden="true"
+      />
       <NuxtLink
         v-for="item in navItems"
+        ref="navLinks"
         :key="item.label"
         :to="item.to"
         class="site-nav__link"

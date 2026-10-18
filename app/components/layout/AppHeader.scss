@@ -35,12 +35,41 @@
 }
 
 .site-nav {
+  --nav-padding: #{space(1)};
+
+  position: relative;
   display: flex;
   gap: space(1);
   background: rgba(0, 0, 0, 0.25);
-  padding: space(1);
+  padding: var(--nav-padding);
   border-radius: radius('pill');
   border: 1px solid color('line');
+
+  &__indicator {
+    position: absolute;
+    top: var(--nav-padding);
+    bottom: var(--nav-padding);
+    left: 0;
+    width: 0;
+    border-radius: radius('pill');
+    background: color('text');
+    opacity: 0;
+    pointer-events: none;
+
+    .site-nav--measured & {
+      opacity: 1;
+    }
+
+    &--animated {
+      transition:
+        transform duration('medium') ease('standard'),
+        width duration('medium') ease('standard');
+
+      @media (prefers-reduced-motion: reduce) {
+        transition: none;
+      }
+    }
+  }
 
   &__link {
     display: flex;
@@ -53,8 +82,9 @@
     color: color('text-muted');
     text-decoration: none;
     white-space: nowrap;
+    position: relative;
     transition:
-      color duration('base'),
+      color duration('medium') ease('standard'),
       background duration('base');
 
     &:hover {
@@ -64,6 +94,10 @@
     &.is-active {
       background: color('text');
       color: color('on-light');
+    }
+
+    .site-nav--measured &.is-active {
+      background: transparent;
     }
   }
 
@@ -83,7 +117,9 @@
     z-index: z('header');
     justify-content: space-around;
     gap: 2px;
-    padding: 6px;
+    --nav-padding: 6px;
+
+    padding: var(--nav-padding);
     border: 1px solid rgba(255, 255, 255, 0.14);
     border-radius: 28px;
     background: color-mix(in srgb, var(--color-surface-1) 72%, transparent);
@@ -108,6 +144,11 @@
         background: rgba(255, 255, 255, 0.12);
         color: color('highlight');
       }
+    }
+
+    &__indicator {
+      border-radius: 22px;
+      background: rgba(255, 255, 255, 0.12);
     }
 
     &__icon {
