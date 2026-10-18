@@ -125,9 +125,7 @@
     background: color-mix(in srgb, var(--color-surface-1) 72%, transparent);
     -webkit-backdrop-filter: blur(22px) saturate(180%);
     backdrop-filter: blur(22px) saturate(180%);
-    box-shadow:
-      0 12px 32px rgba(0, 0, 0, 0.45),
-      inset 0 1px 0 rgba(255, 255, 255, 0.16);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
 
     &__link {
       position: relative;
