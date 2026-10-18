@@ -137,6 +137,7 @@ export default defineNuxtConfig({
     '/api/**': { headers: { 'cache-control': 'public, max-age=3600, s-maxage=86400' } },
     '/api/draws': { headers: { 'cache-control': 'no-store' } },
     '/api/activity': { headers: { 'cache-control': 'public, max-age=60' } },
+    '/api/pokemon/*/reveals': { headers: { 'cache-control': 'public, max-age=300' } },
     '/sprites/**': {
       headers: { 'cache-control': `public, max-age=${ONE_MONTH}, stale-while-revalidate=${ONE_MONTH}` },
     },

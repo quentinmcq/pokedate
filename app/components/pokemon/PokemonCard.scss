@@ -294,6 +294,19 @@
     margin: 0 0 10px;
   }
 
+  &__popularity {
+    display: flex;
+    align-items: center;
+    gap: space(2);
+    margin: 0;
+    color: color('text-muted');
+    font-size: font-size('sm');
+
+    .iconify {
+      color: color('highlight');
+    }
+  }
+
   &__actions {
     display: flex;
     // The extra row gap makes up for the buttons' bottom relief.

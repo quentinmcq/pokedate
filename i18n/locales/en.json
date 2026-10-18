@@ -269,7 +269,8 @@
     "hiddenAbility": "hidden ability",
     "baseStats": "Base stats",
     "matchups": "Weaknesses and resistances",
-    "evolutions": "Evolutions"
+    "evolutions": "Evolutions",
+    "weekReveals": "Drawn {count} times this week on PokéDate"
   },
   "dates": {
     "title": "Which dates give {name}?",

@@ -269,7 +269,8 @@
     "hiddenAbility": "talent caché",
     "baseStats": "Statistiques de base",
     "matchups": "Faiblesses et résistances",
-    "evolutions": "Évolutions"
+    "evolutions": "Évolutions",
+    "weekReveals": "Tiré {count} fois cette semaine sur PokéDate"
   },
   "dates": {
     "title": "Quelles dates donnent {name} ?",

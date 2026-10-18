@@ -30,6 +30,14 @@ const { showToast } = useToast()
 const { t, formatLocalNumber } = useLocaleTools()
 const localePath = useLocalePath()
 
+// The number of draws this week reads the shared counters: it is fetched in the browser, after the card shows.
+const POPULAR_THRESHOLD = 2
+const weekRevealCount = ref(0)
+onMounted(async () => {
+  const reveals = await $fetch<{ weekCount: number }>(`/api/pokemon/${props.pokemon.id}/reveals`).catch(() => null)
+  weekRevealCount.value = reveals?.weekCount ?? 0
+})
+
 const isShinyShown = ref(props.shiny)
 watch(
   () => props.shiny,
@@ -175,6 +183,10 @@ function sharePokemon() {
         <div class="chip-list">
           <TypeChip v-for="type in pokemon.types" :key="type" :type="type" />
         </div>
+        <p v-if="weekRevealCount >= POPULAR_THRESHOLD" class="mon-card__popularity">
+          <Icon name="lucide:users-round" aria-hidden="true" />
+          {{ t('card.weekReveals', { count: weekRevealCount }) }}
+        </p>
         <div class="mon-card__actions">
           <button class="btn btn--primary btn--sm" type="button" @click="sharePokemon">
             <Icon name="lucide:share-2" aria-hidden="true" /> {{ t('common.share') }}
