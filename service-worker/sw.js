@@ -5,11 +5,13 @@ const CACHE_PREFIX = 'pokedate-'
 const SHELL_CACHE = `${CACHE_PREFIX}shell-${BUILD_ID}`
 const RUNTIME_CACHE = `${CACHE_PREFIX}runtime-v1`
 // Workers static assets serve offline.html at /offline and redirect the .html address.
-const OFFLINE_PAGE = '/offline'
+const OFFLINE_PAGES = { fr: '/offline', en: '/offline-en' }
 const SHELL_URLS = [
   '/',
-  OFFLINE_PAGE,
-  '/api/pokedex',
+  '/en',
+  ...Object.values(OFFLINE_PAGES),
+  '/api/pokedex?lang=fr',
+  '/api/pokedex?lang=en',
   '/manifest.webmanifest',
   '/favicon.svg',
   '/icons/icon-192.png',
@@ -77,7 +79,9 @@ self.addEventListener('fetch', (event) => {
   if (request.method !== 'GET' || url.origin !== self.location.origin) return
   if (LIVE_PATHS.some((path) => url.pathname.startsWith(path))) return
 
-  if (request.mode === 'navigate') return event.respondWith(networkFirst(event, OFFLINE_PAGE))
+  const isEnglishPage = url.pathname === '/en' || url.pathname.startsWith('/en/')
+  if (request.mode === 'navigate')
+    return event.respondWith(networkFirst(event, isEnglishPage ? OFFLINE_PAGES.en : OFFLINE_PAGES.fr))
   if (IMMUTABLE_PATHS.some((path) => url.pathname.startsWith(path))) return event.respondWith(cacheFirst(event))
   if (url.pathname.startsWith('/api/')) return event.respondWith(networkFirst(event))
 })
