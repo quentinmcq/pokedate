@@ -4,6 +4,7 @@ const GRAVITY = 0.35
 const AIR_RESISTANCE = 0.99
 
 interface ConfettiParticle {
+  endTime: number
   x: number
   y: number
   velocityX: number
@@ -14,8 +15,9 @@ interface ConfettiParticle {
   color: string
 }
 
-function createParticle(colors: string[]): ConfettiParticle {
+function createParticle(colors: string[], endTime: number): ConfettiParticle {
   return {
+    endTime,
     x: innerWidth / 2 + (Math.random() - 0.5) * 200,
     y: innerHeight * 0.35,
     velocityX: (Math.random() - 0.5) * 14,
@@ -44,6 +46,33 @@ function moveParticle(particle: ConfettiParticle) {
   particle.rotation += particle.rotationSpeed
 }
 
+let particles: ConfettiParticle[] = []
+let isAnimating = false
+
+// Clears the whole bitmap: on phones the viewport height changes while the address bar slides,
+// so clearing by viewport size would leave a strip of confetti stuck at the bottom.
+function clearCanvas(canvas: HTMLCanvasElement, context: CanvasRenderingContext2D) {
+  context.save()
+  context.setTransform(1, 0, 0, 1, 0, 0)
+  context.clearRect(0, 0, canvas.width, canvas.height)
+  context.restore()
+}
+
+function animate(canvas: HTMLCanvasElement, context: CanvasRenderingContext2D) {
+  isAnimating = true
+  const renderFrame = (now: number) => {
+    clearCanvas(canvas, context)
+    particles = particles.filter((particle) => particle.endTime > now)
+    for (const particle of particles) {
+      moveParticle(particle)
+      drawParticle(context, particle)
+    }
+    if (particles.length) requestAnimationFrame(renderFrame)
+    else isAnimating = false
+  }
+  requestAnimationFrame(renderFrame)
+}
+
 export function launchConfetti(colors: string[]) {
   if (matchMedia('(prefers-reduced-motion: reduce)').matches) return
   const canvas = document.getElementById('confetti')
@@ -51,22 +80,14 @@ export function launchConfetti(colors: string[]) {
   const context = canvas.getContext('2d')
   if (!context) return
 
-  const pixelRatio = devicePixelRatio || 1
-  canvas.width = innerWidth * pixelRatio
-  canvas.height = innerHeight * pixelRatio
-  context.scale(pixelRatio, pixelRatio)
-
-  const particles = Array.from({ length: PARTICLE_COUNT }, () => createParticle(colors))
-  const startTime = performance.now()
-
-  const renderFrame = (now: number) => {
-    context.clearRect(0, 0, innerWidth, innerHeight)
-    for (const particle of particles) {
-      moveParticle(particle)
-      drawParticle(context, particle)
-    }
-    if (now - startTime < ANIMATION_DURATION_MS) requestAnimationFrame(renderFrame)
-    else context.clearRect(0, 0, innerWidth, innerHeight)
+  // Several launches share one animation loop, so a new burst never fights an older one.
+  if (!isAnimating) {
+    const pixelRatio = devicePixelRatio || 1
+    canvas.width = innerWidth * pixelRatio
+    canvas.height = innerHeight * pixelRatio
+    context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0)
   }
-  requestAnimationFrame(renderFrame)
+  const endTime = performance.now() + ANIMATION_DURATION_MS
+  particles.push(...Array.from({ length: PARTICLE_COUNT }, () => createParticle(colors, endTime)))
+  if (!isAnimating) animate(canvas, context)
 }
