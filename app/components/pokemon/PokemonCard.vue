@@ -27,6 +27,8 @@ const { recordDiscovery } = usePokedex()
 const shareLink = useShareLink()
 const absoluteUrl = useAbsoluteUrl()
 const { showToast } = useToast()
+const { t, formatLocalNumber } = useLocaleTools()
+const localePath = useLocalePath()
 
 const isShinyShown = ref(props.shiny)
 watch(
@@ -66,7 +68,7 @@ function revealNow() {
 }
 
 function playCry(event: MouseEvent) {
-  new Audio(cryUrl(props.pokemon.id)).play().catch(() => showToast('Cri indisponible sur ce navigateur'))
+  new Audio(cryUrl(props.pokemon.id)).play().catch(() => showToast(t('card.cryUnavailable')))
   ;(event.currentTarget as HTMLElement).animate([{ transform: 'scale(1.3)' }, { transform: 'scale(1)' }], 300)
 }
 
@@ -86,12 +88,10 @@ function sharePokemon() {
   const { id, name } = props.pokemon
   const query = new URLSearchParams({ partage: '1' })
   if (isShinyShown.value) query.set('shiny', '1')
-  const shinySuffix = isShinyShown.value ? ' en version shiny ✨' : ''
+  const shinySuffix = isShinyShown.value ? t('card.shareShinySuffix') : ''
   shareLink({
-    text: props.date
-      ? `Ma date me donne ${name} (#${id})${shinySuffix} ! Et toi, quel Pokémon se cache dans ta date ?`
-      : `Découvre ${name} (#${id}) sur PokéDate !`,
-    url: `${absoluteUrl(pokemonPath(props.pokemon))}?${query}`,
+    text: props.date ? t('card.shareMyDate', { name, id, shiny: shinySuffix }) : t('card.shareDiscover', { name, id }),
+    url: `${absoluteUrl(localePath(pokemonPath(props.pokemon)))}?${query}`,
   })
 }
 </script>
@@ -109,19 +109,19 @@ function sharePokemon() {
         <img
           class="mon-card__art"
           :src="artworkUrl(pokemon.id, isShinyShown)"
-          :alt="isShinyShown ? `${pokemon.name} (shiny)` : pokemon.name"
+          :alt="isShinyShown ? t('card.shinyAlt', { name: pokemon.name }) : pokemon.name"
           width="320"
           height="320"
           fetchpriority="high"
           decoding="async"
         />
-        <span class="mon-card__who" aria-hidden="true">Qui est-ce&nbsp;?</span>
+        <span class="mon-card__who" aria-hidden="true">{{ t('card.whoIsIt') }}</span>
         <PokeBall class="mon-card__reveal-ball" :size="46" />
         <button
           v-if="!isRevealed"
           class="mon-card__skip"
           type="button"
-          aria-label="Révéler le Pokémon tout de suite"
+          :aria-label="t('card.revealNow')"
           @click="revealNow"
         />
         <span
@@ -133,84 +133,96 @@ function sharePokemon() {
           ><Icon name="lucide:sparkle"
         /></span>
         <div class="mon-card__tools">
-          <button class="icon-btn" type="button" title="Écouter son cri" aria-label="Écouter son cri" @click="playCry">
+          <button
+            class="icon-btn"
+            type="button"
+            :title="t('card.playCry')"
+            :aria-label="t('card.playCry')"
+            @click="playCry"
+          >
             <Icon name="lucide:volume-2" aria-hidden="true" />
           </button>
           <button
             class="icon-btn"
             type="button"
             :aria-pressed="isShinyShown"
-            title="Version chromatique (shiny)"
-            aria-label="Afficher la version shiny"
+            :title="t('card.shinyTitle')"
+            :aria-label="t('card.showShiny')"
             @click="toggleShiny"
           >
             <Icon name="lucide:sparkles" aria-hidden="true" />
           </button>
         </div>
         <span v-if="date && shiny" class="mon-card__shiny-badge"
-          ><Icon name="lucide:sparkles" aria-hidden="true" /> Shiny : seulement 1 date sur 20 !</span
+          ><Icon name="lucide:sparkles" aria-hidden="true" /> {{ t('card.shinyBadge') }}</span
         >
       </div>
 
       <header class="mon-card__header">
         <div class="mon-card__id">
-          <span>N° {{ padNumber(pokemon.id, 4) }}</span>
-          <span v-if="generation">Gén. {{ generation.roman }} ({{ generation.region }})</span>
-          <span v-if="pokemon.rarity === 'legendary'" class="tag">Légendaire</span>
-          <span v-if="pokemon.rarity === 'mythical'" class="tag tag--myth">Fabuleux</span>
-          <span v-if="pokemon.isBaby" class="tag tag--baby">Bébé</span>
-          <span v-if="newDiscovery ?? isNewDiscovery" class="tag tag--new">Nouveau !</span>
+          <span>{{ t('card.number', { number: padNumber(pokemon.id, 4) }) }}</span>
+          <span v-if="generation">{{
+            t('card.generation', { roman: generation.roman, region: t(`regions.${generation.region}`) })
+          }}</span>
+          <span v-if="pokemon.rarity === 'legendary'" class="tag">{{ t('card.legendary') }}</span>
+          <span v-if="pokemon.rarity === 'mythical'" class="tag tag--myth">{{ t('card.mythical') }}</span>
+          <span v-if="pokemon.isBaby" class="tag tag--baby">{{ t('card.baby') }}</span>
+          <span v-if="newDiscovery ?? isNewDiscovery" class="tag tag--new">{{ t('card.new') }}</span>
         </div>
         <component :is="headingLevel" :id="`pokemon-${pokemon.id}-name`" class="mon-card__name">
-          {{ pokemon.name }}<small>{{ pokemon.englishName }} · {{ pokemon.genus }}</small>
+          {{ pokemon.name }}<small>{{ pokemon.otherLanguageName }} · {{ pokemon.genus }}</small>
         </component>
         <div class="chip-list">
           <TypeChip v-for="type in pokemon.types" :key="type" :type="type" />
         </div>
         <div class="mon-card__actions">
           <button class="btn btn--primary btn--sm" type="button" @click="sharePokemon">
-            <Icon name="lucide:share-2" aria-hidden="true" /> Partager
+            <Icon name="lucide:share-2" aria-hidden="true" /> {{ t('common.share') }}
           </button>
-          <NuxtLink v-if="date" class="btn btn--ghost btn--sm" :to="{ path: '/duel', query: { a: toIsoDate(date) } }"
-            ><Icon name="lucide:swords" aria-hidden="true" /> Défier</NuxtLink
+          <NuxtLinkLocale
+            v-if="date"
+            class="btn btn--ghost btn--sm"
+            :to="{ path: '/duel', query: { a: toIsoDate(date) } }"
+            ><Icon name="lucide:swords" aria-hidden="true" /> {{ t('card.challenge') }}</NuxtLinkLocale
           >
         </div>
         <slot name="after-actions" :revealed="isRevealed" />
       </header>
 
-      <p class="mon-card__summary">{{ pokemon.description }}</p>
+      <p v-if="pokemon.description" class="mon-card__summary">{{ pokemon.description }}</p>
 
       <dl class="mon-card__facts">
         <div class="mon-card__fact">
-          <dt>Taille</dt>
-          <dd>{{ formatNumber(pokemon.heightMeters) }} m</dd>
+          <dt>{{ t('card.height') }}</dt>
+          <dd>{{ formatLocalNumber(pokemon.heightMeters) }} m</dd>
         </div>
         <div class="mon-card__fact">
-          <dt>Poids</dt>
-          <dd>{{ formatNumber(pokemon.weightKg) }} kg</dd>
+          <dt>{{ t('card.weight') }}</dt>
+          <dd>{{ formatLocalNumber(pokemon.weightKg) }} kg</dd>
         </div>
         <div class="mon-card__fact mon-card__fact--wide">
-          <dt>Talents</dt>
+          <dt>{{ t('card.abilities') }}</dt>
           <dd class="mon-card__abilities">
             <span v-for="ability in pokemon.abilities" :key="ability.name" class="mon-card__ability">
-              {{ ability.name }}<span v-if="ability.hidden" class="mon-card__hidden-ability">talent caché</span>
+              {{ ability.name
+              }}<span v-if="ability.hidden" class="mon-card__hidden-ability">{{ t('card.hiddenAbility') }}</span>
             </span>
           </dd>
         </div>
       </dl>
 
       <section class="mon-card__stats">
-        <component :is="sectionHeadingTag" class="mon-card__section-title">Statistiques de base</component>
+        <component :is="sectionHeadingTag" class="mon-card__section-title">{{ t('card.baseStats') }}</component>
         <PokemonStatBars :stats="pokemon.stats" :filled="areStatBarsFilled" />
       </section>
 
       <section class="mon-card__matchups">
-        <component :is="sectionHeadingTag" class="mon-card__section-title">Faiblesses et résistances</component>
+        <component :is="sectionHeadingTag" class="mon-card__section-title">{{ t('card.matchups') }}</component>
         <PokemonMatchups :types="pokemon.types" />
       </section>
 
       <section v-if="hasEvolutions" class="mon-card__evolutions">
-        <component :is="sectionHeadingTag" class="mon-card__section-title">Évolutions</component>
+        <component :is="sectionHeadingTag" class="mon-card__section-title">{{ t('card.evolutions') }}</component>
         <PokemonEvolutions :stages="pokemon.evolutionStages" :current-id="pokemon.id" />
       </section>
     </div>

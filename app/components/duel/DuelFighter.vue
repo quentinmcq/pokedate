@@ -9,6 +9,8 @@ defineProps<{
   side: DuelSide
   result: 'win' | 'lose' | 'draw'
 }>()
+
+const { t } = useLocaleTools()
 </script>
 
 <template>
@@ -24,17 +26,17 @@ defineProps<{
     <img :src="artworkUrl(pokemon.id, shiny)" :alt="pokemon.name" width="160" height="160" />
     <div class="fighter__player">{{ playerName }}</div>
     <h2 class="fighter__name">
-      <NuxtLink :to="pokemonPath(pokemon)">{{ pokemon.name }}</NuxtLink
+      <NuxtLinkLocale :to="pokemonPath(pokemon)">{{ pokemon.name }}</NuxtLinkLocale
       ><Icon v-if="shiny" name="lucide:sparkles" class="fighter__shiny" aria-label="shiny" />
       <small>#{{ pokemon.id }}</small>
     </h2>
     <div class="chip-list"><TypeChip v-for="type in pokemon.types" :key="type" :type="type" small /></div>
     <div class="fighter__power">
       <span
-        >Total des stats <b>{{ statTotal(pokemon.stats) }}</b></span
+        >{{ t('duel.totalStats') }} <b>{{ statTotal(pokemon.stats) }}</b></span
       >
       <span
-        >Vitesse <b>{{ pokemon.stats.speed }}</b></span
+        >{{ t('duel.speed') }} <b>{{ pokemon.stats.speed }}</b></span
       >
     </div>
   </div>

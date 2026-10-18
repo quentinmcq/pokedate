@@ -7,8 +7,9 @@ interface ShareOptions {
 export function useShareLink() {
   const { showToast } = useToast()
   const trackEvent = useTrackEvent()
+  const { t } = useLocaleTools()
 
-  return async ({ text, url, copiedMessage = 'Lien copié, envoie-le à tes potes' }: ShareOptions) => {
+  return async ({ text, url, copiedMessage = t('common.linkCopied') }: ShareOptions) => {
     trackEvent('share')
     if (navigator.share) {
       await navigator.share({ title: 'PokéDate', text, url }).catch(() => {})
@@ -18,7 +19,7 @@ export function useShareLink() {
       await navigator.clipboard.writeText(`${text} ${url}`)
       showToast(copiedMessage)
     } catch {
-      prompt('Copie ce lien :', url)
+      prompt(t('common.copyPrompt'), url)
     }
   }
 }

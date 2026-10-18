@@ -2,6 +2,7 @@
 import type { CalendarDate } from '#shared/types/pokemon'
 
 const props = defineProps<{ date: CalendarDate }>()
+const { t } = useLocaleTools()
 
 const dateParts = computed(() => {
   const { day, month, year } = toDateFieldValue(props.date)
@@ -10,7 +11,7 @@ const dateParts = computed(() => {
 const pokemonId = computed(() => pokemonIdFromDate(props.date))
 const spokenFormula = computed(() => {
   const [dayDigit, monthDigit, yearDigit] = dateParts.value.map((part) => part.lastDigit)
-  return `Derniers chiffres : ${dayDigit}, ${monthDigit} et ${yearDigit}, soit le Pokémon numéro ${pokemonId.value}`
+  return t('formula.spoken', { day: dayDigit!, month: monthDigit!, year: yearDigit!, number: pokemonId.value })
 })
 </script>
 
@@ -25,8 +26,8 @@ const spokenFormula = computed(() => {
       >
     </template>
     <span class="formula__arrow" aria-hidden="true">→</span>
-    <span class="formula__num" aria-hidden="true">N° {{ padNumber(pokemonId, 3) }}</span>
-    <span v-if="pokemonId === 1000" aria-hidden="true">(000 devient 1000 !)</span>
+    <span class="formula__num" aria-hidden="true">{{ t('card.number', { number: padNumber(pokemonId, 3) }) }}</span>
+    <span v-if="pokemonId === 1000" aria-hidden="true">{{ t('formula.thousand') }}</span>
   </p>
 </template>
 

@@ -6,6 +6,7 @@ interface BeforeInstallPromptEvent extends Event {
 
 const installPrompt = shallowRef<BeforeInstallPromptEvent | null>(null)
 const trackEvent = useTrackEvent()
+const { t } = useLocaleTools()
 
 function keepInstallPrompt(event: Event) {
   event.preventDefault()
@@ -36,7 +37,7 @@ onBeforeUnmount(() => {
 <template>
   <Transition name="install-fade">
     <button v-if="installPrompt" class="btn btn--ghost btn--sm" type="button" @click="installApp">
-      <Icon name="lucide:smartphone" aria-hidden="true" /> Installer l'appli
+      <Icon name="lucide:smartphone" aria-hidden="true" /> {{ t('footer.install') }}
     </button>
   </Transition>
 </template>

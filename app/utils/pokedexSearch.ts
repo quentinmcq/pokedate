@@ -11,7 +11,7 @@ export function filterPokedexEntries<Entry extends PokedexEntry>(
   entries: Entry[],
   { query, type }: { query: string; type: TypeKey | null },
 ) {
-  const normalizedQuery = normalizeSearchText(query).replace(/^(#|n°)\s*/, '')
+  const normalizedQuery = normalizeSearchText(query).replace(/^(?:#|n°|no\.?)\s*(?=\d)/, '')
   const searchedId = /^\d+$/.test(normalizedQuery) ? Number(normalizedQuery) : null
   return entries.filter(
     (entry) =>

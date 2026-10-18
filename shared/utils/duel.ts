@@ -1,5 +1,6 @@
-import type { PokemonDetail, TypeKey } from '../types/pokemon'
-import { formatNumber, POKEMON_TYPES, statTotal, typeEffectiveness } from './pokemon'
+import type { Locale, PokemonDetail, TypeKey } from '../types/pokemon'
+import { formatNumber, statTotal, typeEffectiveness } from './pokemon'
+import type { Translate } from './messages'
 
 export type Fighter = Pick<PokemonDetail, 'id' | 'types' | 'stats'>
 export type DuelSide = 'A' | 'B'
@@ -60,39 +61,51 @@ export function resolveDuel(fighterA: Fighter, fighterB: Fighter): DuelOutcome {
   return { attackOfA, attackOfB, firstStriker, winner }
 }
 
-export function describeEffectiveness(multiplier: number) {
-  const factor = `(×${formatNumber(multiplier, 2)})`
-  if (multiplier >= 4) return `c'est ultra efficace ${factor} !`
-  if (multiplier >= 2) return `c'est super efficace ${factor} !`
-  if (multiplier < 1) return `ce n'est pas très efficace ${factor}…`
-  return `efficacité normale ${factor}.`
+export function describeEffectiveness(t: Translate, multiplier: number, locale: Locale) {
+  const factor = `(×${formatNumber(multiplier, locale, 2)})`
+  if (multiplier >= 4) return t('duelStory.effectiveness.ultra', { factor })
+  if (multiplier >= 2) return t('duelStory.effectiveness.super', { factor })
+  if (multiplier < 1) return t('duelStory.effectiveness.weak', { factor })
+  return t('duelStory.effectiveness.normal', { factor })
 }
 
-export const describeKnockOut = (turns: number) =>
-  turns === 1 ? 'tombe K.O. dès le premier coup' : `tombe K.O. en ${turns} coups`
+export const describeKnockOut = (t: Translate, turns: number) =>
+  turns === 1 ? t('duelStory.knockOutFirstHit') : t('duelStory.knockOutTurns', { turns })
 
-export function describeAttack(attackerName: string, defenderName: string, attack: AttackSummary) {
-  const move = `${attackerName} lance une attaque ${POKEMON_TYPES[attack.type].label}`
-  if (attack.turnsToKnockOut === Infinity) return `${move}, mais elle n'a aucun effet sur ${defenderName}.`
-  return `${move} : ${describeEffectiveness(attack.multiplier)} ${defenderName} ${describeKnockOut(attack.turnsToKnockOut)}.`
+export function describeAttack(
+  t: Translate,
+  locale: Locale,
+  attackerName: string,
+  defenderName: string,
+  attack: AttackSummary,
+) {
+  const move = t('duelStory.attack', { attacker: attackerName, type: t(`types.${attack.type}`) })
+  if (attack.turnsToKnockOut === Infinity) return t('duelStory.noEffect', { move, defender: defenderName })
+  return t('duelStory.hit', {
+    move,
+    effectiveness: describeEffectiveness(t, attack.multiplier, locale),
+    defender: defenderName,
+    knockOut: describeKnockOut(t, attack.turnsToKnockOut),
+  })
 }
 
 const otherSide = (side: DuelSide): DuelSide => (side === 'A' ? 'B' : 'A')
 
 export function describeDuelTempo(
+  t: Translate,
   fighters: Record<DuelSide, Fighter & { name: string }>,
   { attackOfA, attackOfB, firstStriker, winner }: DuelOutcome,
 ) {
-  if (fighters.A.id === fighters.B.id) return 'Même Pokémon, mêmes stats : impossible de les départager.'
-  if (!winner) return "Aucun des deux ne peut toucher l'autre."
+  if (fighters.A.id === fighters.B.id) return t('duelStory.mirror')
+  if (!winner) return t('duelStory.noHit')
   const first = fighters[firstStriker]
   const second = fighters[otherSide(firstStriker)]
   const opening =
     fighters.A.stats.speed === fighters.B.stats.speed
-      ? `Vitesse égale : ${first.name}, plus costaud, frappe en premier`
-      : `${first.name} est plus rapide et frappe en premier`
-  if (winner !== firstStriker) return `${opening}, mais ${second.name} le met K.O. plus vite.`
+      ? t('duelStory.sameSpeed', { first: first.name })
+      : t('duelStory.faster', { first: first.name })
+  if (winner !== firstStriker) return t('duelStory.beatenFaster', { opening, second: second.name })
   return attackOfA.turnsToKnockOut === attackOfB.turnsToKnockOut
-    ? `${opening} : à nombre de coups égal, ça fait la différence.`
-    : `${opening} et met ${second.name} K.O. plus vite.`
+    ? t('duelStory.sameTurns', { opening })
+    : t('duelStory.winsFaster', { opening, second: second.name })
 }

@@ -1,14 +1,14 @@
-import type { BaseStats, StatKey, TypeKey } from '../types/pokemon'
+import type { BaseStats, Locale, StatKey, TypeKey } from '../types/pokemon'
 
 export const POKEMON_COUNT = 1025
 
 export const artworkUrl = (id: number, shiny = false) => `/sprites/${shiny ? 'art-shiny' : 'art'}/${id}.webp`
 export const spriteUrl = (id: number, shiny = false) => `/sprites/${shiny ? 'mini-shiny' : 'mini'}/${id}.webp`
-export const shareImagePath = (id: number) => `/sprites/og/${id}.jpg`
+export const shareImagePath = (id: number, locale: Locale = 'fr') =>
+  `/sprites/${locale === 'en' ? 'og-en' : 'og'}/${id}.jpg`
 export const cryUrl = (id: number) => `/cries/${id}.ogg`
 
 export interface PokemonTypeStyle {
-  label: string
   color: string
   icon: string
   textColor: string
@@ -18,24 +18,24 @@ const DARK_TEXT = '#14162b'
 const LIGHT_TEXT = '#ffffff'
 
 export const POKEMON_TYPES: Record<TypeKey, PokemonTypeStyle> = {
-  normal: { label: 'Normal', color: '#9FA19F', icon: 'lucide:circle-dot', textColor: DARK_TEXT },
-  fire: { label: 'Feu', color: '#D92B23', icon: 'lucide:flame', textColor: LIGHT_TEXT },
-  water: { label: 'Eau', color: '#2980EF', icon: 'lucide:droplet', textColor: DARK_TEXT },
-  electric: { label: 'Électrik', color: '#E0AE00', icon: 'lucide:zap', textColor: DARK_TEXT },
-  grass: { label: 'Plante', color: '#3FA129', icon: 'lucide:leaf', textColor: DARK_TEXT },
-  ice: { label: 'Glace', color: '#3DCEF3', icon: 'lucide:snowflake', textColor: DARK_TEXT },
-  fighting: { label: 'Combat', color: '#FF8000', icon: 'lucide:hand-fist', textColor: DARK_TEXT },
-  poison: { label: 'Poison', color: '#9141CB', icon: 'lucide:flask-conical', textColor: LIGHT_TEXT },
-  ground: { label: 'Sol', color: '#915121', icon: 'lucide:mountain', textColor: LIGHT_TEXT },
-  flying: { label: 'Vol', color: '#81B9EF', icon: 'lucide:feather', textColor: DARK_TEXT },
-  psychic: { label: 'Psy', color: '#EF4179', icon: 'lucide:eye', textColor: DARK_TEXT },
-  bug: { label: 'Insecte', color: '#91A119', icon: 'lucide:bug', textColor: DARK_TEXT },
-  rock: { label: 'Roche', color: '#AFA981', icon: 'lucide:mountain-snow', textColor: DARK_TEXT },
-  ghost: { label: 'Spectre', color: '#704170', icon: 'lucide:ghost', textColor: LIGHT_TEXT },
-  dragon: { label: 'Dragon', color: '#5060E1', icon: 'lucide:gem', textColor: LIGHT_TEXT },
-  dark: { label: 'Ténèbres', color: '#624D4E', icon: 'lucide:moon', textColor: LIGHT_TEXT },
-  steel: { label: 'Acier', color: '#60A1B8', icon: 'lucide:shield', textColor: DARK_TEXT },
-  fairy: { label: 'Fée', color: '#EF70EF', icon: 'lucide:wand-sparkles', textColor: DARK_TEXT },
+  normal: { color: '#9FA19F', icon: 'lucide:circle-dot', textColor: DARK_TEXT },
+  fire: { color: '#D92B23', icon: 'lucide:flame', textColor: LIGHT_TEXT },
+  water: { color: '#2980EF', icon: 'lucide:droplet', textColor: DARK_TEXT },
+  electric: { color: '#E0AE00', icon: 'lucide:zap', textColor: DARK_TEXT },
+  grass: { color: '#3FA129', icon: 'lucide:leaf', textColor: DARK_TEXT },
+  ice: { color: '#3DCEF3', icon: 'lucide:snowflake', textColor: DARK_TEXT },
+  fighting: { color: '#FF8000', icon: 'lucide:hand-fist', textColor: DARK_TEXT },
+  poison: { color: '#9141CB', icon: 'lucide:flask-conical', textColor: LIGHT_TEXT },
+  ground: { color: '#915121', icon: 'lucide:mountain', textColor: LIGHT_TEXT },
+  flying: { color: '#81B9EF', icon: 'lucide:feather', textColor: DARK_TEXT },
+  psychic: { color: '#EF4179', icon: 'lucide:eye', textColor: DARK_TEXT },
+  bug: { color: '#91A119', icon: 'lucide:bug', textColor: DARK_TEXT },
+  rock: { color: '#AFA981', icon: 'lucide:mountain-snow', textColor: DARK_TEXT },
+  ghost: { color: '#704170', icon: 'lucide:ghost', textColor: LIGHT_TEXT },
+  dragon: { color: '#5060E1', icon: 'lucide:gem', textColor: LIGHT_TEXT },
+  dark: { color: '#624D4E', icon: 'lucide:moon', textColor: LIGHT_TEXT },
+  steel: { color: '#60A1B8', icon: 'lucide:shield', textColor: DARK_TEXT },
+  fairy: { color: '#EF70EF', icon: 'lucide:wand-sparkles', textColor: DARK_TEXT },
 }
 
 export const TYPE_KEYS = Object.keys(POKEMON_TYPES) as TypeKey[]
@@ -130,15 +130,6 @@ export const formatMultiplier = (multiplier: number) => MULTIPLIER_LABELS[multip
 
 export const STAT_KEYS: StatKey[] = ['hp', 'attack', 'defense', 'specialAttack', 'specialDefense', 'speed']
 
-export const STAT_LABELS: Record<StatKey, string> = {
-  hp: 'PV',
-  attack: 'Attaque',
-  defense: 'Défense',
-  specialAttack: 'Atq. Spé.',
-  specialDefense: 'Déf. Spé.',
-  speed: 'Vitesse',
-}
-
 export const statTotal = (stats: BaseStats) => STAT_KEYS.reduce((total, key) => total + stats[key], 0)
 
 export const strongestStat = (stats: BaseStats): StatKey =>
@@ -152,21 +143,23 @@ export interface Generation {
 }
 
 export const GENERATIONS: Generation[] = [
-  { roman: 'I', region: 'Kanto', firstId: 1, lastId: 151 },
-  { roman: 'II', region: 'Johto', firstId: 152, lastId: 251 },
-  { roman: 'III', region: 'Hoenn', firstId: 252, lastId: 386 },
-  { roman: 'IV', region: 'Sinnoh', firstId: 387, lastId: 493 },
-  { roman: 'V', region: 'Unys', firstId: 494, lastId: 649 },
-  { roman: 'VI', region: 'Kalos', firstId: 650, lastId: 721 },
-  { roman: 'VII', region: 'Alola', firstId: 722, lastId: 809 },
-  { roman: 'VIII', region: 'Galar', firstId: 810, lastId: 905 },
-  { roman: 'IX', region: 'Paldea', firstId: 906, lastId: 1025 },
+  { roman: 'I', region: 'kanto', firstId: 1, lastId: 151 },
+  { roman: 'II', region: 'johto', firstId: 152, lastId: 251 },
+  { roman: 'III', region: 'hoenn', firstId: 252, lastId: 386 },
+  { roman: 'IV', region: 'sinnoh', firstId: 387, lastId: 493 },
+  { roman: 'V', region: 'unova', firstId: 494, lastId: 649 },
+  { roman: 'VI', region: 'kalos', firstId: 650, lastId: 721 },
+  { roman: 'VII', region: 'alola', firstId: 722, lastId: 809 },
+  { roman: 'VIII', region: 'galar', firstId: 810, lastId: 905 },
+  { roman: 'IX', region: 'paldea', firstId: 906, lastId: 1025 },
 ]
 
 export const generationOf = (generationNumber: number) => GENERATIONS[generationNumber - 1]
 
-export const formatNumber = (value: number, maxDecimals = 1) =>
-  value.toLocaleString('fr-FR', { maximumFractionDigits: maxDecimals })
+export const LOCALE_TAGS: Record<Locale, string> = { fr: 'fr-FR', en: 'en-GB' }
+
+export const formatNumber = (value: number, locale: Locale = 'fr', maxDecimals = 1) =>
+  value.toLocaleString(LOCALE_TAGS[locale], { maximumFractionDigits: maxDecimals })
 
 export const padNumber = (value: number | string, length = 2) => String(value).padStart(length, '0')
 
@@ -180,4 +173,6 @@ export const slugify = (text: string) =>
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '')
 
-export const pokemonPath = (pokemon: { id: number; name: string }) => `/pokemon/${pokemon.id}-${slugify(pokemon.name)}`
+export const pokemonSlug = (pokemon: { id: number; name: string }) => `${pokemon.id}-${slugify(pokemon.name)}`
+
+export const pokemonPath = (pokemon: { id: number; name: string }) => `/pokemon/${pokemonSlug(pokemon)}`

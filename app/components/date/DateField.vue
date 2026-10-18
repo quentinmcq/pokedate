@@ -12,10 +12,12 @@ const props = defineProps<{
 const date = defineModel<DateFieldValue>({ required: true })
 
 const DATE_PARTS = [
-  { key: 'day', label: 'Jour', placeholder: 'JJ', maxLength: 2, autocomplete: 'bday-day' },
-  { key: 'month', label: 'Mois', placeholder: 'MM', maxLength: 2, autocomplete: 'bday-month' },
-  { key: 'year', label: 'Année', placeholder: 'AAAA', maxLength: 4, autocomplete: 'bday-year' },
+  { key: 'day', maxLength: 2, autocomplete: 'bday-day' },
+  { key: 'month', maxLength: 2, autocomplete: 'bday-month' },
+  { key: 'year', maxLength: 4, autocomplete: 'bday-year' },
 ] as const
+
+const { t } = useLocaleTools()
 
 type DatePart = (typeof DATE_PARTS)[number]
 
@@ -74,11 +76,11 @@ onMounted(() => {
 
 <template>
   <fieldset class="date-field" :class="{ 'date-field--compact': props.compact }">
-    <legend class="visually-hidden">{{ props.legend ?? 'Date' }}</legend>
+    <legend class="visually-hidden">{{ props.legend ?? t('dateField.legend') }}</legend>
     <template v-for="(part, index) in DATE_PARTS" :key="part.key">
       <span v-if="index > 0" class="date-field__sep" aria-hidden="true">/</span>
       <label class="date-field__part" :class="{ 'date-field__part--year': part.key === 'year' }">
-        <span :class="{ 'visually-hidden': props.compact }">{{ part.label }}</span>
+        <span :class="{ 'visually-hidden': props.compact }">{{ t(`dateField.${part.key}`) }}</span>
         <input
           ref="inputs"
           class="date-field__input"
@@ -86,7 +88,7 @@ onMounted(() => {
           :name="props.fieldNames?.[part.key]"
           :autocomplete="part.autocomplete"
           :maxlength="part.maxLength"
-          :placeholder="part.placeholder"
+          :placeholder="t(`dateField.${part.key}Placeholder`)"
           :value.attr="date[part.key]"
           :aria-invalid="props.invalidPart === part.key || undefined"
           :aria-describedby="props.errorId"

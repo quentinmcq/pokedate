@@ -6,6 +6,7 @@ import {
   parseSharedFighters,
   tournamentShareImagePath,
 } from '../../shared/utils/shareImages'
+import { translateEn, translateFr } from './translators'
 
 const pikachu = { pokemonId: 25, shiny: false, name: 'Pikachu' }
 const shinyCharizard = { pokemonId: 6, shiny: true, name: 'Dracaufeu' }
@@ -15,6 +16,11 @@ describe('adresses des images de partage', () => {
   it('encode les Pokémon et leur version shiny sans nom de joueur', () => {
     expect(duelShareImagePath(pikachu, shinyCharizard)).toBe('/og/duel/25-6s.jpg')
     expect(tournamentShareImagePath([mewtwo, pikachu, shinyCharizard])).toBe('/og/tournoi/150-25-6s.jpg')
+  })
+
+  it('ajoute la langue anglaise à l’adresse', () => {
+    expect(duelShareImagePath(pikachu, shinyCharizard, 'en')).toBe('/og/duel/25-6s.en.jpg')
+    expect(parseSharedFighters('25-6s.en.jpg', 2)).toHaveLength(2)
   })
 
   it('relit une adresse valide', () => {
@@ -35,7 +41,7 @@ const textsOf = (layers: ReturnType<typeof duelLayers>['layers']) =>
 
 describe('composition des images de partage', () => {
   it('met le gagnant du duel en avant', () => {
-    const { frame, layers } = duelLayers(pikachu, shinyCharizard, 'B')
+    const { frame, layers } = duelLayers(translateFr, pikachu, shinyCharizard, 'B')
     expect(frame).toBe(SHARE_FRAMES.duelRightWins)
     expect(textsOf(layers)).toContain('Dracaufeu remporte le duel')
     const pikachuLayer = layers.find((layer) => layer.kind === 'artwork' && layer.fighter.pokemonId === 25)
@@ -43,13 +49,17 @@ describe('composition des images de partage', () => {
   })
 
   it('distingue le match nul du match miroir', () => {
-    expect(textsOf(duelLayers(pikachu, shinyCharizard, null).layers)).toContain('Match nul !')
-    expect(textsOf(duelLayers(pikachu, pikachu, null).layers)).toContain('Match miroir !')
+    expect(textsOf(duelLayers(translateFr, pikachu, shinyCharizard, null).layers)).toContain('Match nul !')
+    expect(textsOf(duelLayers(translateFr, pikachu, pikachu, null).layers)).toContain('Match miroir !')
   })
 
   it('titre le tournoi avec le champion', () => {
-    const { frame, layers } = tournamentLayers([mewtwo, pikachu, shinyCharizard])
+    const { frame, layers } = tournamentLayers(translateFr, [mewtwo, pikachu, shinyCharizard])
     expect(frame).toBe(SHARE_FRAMES.tournament)
     expect(textsOf(layers)).toContain('Mewtwo remporte le tournoi')
+  })
+
+  it('écrit les titres en anglais', () => {
+    expect(textsOf(duelLayers(translateEn, pikachu, shinyCharizard, 'A').layers)).toContain('Pikachu wins the duel')
   })
 })

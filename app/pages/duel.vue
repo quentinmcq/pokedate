@@ -2,6 +2,7 @@
 import type { DateFieldValue } from '#shared/types/pokemon'
 import type { DateFieldKey } from '#shared/utils/date'
 import type { DuelSide } from '#shared/utils/duel'
+import type { Message } from '#shared/utils/messages'
 
 const route = useRoute()
 const router = useRouter()
@@ -10,6 +11,8 @@ const shareLink = useShareLink()
 const absoluteUrl = useAbsoluteUrl()
 const { recordDiscovery } = usePokedex()
 const trackEvent = useTrackEvent()
+const { t, locale, translate } = useLocaleTools()
+const localePath = useLocalePath()
 rememberCurrentPath('challenges')
 
 const duelQuery = computed(() => parseDuelQuery(route.query))
@@ -19,7 +22,7 @@ const dateA = ref<DateFieldValue>(emptyDateFieldValue())
 const dateB = ref<DateFieldValue>(emptyDateFieldValue())
 const playerNameInputA = ref(duelQuery.value.playerNameA)
 const playerNameInputB = ref(duelQuery.value.playerNameB)
-const formError = ref('')
+const formError = ref<{ player: string; error: Message } | null>(null)
 const invalidDatePartA = ref<DateFieldKey | null>(null)
 const invalidDatePartB = ref<DateFieldKey | null>(null)
 const dateFieldA = useTemplateRef('dateFieldA')
@@ -35,8 +38,8 @@ const [{ data: pokemonA }, { data: pokemonB }] = await Promise.all([
   usePokemonDetail(() => (hasBothPokemon.value ? duelQuery.value.pokemonIdB : null)),
 ])
 
-const playerLabelA = computed(() => duelQuery.value.playerNameA || 'Joueur 1')
-const playerLabelB = computed(() => duelQuery.value.playerNameB || 'Joueur 2')
+const playerLabelA = computed(() => duelQuery.value.playerNameA || t('challenge.player', { number: 1 }))
+const playerLabelB = computed(() => duelQuery.value.playerNameB || t('challenge.player', { number: 2 }))
 
 const outcome = computed(() =>
   hasBothPokemon.value && pokemonA.value && pokemonB.value ? resolveDuel(pokemonA.value, pokemonB.value) : null,
@@ -56,9 +59,9 @@ const fighterResult = (side: DuelSide) => {
 
 const verdictTitle = computed(() => {
   if (!outcome.value || !pokemonA.value || !pokemonB.value) return ''
-  if (winnerPokemon.value) return `${winnerName.value} gagne avec ${winnerPokemon.value.name} !`
-  if (pokemonA.value.id === pokemonB.value.id) return 'Match miroir : même Pokémon, égalité parfaite !'
-  return 'Match nul !'
+  if (winnerPokemon.value) return t('duel.winner', { player: winnerName.value, pokemon: winnerPokemon.value.name })
+  if (pokemonA.value.id === pokemonB.value.id) return t('duel.mirror')
+  return t('duel.draw')
 })
 
 const verdictIcon = computed(() => {
@@ -69,7 +72,7 @@ const verdictIcon = computed(() => {
 
 const tempoText = computed(() =>
   outcome.value && pokemonA.value && pokemonB.value
-    ? describeDuelTempo({ A: pokemonA.value, B: pokemonB.value }, outcome.value)
+    ? describeDuelTempo(translate, { A: pokemonA.value, B: pokemonB.value }, outcome.value)
     : '',
 )
 
@@ -101,14 +104,20 @@ async function startDuel() {
   invalidDatePartA.value = parsedA.ok ? null : parsedA.invalidPart
   invalidDatePartB.value = parsedA.ok && !parsedB.ok ? parsedB.invalidPart : null
   if (!parsedA.ok) {
-    formError.value = `${cleanPlayerName(playerNameInputA.value) || 'Joueur 1'} : ${parsedA.error}`
+    formError.value = {
+      player: cleanPlayerName(playerNameInputA.value) || t('challenge.player', { number: 1 }),
+      error: parsedA.error,
+    }
     return dateFieldA.value?.focusInvalidPart(parsedA.invalidPart)
   }
   if (!parsedB.ok) {
-    formError.value = `${cleanPlayerName(playerNameInputB.value) || 'Joueur 2'} : ${parsedB.error}`
+    formError.value = {
+      player: cleanPlayerName(playerNameInputB.value) || t('challenge.player', { number: 2 }),
+      error: parsedB.error,
+    }
     return dateFieldB.value?.focusInvalidPart(parsedB.invalidPart)
   }
-  formError.value = ''
+  formError.value = null
   trackEvent('duel')
 
   await router.push({
@@ -128,10 +137,10 @@ function shareDuel() {
   const query = new URLSearchParams(buildDuelQuery(duelQuery.value))
   shareLink({
     text: winnerPokemon.value
-      ? `${winnerName.value} gagne le duel PokéDate avec ${winnerPokemon.value.name} ! Revanche ?`
-      : 'Match nul au duel PokéDate ! Revanche ?',
-    url: `${absoluteUrl('/duel')}?${query}`,
-    copiedMessage: 'Lien du duel copié',
+      ? t('duel.shareWinner', { player: winnerName.value, pokemon: winnerPokemon.value.name })
+      : t('duel.shareDraw'),
+    url: `${absoluteUrl(localePath('/duel'))}?${query}`,
+    copiedMessage: t('duel.linkCopied'),
   })
 }
 
@@ -139,16 +148,21 @@ usePageSeo({
   title: () =>
     pokemonA.value && pokemonB.value && outcome.value
       ? `${pokemonA.value.name} VS ${pokemonB.value.name}`
-      : "Duel d'anniversaires",
-  description:
-    "Ta date contre celle de ton adversaire : quel Pokémon gagne le combat ? Un duel de dates d'anniversaire façon Pokémon.",
+      : t('duel.title'),
+  description: () => t('duel.seoDescription'),
   shareImagePath: () => {
     const { pokemonIdA, pokemonIdB, shinyA, shinyB } = duelQuery.value
     if (!hasResult.value || !pokemonIdA || !pokemonIdB) return undefined
-    return duelShareImagePath({ pokemonId: pokemonIdA, shiny: shinyA }, { pokemonId: pokemonIdB, shiny: shinyB })
+    return duelShareImagePath(
+      { pokemonId: pokemonIdA, shiny: shinyA },
+      { pokemonId: pokemonIdB, shiny: shinyB },
+      locale.value,
+    )
   },
   shareImageAlt: () =>
-    pokemonA.value && pokemonB.value ? `${pokemonA.value.name} contre ${pokemonB.value.name}` : undefined,
+    pokemonA.value && pokemonB.value
+      ? t('duel.shareImageAlt', { first: pokemonA.value.name, second: pokemonB.value.name })
+      : undefined,
   noindex: () => hasBothPokemon.value,
 })
 </script>
@@ -156,7 +170,7 @@ usePageSeo({
 <template>
   <div>
     <div v-if="hasResult" class="hero duel-heading">
-      <h1>Duel d'anniversaires</h1>
+      <h1>{{ t('duel.title') }}</h1>
     </div>
 
     <section
@@ -187,18 +201,18 @@ usePageSeo({
       <div class="verdict">
         <h2 id="verdict"><Icon :name="verdictIcon" aria-hidden="true" /> {{ verdictTitle }}</h2>
         <ul>
-          <li>{{ describeAttack(pokemonA.name, pokemonB.name, outcome.attackOfA) }}</li>
-          <li>{{ describeAttack(pokemonB.name, pokemonA.name, outcome.attackOfB) }}</li>
+          <li>{{ describeAttack(translate, locale, pokemonA.name, pokemonB.name, outcome.attackOfA) }}</li>
+          <li>{{ describeAttack(translate, locale, pokemonB.name, pokemonA.name, outcome.attackOfB) }}</li>
           <li>{{ tempoText }}</li>
         </ul>
       </div>
       <div class="actions">
         <button class="btn btn--primary btn--sm" type="button" @click="shareDuel">
-          <Icon name="lucide:share-2" aria-hidden="true" /> Partager le duel
+          <Icon name="lucide:share-2" aria-hidden="true" /> {{ t('duel.share') }}
         </button>
       </div>
       <p class="field-hint field-hint--privacy">
-        <Icon name="lucide:lock" aria-hidden="true" /> Le lien partagé ne contient que les Pokémon, jamais vos dates.
+        <Icon name="lucide:lock" aria-hidden="true" /> {{ t('challenge.linkPrivacy') }}
       </p>
     </section>
 
@@ -210,54 +224,63 @@ usePageSeo({
       :aria-labelledby="hasResult ? 'rematch-title' : undefined"
       @submit.prevent="startDuel"
     >
-      <h2 v-if="hasResult" id="rematch-title" class="duel-rematch__title">Ta revanche&nbsp;?</h2>
+      <h2 v-if="hasResult" id="rematch-title" class="duel-rematch__title">{{ t('duel.rematch') }}</h2>
       <template v-else>
-        <h1>Duel d'anniversaires</h1>
-        <p class="lead">Ta date contre celle de ton adversaire&nbsp;: quel Pokémon l'emporte&nbsp;?</p>
+        <h1>{{ t('duel.title') }}</h1>
+        <p class="lead">{{ t('duel.lead') }}</p>
       </template>
       <div class="duel-form">
         <div class="duel-form__side">
-          <label class="visually-hidden" for="player-name-a">Prénom du joueur 1</label>
+          <label class="visually-hidden" for="player-name-a">{{ t('challenge.playerName', { number: 1 }) }}</label>
           <input
             id="player-name-a"
             v-model="playerNameInputA"
             class="text-input"
-            placeholder="Ton prénom"
+            :placeholder="t('duel.yourName')"
             :maxlength="PLAYER_NAME_MAX_LENGTH"
           />
           <DateField
             ref="dateFieldA"
             v-model="dateA"
             compact
-            legend="Date du joueur 1"
+            :legend="t('challenge.playerDate', { number: 1 })"
             error-id="duel-error"
             :invalid-part="invalidDatePartA"
           />
         </div>
         <span class="vs-badge" aria-hidden="true">VS</span>
         <div class="duel-form__side">
-          <label class="visually-hidden" for="player-name-b">Prénom du joueur 2</label>
+          <label class="visually-hidden" for="player-name-b">{{ t('challenge.playerName', { number: 2 }) }}</label>
           <input
             id="player-name-b"
             v-model="playerNameInputB"
             class="text-input"
-            placeholder="Son prénom"
+            :placeholder="t('duel.opponentName')"
             :maxlength="PLAYER_NAME_MAX_LENGTH"
           />
           <DateField
             ref="dateFieldB"
             v-model="dateB"
             compact
-            legend="Date du joueur 2"
+            :legend="t('challenge.playerDate', { number: 2 })"
             error-id="duel-error"
             :invalid-part="invalidDatePartB"
           />
         </div>
       </div>
-      <p id="duel-error" class="field-error" role="alert">{{ formError }}</p>
+      <p id="duel-error" class="field-error" role="alert">
+        {{
+          formError
+            ? t('challenge.playerError', {
+                player: formError.player,
+                error: t(formError.error.key, formError.error.params ?? {}),
+              })
+            : ''
+        }}
+      </p>
       <div class="actions">
         <button class="btn btn--primary" type="submit">
-          <Icon name="lucide:swords" aria-hidden="true" /> Lancer le combat
+          <Icon name="lucide:swords" aria-hidden="true" /> {{ t('duel.start') }}
         </button>
       </div>
     </form>

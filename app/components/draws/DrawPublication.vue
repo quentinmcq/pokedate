@@ -21,6 +21,7 @@ const {
   savePreferences,
 } = usePublishedDraws()
 const trackEvent = useTrackEvent()
+const { t } = useLocaleTools()
 
 const status = ref<Status>('waiting')
 const publication = ref<Publication | null>(null)
@@ -31,6 +32,7 @@ const dialog = useTemplateRef<HTMLDialogElement>('dialog')
 const nicknameInput = ref('')
 const autoPublishInput = ref(true)
 const dialogError = ref('')
+const shownNickname = computed(() => (nickname.value === ANONYMOUS_NICKNAME ? t('common.anonymous') : nickname.value))
 const isSaving = ref(false)
 
 const STATUS_ICONS: Record<Status, string> = {
@@ -49,8 +51,8 @@ const publishedPokemon = () => ({
   bonusPokemonId: props.bonusPokemonId,
 })
 
-const readErrorMessage = (error: unknown, fallback: string) =>
-  (error as { data?: { message?: string } })?.data?.message ?? fallback
+const readErrorMessage = (error: unknown, fallbackKey: string) =>
+  t((error as { statusCode?: number })?.statusCode === 429 ? 'publication.tooFast' : fallbackKey)
 
 async function publishNow() {
   status.value = 'publishing'
@@ -86,7 +88,7 @@ async function removePublication() {
     publication.value = await remove(publication.value)
     status.value = 'removed'
   } catch (error) {
-    actionError.value = readErrorMessage(error, 'Le retrait a échoué, réessaie dans un instant.')
+    actionError.value = readErrorMessage(error, 'publication.removeFailed')
   } finally {
     isBusy.value = false
   }
@@ -109,7 +111,7 @@ const closeSettings = () => dialog.value?.close()
 
 async function saveSettings() {
   const check = checkNickname(nicknameInput.value)
-  if (!check.ok) return (dialogError.value = check.error)
+  if (!check.ok) return (dialogError.value = t(check.error.key))
   isSaving.value = true
   dialogError.value = ''
   try {
@@ -120,7 +122,7 @@ async function saveSettings() {
       startPublication()
     }
   } catch (error) {
-    dialogError.value = readErrorMessage(error, "Le pseudo n'a pas pu être changé, réessaie dans un instant.")
+    dialogError.value = readErrorMessage(error, 'publication.renameFailed')
   } finally {
     isSaving.value = false
   }
@@ -131,18 +133,21 @@ async function saveSettings() {
   <div v-if="status !== 'waiting'" class="draw-publication" role="status">
     <Icon :name="STATUS_ICONS[status]" class="draw-publication__icon" aria-hidden="true" />
     <p class="draw-publication__text">
-      <template v-if="status === 'publishing'">Ajout aux derniers tirages…</template>
-      <template v-else-if="status === 'published'">
-        Ajouté aux <NuxtLink to="/tirages" class="text-link">derniers tirages</NuxtLink> en tant que
-        <b>{{ nickname }}</b
-        >.
-      </template>
-      <template v-else-if="status === 'removed'">Retiré des derniers tirages.</template>
-      <template v-else-if="status === 'failed'">Pas pu l'ajouter aux derniers tirages.</template>
-      <template v-else-if="status === 'limit'">
-        Tu as déjà ajouté {{ DAILY_AUTO_PUBLISH_LIMIT }} tirages aujourd'hui : celui-ci reste privé.
-      </template>
-      <template v-else>Ajout automatique aux derniers tirages désactivé.</template>
+      <template v-if="status === 'publishing'">{{ t('publication.publishing') }}</template>
+      <i18n-t v-else-if="status === 'published'" keypath="publication.published" scope="global">
+        <template #draws
+          ><NuxtLinkLocale to="/tirages" class="text-link">{{ t('publication.drawsLink') }}</NuxtLinkLocale></template
+        >
+        <template #nickname
+          ><b>{{ shownNickname }}</b></template
+        >
+      </i18n-t>
+      <template v-else-if="status === 'removed'">{{ t('publication.removed') }}</template>
+      <template v-else-if="status === 'failed'">{{ t('publication.failed') }}</template>
+      <template v-else-if="status === 'limit'">{{
+        t('publication.limit', { limit: DAILY_AUTO_PUBLISH_LIMIT })
+      }}</template>
+      <template v-else>{{ t('publication.disabled') }}</template>
       <span v-if="actionError" class="draw-publication__error">{{ actionError }}</span>
     </p>
     <div class="draw-publication__actions">
@@ -153,7 +158,7 @@ async function saveSettings() {
         aria-haspopup="dialog"
         @click="openSettings"
       >
-        {{ status === 'published' ? 'Changer de pseudo' : 'Réglages' }}
+        {{ status === 'published' ? t('publication.changeNickname') : t('publication.settings') }}
       </button>
       <button
         v-if="status === 'published'"
@@ -162,7 +167,7 @@ async function saveSettings() {
         :disabled="isBusy"
         @click="removePublication"
       >
-        Retirer
+        {{ t('publication.remove') }}
       </button>
       <button
         v-if="status === 'removed' || status === 'failed'"
@@ -171,40 +176,45 @@ async function saveSettings() {
         :disabled="isBusy"
         @click="republish"
       >
-        {{ status === 'removed' ? 'Remettre' : 'Réessayer' }}
+        {{ status === 'removed' ? t('publication.restore') : t('common.retry') }}
       </button>
     </div>
   </div>
 
   <dialog ref="dialog" class="publish-dialog" aria-labelledby="publish-dialog-title" @click.self="closeSettings">
     <form class="publish-dialog__content" novalidate @submit.prevent="saveSettings">
-      <h2 id="publish-dialog-title" class="publish-dialog__title">Tes tirages publics</h2>
+      <h2 id="publish-dialog-title" class="publish-dialog__title">{{ t('publication.dialogTitle') }}</h2>
       <p class="publish-dialog__public">
-        <Icon name="lucide:globe" aria-hidden="true" /> Tes Pokémon révélés apparaissent sur la page
-        <NuxtLink to="/tirages" class="text-link" target="_blank">Derniers tirages</NuxtLink>, visible par tout le monde
-        : {{ DAILY_AUTO_PUBLISH_LIMIT }} par jour au plus, effacés au bout de 7 jours. Seuls le pseudo, le Pokémon et
-        l'heure sont publiés, jamais ta date.
+        <Icon name="lucide:globe" aria-hidden="true" />
+        <i18n-t keypath="publication.notice" scope="global">
+          <template #page
+            ><NuxtLinkLocale to="/tirages" class="text-link" target="_blank">{{
+              t('publication.noticePage')
+            }}</NuxtLinkLocale></template
+          >
+          <template #limit>{{ DAILY_AUTO_PUBLISH_LIMIT }}</template>
+        </i18n-t>
       </p>
-      <label class="publish-dialog__label" for="publish-nickname">Ton pseudo (facultatif)</label>
+      <label class="publish-dialog__label" for="publish-nickname">{{ t('publication.nicknameLabel') }}</label>
       <input
         id="publish-nickname"
         v-model="nicknameInput"
         class="publish-dialog__input"
-        :placeholder="ANONYMOUS_NICKNAME"
+        :placeholder="t('common.anonymous')"
         autocomplete="nickname"
         :maxlength="NICKNAME_LENGTH.max"
         :aria-invalid="!!dialogError || undefined"
         aria-describedby="publish-error publish-note"
       />
       <p id="publish-error" class="field-error" role="alert">{{ dialogError }}</p>
-      <p id="publish-note" class="publish-dialog__note">Laisse vide pour rester anonyme.</p>
+      <p id="publish-note" class="publish-dialog__note">{{ t('publication.nicknameNote') }}</p>
       <label class="toggle publish-dialog__toggle">
         <input v-model="autoPublishInput" type="checkbox" />
-        Ajouter automatiquement mes prochains tirages
+        {{ t('publication.autoPublish') }}
       </label>
       <div class="publish-dialog__actions">
-        <button class="btn btn--primary btn--sm" type="submit" :disabled="isSaving">Enregistrer</button>
-        <button class="btn btn--ghost btn--sm" type="button" @click="closeSettings">Annuler</button>
+        <button class="btn btn--primary btn--sm" type="submit" :disabled="isSaving">{{ t('publication.save') }}</button>
+        <button class="btn btn--ghost btn--sm" type="button" @click="closeSettings">{{ t('common.cancel') }}</button>
       </div>
     </form>
   </dialog>

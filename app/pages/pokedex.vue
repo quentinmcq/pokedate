@@ -3,6 +3,7 @@ import type { Discoveries } from '~/composables/usePokedex'
 
 const { discoveries, seenCount, caughtCount, shinyCount, isLoaded, discoveryStateOf } = usePokedex()
 const { resetAccent } = usePageAccent()
+const { t, formatLocalNumber } = useLocaleTools()
 rememberCurrentPath('pokedex')
 resetAccent()
 
@@ -35,8 +36,8 @@ const isEmpty = computed(() => isLoaded.value && seenCount.value === 0)
 const completionPercent = computed(() => (caughtCount.value / totalCount.value) * 100)
 
 usePageSeo({
-  title: 'Mon Pokédex',
-  description: 'Tous les Pokémon que tu as attrapés avec PokéDate, en entrant tes dates et celles de tes potes.',
+  title: () => t('pokedex.seoTitle'),
+  description: () => t('pokedex.seoDescription'),
   noindex: true,
 })
 </script>
@@ -44,42 +45,45 @@ usePageSeo({
 <template>
   <div>
     <div class="hero">
-      <h1>Ton Pokédex</h1>
-      <p class="lead">
-        Chaque date que tu entres (la tienne, celles de tes potes, celles d'un duel…) te fait attraper son Pokémon. Ceux
-        que tu croises au hasard ou sur leur fiche sont seulement vus. Attrape-les tous&nbsp;!
-      </p>
+      <h1>{{ t('pokedex.title') }}</h1>
+      <p class="lead">{{ t('pokedex.lead') }}</p>
       <PokedexImport v-if="incomingDiscoveries" :incoming="incomingDiscoveries" @done="finishImport" />
       <template v-if="!isEmpty">
         <div
           class="progress"
           role="progressbar"
-          aria-label="Progression du Pokédex"
+          :aria-label="t('pokedex.progress')"
           :aria-valuenow="caughtCount"
           aria-valuemin="0"
           :aria-valuemax="totalCount"
-          :aria-valuetext="`${caughtCount} Pokémon attrapés sur ${totalCount}`"
+          :aria-valuetext="t('pokedex.progressText', { caught: caughtCount, total: totalCount })"
         >
           <div class="progress__fill" :style="{ width: `${completionPercent}%` }" />
         </div>
         <p class="dex-stats">
-          {{ caughtCount }} / {{ totalCount }} attrapés ({{ formatNumber(completionPercent) }} %) · {{ seenCount }} vu{{
-            seenCount > 1 ? 's' : ''
+          {{
+            t('pokedex.stats', {
+              caught: caughtCount,
+              total: totalCount,
+              percent: formatLocalNumber(completionPercent),
+            })
+          }}
+          · {{ t('pokedex.seen', { count: seenCount }, seenCount)
           }}<template v-if="shinyCount">
             · {{ shinyCount }} shiny <Icon name="lucide:sparkles" aria-hidden="true"
           /></template>
         </p>
         <label class="toggle"
-          ><input v-model="showOnlyDiscovered" type="checkbox" /> Masquer les Pokémon jamais vus</label
+          ><input v-model="showOnlyDiscovered" type="checkbox" /> {{ t('pokedex.hideUnseen') }}</label
         >
       </template>
     </div>
 
     <div v-if="isEmpty" class="empty-state">
       <PokeBall :size="56" />
-      <p>Ton Pokédex est vide. Révèle le Pokémon de ta date pour commencer ta collection.</p>
-      <NuxtLink to="/" class="btn btn--primary"
-        ><Icon name="lucide:sparkles" aria-hidden="true" /> Révéler mon premier Pokémon</NuxtLink
+      <p>{{ t('pokedex.empty') }}</p>
+      <NuxtLinkLocale to="/" class="btn btn--primary"
+        ><Icon name="lucide:sparkles" aria-hidden="true" /> {{ t('pokedex.revealFirst') }}</NuxtLinkLocale
       >
     </div>
 

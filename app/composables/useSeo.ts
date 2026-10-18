@@ -1,6 +1,5 @@
 const SITE_NAME = 'PokéDate'
-const DEFAULT_TITLE = 'PokéDate · Quel Pokémon se cache dans ta date ?'
-const DEFAULT_SHARE_IMAGE = '/og-default.jpg'
+const DEFAULT_SHARE_IMAGES = { fr: '/og-default.jpg', en: '/og-default-en.jpg' } as const
 
 export function useAbsoluteUrl() {
   const { siteUrl } = useRuntimeConfig().public
@@ -10,17 +9,20 @@ export function useAbsoluteUrl() {
 export function useSiteSeo() {
   const route = useRoute()
   const absoluteUrl = useAbsoluteUrl()
-  const canonicalUrl = computed(() => absoluteUrl(route.path))
+  const { t } = useLocaleTools()
+  // Language, canonical link, hreflang alternates and og:locale all come from the i18n module.
+  const localeHead = useLocaleHead({ dir: false, lang: true, seo: true })
 
   useHead({
-    titleTemplate: (title) => (title ? `${title} · ${SITE_NAME}` : DEFAULT_TITLE),
-    link: [{ rel: 'canonical', href: canonicalUrl }],
+    titleTemplate: (title) => (title ? `${title} · ${SITE_NAME}` : t('seo.defaultTitle')),
+    htmlAttrs: { lang: () => localeHead.value.htmlAttrs.lang },
+    link: () => localeHead.value.link,
+    meta: () => localeHead.value.meta,
   })
   useSeoMeta({
     ogSiteName: SITE_NAME,
-    ogLocale: 'fr_FR',
     ogType: 'website',
-    ogUrl: canonicalUrl,
+    ogUrl: () => absoluteUrl(route.path),
   })
 }
 
@@ -40,11 +42,12 @@ const serializeJsonLd = (data: JsonLd | JsonLd[]) => JSON.stringify(data).replac
 
 export function usePageSeo(seo: PageSeo) {
   const absoluteUrl = useAbsoluteUrl()
-  const shareImageUrl = computed(() => absoluteUrl(toValue(seo.shareImagePath) ?? DEFAULT_SHARE_IMAGE))
+  const { t, locale } = useLocaleTools()
+  const shareImageUrl = computed(() => absoluteUrl(toValue(seo.shareImagePath) ?? DEFAULT_SHARE_IMAGES[locale.value]))
 
   useSeoMeta({
     title: () => toValue(seo.title),
-    ogTitle: () => toValue(seo.shareTitle) ?? toValue(seo.title) ?? DEFAULT_TITLE,
+    ogTitle: () => toValue(seo.shareTitle) ?? toValue(seo.title) ?? t('seo.defaultTitle'),
     description: () => toValue(seo.description),
     ogDescription: () => toValue(seo.description),
     ogImage: shareImageUrl,

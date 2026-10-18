@@ -5,26 +5,31 @@ const props = defineProps<{ pokemonId: number; pokemonName: string; today: Calen
 
 const YEARS_SHOWN = 3
 
-const listFormat = new Intl.ListFormat('fr-FR', { type: 'disjunction' })
-const monthFormat = new Intl.DateTimeFormat('fr-FR', { month: 'long', timeZone: 'UTC' })
-const longDateFormat = new Intl.DateTimeFormat('fr-FR', {
-  weekday: 'long',
-  day: 'numeric',
-  month: 'long',
-  year: 'numeric',
-  timeZone: 'UTC',
-})
+const { t, locale } = useLocaleTools()
+const localeTag = computed(() => LOCALE_TAGS[locale.value])
+const listFormat = computed(() => new Intl.ListFormat(localeTag.value, { type: 'disjunction' }))
+const monthFormat = computed(() => new Intl.DateTimeFormat(localeTag.value, { month: 'long', timeZone: 'UTC' }))
+const longDateFormat = computed(
+  () =>
+    new Intl.DateTimeFormat(localeTag.value, {
+      weekday: 'long',
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+      timeZone: 'UTC',
+    }),
+)
 
 const asUtcDate = ({ day, month, year }: CalendarDate) => new Date(Date.UTC(year, month - 1, day))
 const shortDate = ({ day, month, year }: CalendarDate) => `${padNumber(day)}/${padNumber(month)}/${year}`
-const monthName = (month: number) => monthFormat.format(asUtcDate({ day: 1, month, year: 2000 }))
+const monthName = (month: number) => monthFormat.value.format(asUtcDate({ day: 1, month, year: 2000 }))
 
 const digits = computed(() => dateDigitsForPokemon(props.pokemonId))
 const monthsAllowed = computed(() => (digits.value ? monthsEndingWith(digits.value.month) : []))
 const dayChoices = computed(() =>
-  digits.value ? listFormat.format(daysEndingWith(digits.value.day).map((day) => padNumber(day))) : '',
+  digits.value ? listFormat.value.format(daysEndingWith(digits.value.day).map((day) => padNumber(day))) : '',
 )
-const monthChoices = computed(() => listFormat.format(monthsAllowed.value.map(monthName)))
+const monthChoices = computed(() => listFormat.value.format(monthsAllowed.value.map(monthName)))
 const yearChoices = computed(() => {
   if (!digits.value) return ''
   const latestYear = props.today.year - ((props.today.year - digits.value.year + 10) % 10)
@@ -39,44 +44,56 @@ const examples = computed(() => exampleDatesForPokemon(props.pokemonId).map(shor
 
 <template>
   <section class="pokemon-dates" aria-labelledby="pokemon-dates-title">
-    <h2 id="pokemon-dates-title">Quelles dates donnent {{ pokemonName }}&nbsp;?</h2>
+    <h2 id="pokemon-dates-title">{{ t('dates.title', { name: pokemonName }) }}</h2>
     <template v-if="digits">
-      <p>Ta date donne {{ pokemonName }} quand&nbsp;:</p>
+      <p>{{ t('dates.intro', { name: pokemonName }) }}</p>
       <ul class="pokemon-dates__rules">
-        <li>
-          le jour finit par <b>{{ digits.day }}</b> ({{ dayChoices }})&nbsp;;
-        </li>
-        <li v-if="monthsAllowed.length > 1">
-          le mois finit par <b>{{ digits.month }}</b> ({{ monthChoices }})&nbsp;;
-        </li>
-        <li v-else>
-          le mois est <b>{{ monthChoices }}</b
-          >&nbsp;;
-        </li>
-        <li>
-          l'année finit par <b>{{ digits.year }}</b> ({{ yearChoices }}).
-        </li>
+        <i18n-t keypath="dates.dayRule" tag="li" scope="global">
+          <template #digit
+            ><b>{{ digits.day }}</b></template
+          >
+          <template #choices>{{ dayChoices }}</template>
+        </i18n-t>
+        <i18n-t v-if="monthsAllowed.length > 1" keypath="dates.monthRule" tag="li" scope="global">
+          <template #digit
+            ><b>{{ digits.month }}</b></template
+          >
+          <template #choices>{{ monthChoices }}</template>
+        </i18n-t>
+        <i18n-t v-else keypath="dates.singleMonthRule" tag="li" scope="global">
+          <template #month
+            ><b>{{ monthChoices }}</b></template
+          >
+        </i18n-t>
+        <i18n-t keypath="dates.yearRule" tag="li" scope="global">
+          <template #digit
+            ><b>{{ digits.year }}</b></template
+          >
+          <template #choices>{{ yearChoices }}</template>
+        </i18n-t>
       </ul>
     </template>
-    <p v-else>
-      {{ pokemonName }} est un Pokémon bonus&nbsp;: il n'apparaît qu'avec une <b>date miroir</b>, quand le jour et le
-      mois sont identiques (le 04/04, le 12/12…). Le jour et l'année décident lequel des 25 Pokémon bonus surgit.
-    </p>
+    <i18n-t v-else keypath="dates.bonus" tag="p" scope="global">
+      <template #name>{{ pokemonName }}</template>
+      <template #mirrorDate
+        ><b>{{ t('dates.mirrorDate') }}</b></template
+      >
+    </i18n-t>
     <dl class="pokemon-dates__facts">
       <div v-if="nextDate" class="pokemon-dates__fact">
-        <dt>Prochaine date</dt>
+        <dt>{{ t('dates.next') }}</dt>
         <dd>
           <time :datetime="toIsoDate(nextDate)">{{
-            isToday ? "Aujourd'hui !" : longDateFormat.format(asUtcDate(nextDate))
+            isToday ? t('dates.today') : longDateFormat.format(asUtcDate(nextDate))
           }}</time>
         </dd>
       </div>
       <div class="pokemon-dates__fact">
-        <dt>Exemples de dates de naissance</dt>
+        <dt>{{ t('dates.examples') }}</dt>
         <dd>{{ examples }}</dd>
       </div>
     </dl>
-    <NuxtLink to="/" class="btn btn--ghost btn--sm">Tester ta date</NuxtLink>
+    <NuxtLinkLocale to="/" class="btn btn--ghost btn--sm">{{ t('dates.tryYours') }}</NuxtLinkLocale>
   </section>
 </template>
 

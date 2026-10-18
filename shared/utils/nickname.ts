@@ -1,3 +1,5 @@
+import type { Message } from './messages'
+
 export const NICKNAME_LENGTH = { min: 2, max: 20 } as const
 
 const ALLOWED_CHARACTERS = /^[\p{L}\p{N} '_-]+$/u
@@ -64,20 +66,21 @@ export const ANONYMOUS_NICKNAME = 'Anonyme'
 
 export const cleanNickname = (value: unknown) => (typeof value === 'string' ? value.trim().replace(/\s+/g, ' ') : '')
 
-export type NicknameCheck = { ok: true; nickname: string } | { ok: false; error: string }
+export type NicknameCheck = { ok: true; nickname: string } | { ok: false; error: Message }
+
+const invalid = (key: string): NicknameCheck => ({ ok: false, error: { key: `nicknameErrors.${key}` } })
 
 export function checkNickname(value: unknown): NicknameCheck {
   const nickname = cleanNickname(value)
   if (!nickname) return { ok: true, nickname: ANONYMOUS_NICKNAME }
-  if (nickname.length < NICKNAME_LENGTH.min) return { ok: false, error: 'Ton pseudo doit faire au moins 2 caractères.' }
-  if (nickname.length > NICKNAME_LENGTH.max) return { ok: false, error: 'Ton pseudo doit faire 20 caractères au plus.' }
-  if (!ALLOWED_CHARACTERS.test(nickname))
-    return { ok: false, error: 'Lettres, chiffres, espaces, tirets et apostrophes uniquement.' }
+  if (nickname.length < NICKNAME_LENGTH.min) return invalid('tooShort')
+  if (nickname.length > NICKNAME_LENGTH.max) return invalid('tooLong')
+  if (!ALLOWED_CHARACTERS.test(nickname)) return invalid('characters')
   const words = normalized(nickname).split(/[\s'_-]+/)
   const spelledOutWord = words.filter((word) => word.length === 1).join('')
   const isBlocked =
     words.some((word) => BLOCKED_WORDS.includes(word)) ||
     [...words, spelledOutWord].some((word) => BLOCKED_FRAGMENTS.some((fragment) => word.includes(fragment)))
-  if (isBlocked) return { ok: false, error: 'Choisis un autre pseudo, celui-ci ne passe pas.' }
+  if (isBlocked) return invalid('blocked')
   return { ok: true, nickname }
 }

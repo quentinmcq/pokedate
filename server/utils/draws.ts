@@ -1,4 +1,4 @@
-import type { PublicDraw, PublishedDraw } from '#shared/types/pokemon'
+import type { Locale, PublicDraw, PublishedDraw } from '#shared/types/pokemon'
 import type { D1Database } from './cloudflareBindings'
 
 export const DRAWS_SHOWN = 50
@@ -15,24 +15,24 @@ interface DrawRow {
   bonus_pokemon_id: number | null
 }
 
-const pokemonName = (id: number) => findPokemon(id)?.name ?? `#${id}`
-
-const toPublicDraw = (row: DrawRow): PublicDraw => ({
+const toPublicDraw = (row: DrawRow, locale: Locale = 'fr'): PublicDraw => ({
   id: row.id,
   pokemonId: row.pokemon_id,
-  pokemonName: pokemonName(row.pokemon_id),
+  pokemonName: pokemonNameOf(row.pokemon_id, locale),
   shiny: row.shiny === 1,
-  bonusPokemon: row.bonus_pokemon_id ? { id: row.bonus_pokemon_id, name: pokemonName(row.bonus_pokemon_id) } : null,
+  bonusPokemon: row.bonus_pokemon_id
+    ? { id: row.bonus_pokemon_id, name: pokemonNameOf(row.bonus_pokemon_id, locale) }
+    : null,
   nickname: row.nickname,
   createdAt: new Date(row.created_at).toISOString(),
 })
 
-export async function listRecentDraws(db: D1Database, now = Date.now()) {
+export async function listRecentDraws(db: D1Database, locale: Locale, now = Date.now()) {
   const { results } = await db
     .prepare('SELECT * FROM draws WHERE created_at >= ? ORDER BY id DESC LIMIT ?')
     .bind(now - DRAW_LIFETIME_MS, DRAWS_SHOWN)
     .all<DrawRow>()
-  return results.map(toPublicDraw)
+  return results.map((row) => toPublicDraw(row, locale))
 }
 
 export async function countRecentDrawsOfNickname(db: D1Database, nickname: string, now = Date.now()) {

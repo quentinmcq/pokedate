@@ -1,3 +1,5 @@
+export type Locale = 'fr' | 'en'
+
 export type TypeKey =
   | 'normal'
   | 'fire'
@@ -48,7 +50,7 @@ export interface PokedexEntry extends PokemonSummary {
 }
 
 export interface PokemonDetail extends PokedexEntry {
-  englishName: string
+  otherLanguageName: string
   genus: string
   heightMeters: number
   weightKg: number

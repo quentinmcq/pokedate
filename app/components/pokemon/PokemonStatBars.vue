@@ -5,6 +5,8 @@ const props = defineProps<{ stats: BaseStats; filled: boolean }>()
 
 const MAX_DISPLAYED_STAT = 200
 
+const { t } = useLocaleTools()
+
 const total = computed(() => statTotal(props.stats))
 const bestStat = computed(() => strongestStat(props.stats))
 const fillWidth = (value: number) => (props.filled ? `${Math.min(100, (value / MAX_DISPLAYED_STAT) * 100)}%` : '0')
@@ -13,7 +15,7 @@ const fillWidth = (value: number) => (props.filled ? `${Math.min(100, (value / M
 <template>
   <dl class="stat-bars">
     <template v-for="key in STAT_KEYS" :key="key">
-      <dt>{{ STAT_LABELS[key] }}</dt>
+      <dt>{{ t(`stats.${key}`) }}</dt>
       <dd>
         <span class="stat-bars__val">{{ stats[key] }}</span>
         <span class="stat-bars__track" aria-hidden="true"
@@ -26,7 +28,8 @@ const fillWidth = (value: number) => (props.filled ? `${Math.min(100, (value / M
     </template>
   </dl>
   <p class="stat-bars__total">
-    <span>Total</span><span>{{ total }}</span>
+    <span>{{ t('stats.total') }}</span
+    ><span>{{ total }}</span>
   </p>
 </template>
 

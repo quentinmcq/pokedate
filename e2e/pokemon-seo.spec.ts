@@ -76,10 +76,19 @@ test.describe('Référencement', { tag: '@server' }, () => {
     expect(og.headers()['content-type']).toBe('image/jpeg')
   })
 
+  test('la fiche anglaise a son adresse, son titre et ses liens de langue', async ({ page }) => {
+    await gotoHydrated(page, '/en/pokemon/706-goodra')
+    await expect(page.locator('html')).toHaveAttribute('lang', 'en-GB')
+    await expect(page).toHaveTitle('Goodra (no. 706): types, stats, weaknesses and evolutions · PokéDate')
+    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', /\/en\/pokemon\/706-goodra$/)
+    await expect(page.locator('link[hreflang="fr"]')).toHaveAttribute('href', /\/pokemon\/706-muplodocus$/)
+    await expect(page.locator(meta('og:image'))).toHaveAttribute('content', /\/sprites\/og-en\/706\.jpg$/)
+  })
+
   test('les pages personnelles ne sont pas indexées', async ({ page }) => {
     await gotoHydrated(page, '/?date=2026-10-17')
     await expect(page.locator(meta('robots'))).toHaveAttribute('content', 'noindex, follow')
-    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', /\/$/)
+    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', /pokedate\.fr\/?$/)
     await gotoHydrated(page, '/duel?pa=1&pb=4')
     await expect(page.locator(meta('robots'))).toHaveAttribute('content', 'noindex, follow')
   })
@@ -105,8 +114,10 @@ test.describe('Référencement', { tag: '@server' }, () => {
     const sitemap = await request.get('/sitemap.xml')
     expect(sitemap.headers()['content-type']).toContain('application/xml')
     const xml = await sitemap.text()
-    expect(xml.match(/<url>/g)).toHaveLength(1030)
+    expect(xml.match(/<url>/g)).toHaveLength(2060)
     expect(xml).toContain('/pokemon/1025-')
+    expect(xml).toContain('/en/pokemon/1025-')
+    expect(xml).toContain('hreflang="en"')
     const robots = await (await request.get('/robots.txt')).text()
     expect(robots).toContain('Sitemap: ')
   })

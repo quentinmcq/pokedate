@@ -20,7 +20,7 @@ export async function assertWithinRateLimit(event: H3Event, limiter: RateLimiter
 
 export async function readAllowedNickname(db: D1Database, value: unknown) {
   const nicknameCheck = checkNickname(value)
-  if (!nicknameCheck.ok) throw createError({ statusCode: 400, message: nicknameCheck.error })
+  if (!nicknameCheck.ok) throw createError({ statusCode: 400, message: translatorFor('fr')(nicknameCheck.error.key) })
   const { nickname } = nicknameCheck
   if (nickname !== ANONYMOUS_NICKNAME && (await countRecentDrawsOfNickname(db, nickname)) >= NICKNAME_HOURLY_LIMIT)
     throw createError({ statusCode: 429, message: 'Ce pseudo a déjà beaucoup publié, réessaie dans une heure.' })

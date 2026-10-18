@@ -19,7 +19,7 @@ export default defineEventHandler(async (event): Promise<DrawsActivity> => {
     .bind(today, `-${DAYS_IN_WEEK - 1} days`)
     .first<{ pokemon_id: number; total: number }>()
 
-  const favouritePokemon = weekFavourite ? findPokemon(weekFavourite.pokemon_id) : null
+  const favouritePokemon = weekFavourite ? findPokemon(weekFavourite.pokemon_id, requestLocale(event)) : null
   return {
     todayReveals: todayTotals?.reveals ?? 0,
     todayShiny: todayTotals?.shiny ?? 0,

@@ -2,10 +2,12 @@ import { createHash } from 'node:crypto'
 import { cpSync, existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { join, relative, sep } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { ENGLISH_PAGE_PATHS } from './shared/utils/localizedPages'
 import { POKEMON_TYPES } from './shared/utils/pokemon'
 
 const GENERATED = fileURLToPath(new URL('./generated', import.meta.url))
 const SERVICE_WORKER_SOURCE = fileURLToPath(new URL('./service-worker/sw.js', import.meta.url))
+const SITE_URL = 'https://pokedate.fr'
 const ONE_MONTH = 60 * 60 * 24 * 30
 
 // The service worker precaches every built script, style and font. Its content changes with each
@@ -26,7 +28,7 @@ export default defineNuxtConfig({
   compatibilityDate: '2026-10-17',
   devtools: { enabled: true },
 
-  modules: ['@nuxt/fonts', '@nuxt/icon', 'nuxt-security'],
+  modules: ['@nuxt/fonts', '@nuxt/icon', '@nuxtjs/i18n', 'nuxt-security'],
 
   components: [{ path: '~/components', pathPrefix: false }],
 
@@ -34,15 +36,28 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
-      siteUrl: 'https://pokedate.fr',
+      siteUrl: SITE_URL,
       portfolioUrl: 'https://quentin-macq.dev',
       cloudflareAnalyticsToken: '',
     },
   },
 
+  i18n: {
+    strategy: 'prefix_except_default',
+    defaultLocale: 'fr',
+    baseUrl: SITE_URL,
+    locales: [
+      { code: 'fr', language: 'fr-FR', name: 'Français', file: 'fr.json' },
+      { code: 'en', language: 'en-GB', name: 'English', file: 'en.json' },
+    ],
+    // No cookie and no redirect: each language has its own addresses, and a link switches between them.
+    detectBrowserLanguage: false,
+    customRoutes: 'config',
+    pages: Object.fromEntries(Object.entries(ENGLISH_PAGE_PATHS).map(([page, path]) => [page, { en: path }])),
+  },
+
   app: {
     head: {
-      htmlAttrs: { lang: 'fr' },
       meta: [
         { name: 'viewport', content: 'width=device-width, initial-scale=1, viewport-fit=cover' },
         { name: 'theme-color', content: '#14162b' },

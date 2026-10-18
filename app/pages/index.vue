@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { CalendarDate, DateFieldValue } from '#shared/types/pokemon'
 import type { DateFieldKey } from '#shared/utils/date'
+import type { Message } from '#shared/utils/messages'
 
 const route = useRoute()
 const router = useRouter()
@@ -9,12 +10,14 @@ const absoluteUrl = useAbsoluteUrl()
 const { portfolioUrl } = useRuntimeConfig().public
 const { recordDiscovery } = usePokedex()
 const trackEvent = useTrackEvent()
+const { t, locale } = useLocaleTools()
+const localePath = useLocalePath()
 rememberCurrentPath('home')
 
 const RANDOM_DATE_START = new Date(1950, 0, 1).getTime()
 
 const dateInput = ref<DateFieldValue>(emptyDateFieldValue())
-const formError = ref('')
+const formError = ref<Message | null>(null)
 const invalidDatePart = ref<DateFieldKey | null>(null)
 const dateField = useTemplateRef('dateField')
 const revealCount = ref(0)
@@ -60,7 +63,7 @@ onMounted(() => watch([() => route.fullPath, revealCount], recordRevealedDate, {
 watchEffect(() => !pokemon.value && resetAccent())
 
 async function revealPokemonFor(date: CalendarDate, { isRandom = false } = {}) {
-  formError.value = ''
+  formError.value = null
   invalidDatePart.value = null
   revealCount.value++
   trackEvent(isRandom ? 'random' : 'reveal', { pokemonId: pokemonIdFromDate(date), shiny: isShinyDate(date) })
@@ -90,9 +93,8 @@ const revealedPokemon = computed(() => (selectedDate.value ? pokemon.value : nul
 
 usePageSeo({
   title: () => (revealedPokemon.value ? `${revealedPokemon.value.name} #${revealedPokemon.value.id}` : undefined),
-  description:
-    "Quel Pokémon se cache dans ta date de naissance ? Les derniers chiffres du jour, du mois et de l'année donnent ton Pokémon parmi les 1025 : types, stats, faiblesses, évolutions, duels et tournois entre potes.",
-  shareImagePath: () => (revealedPokemon.value ? shareImagePath(revealedPokemon.value.id) : undefined),
+  description: () => t('home.seoDescription'),
+  shareImagePath: () => (revealedPokemon.value ? shareImagePath(revealedPokemon.value.id, locale.value) : undefined),
   shareImageAlt: () => revealedPokemon.value?.name,
   noindex: () => !!route.query.date,
   structuredData: () => [
@@ -100,27 +102,27 @@ usePageSeo({
       '@context': 'https://schema.org',
       '@type': 'WebSite',
       name: 'PokéDate',
-      url: absoluteUrl('/'),
-      inLanguage: 'fr-FR',
+      url: absoluteUrl(localePath('/')),
+      inLanguage: LOCALE_TAGS[locale.value],
     },
     {
       '@context': 'https://schema.org',
       '@type': 'WebApplication',
       name: 'PokéDate',
-      url: absoluteUrl('/'),
+      url: absoluteUrl(localePath('/')),
       applicationCategory: 'EntertainmentApplication',
-      operatingSystem: 'Tous',
-      inLanguage: 'fr-FR',
+      operatingSystem: t('home.anyOperatingSystem'),
+      inLanguage: LOCALE_TAGS[locale.value],
       offers: { '@type': 'Offer', price: '0', priceCurrency: 'EUR' },
       author: { '@type': 'Person', name: 'Quentin Macq', url: portfolioUrl },
     },
     {
       '@context': 'https://schema.org',
       '@type': 'FAQPage',
-      mainEntity: HOME_FAQ.map(({ question, answer }) => ({
+      mainEntity: HOME_FAQ_KEYS.map((key) => ({
         '@type': 'Question',
-        name: question,
-        acceptedAnswer: { '@type': 'Answer', text: answer },
+        name: t(`faq.${key}.question`),
+        acceptedAnswer: { '@type': 'Answer', text: t(`faq.${key}.answer`) },
       })),
     },
   ],
@@ -129,41 +131,63 @@ usePageSeo({
 
 <template>
   <div>
-    <form class="hero" action="/" method="get" autocomplete="off" novalidate @submit.prevent="submitDate">
-      <h1>Quel Pokémon<br />se cache dans ta date&nbsp;?</h1>
-      <p class="lead">
-        Les derniers chiffres du <b>jour</b>, du <b>mois</b> et de l'<b>année</b> forment le numéro de ton Pokémon.
-        Essaie avec ta date de naissance&nbsp;!
-      </p>
+    <form
+      class="hero"
+      :action="localePath('/')"
+      method="get"
+      autocomplete="off"
+      novalidate
+      @submit.prevent="submitDate"
+    >
+      <h1>{{ t('home.titleStart') }}<br />{{ t('home.titleEnd') }}</h1>
+      <i18n-t keypath="home.lead" tag="p" class="lead" scope="global">
+        <template #day
+          ><b>{{ t('home.leadDay') }}</b></template
+        >
+        <template #month
+          ><b>{{ t('home.leadMonth') }}</b></template
+        >
+        <template #year
+          ><b>{{ t('home.leadYear') }}</b></template
+        >
+      </i18n-t>
       <DateField
         ref="dateField"
         v-model="dateInput"
-        legend="Ta date"
+        :legend="t('home.dateLegend')"
         error-id="date-error"
         :invalid-part="invalidDatePart"
         :field-names="DATE_FIELD_NAMES"
       />
-      <p id="date-error" class="field-error" role="alert">{{ formError }}</p>
+      <p id="date-error" class="field-error" role="alert">
+        {{ formError ? t(formError.key, formError.params ?? {}) : '' }}
+      </p>
       <div class="actions">
-        <button class="btn btn--primary" type="submit">Révéler mon Pokémon</button>
+        <button class="btn btn--primary" type="submit">{{ t('home.reveal') }}</button>
         <span class="actions__break" aria-hidden="true" />
-        <button class="btn btn--ghost" type="button" @click="revealToday">Aujourd'hui</button>
+        <button class="btn btn--ghost" type="button" @click="revealToday">{{ t('home.today') }}</button>
         <button class="btn btn--ghost" type="button" @click="revealRandomDate">
-          <Icon name="lucide:dices" aria-hidden="true" /> Au hasard
+          <Icon name="lucide:dices" aria-hidden="true" /> {{ t('home.random') }}
         </button>
       </div>
     </form>
 
-    <section v-if="pokemon && selectedDate" ref="resultSection" class="result" tabindex="-1" aria-label="Ton Pokémon">
+    <section
+      v-if="pokemon && selectedDate"
+      ref="resultSection"
+      class="result"
+      tabindex="-1"
+      :aria-label="t('home.resultLabel')"
+    >
       <DateFormula :date="selectedDate" />
       <p v-if="isRandomDraw" class="result__random-note">
         <Icon name="lucide:dices" aria-hidden="true" />
-        <span>
-          Tirage au hasard&nbsp;: {{ pokemon.name }} est seulement <b>vu</b> dans ton Pokédex, en ombre<template
-            v-if="isShiny"
-            >, même s'il est shiny</template
-          >. Pour l'attraper, entre une date qui compte pour toi.
-        </span>
+        <i18n-t :keypath="isShiny ? 'home.randomNoteShiny' : 'home.randomNote'" tag="span" scope="global">
+          <template #name>{{ pokemon.name }}</template>
+          <template #seen
+            ><b>{{ t('home.randomNoteSeen') }}</b></template
+          >
+        </i18n-t>
       </p>
       <PokemonCard
         :key="`${toIsoDate(selectedDate)}-${revealCount}`"
@@ -187,43 +211,50 @@ usePageSeo({
         :to="pokemonPath(mirrorPokemon)"
         :image-src="artworkUrl(mirrorPokemon.id)"
         icon="lucide:moon-star"
-        :title="`Ta date est une date miroir : ${padNumber(selectedDate.day)}/${padNumber(selectedDate.month)} !`"
+        :title="t('home.mirrorTitle', { date: `${padNumber(selectedDate.day)}/${padNumber(selectedDate.month)}` })"
       >
-        Le jour et le mois de ta date sont identiques, alors un Pokémon rare surgit en bonus&nbsp;:
-        <strong>{{ mirrorPokemon.name }}</strong
-        >. Touche pour le découvrir.
+        <i18n-t keypath="home.mirrorText" scope="global">
+          <template #name
+            ><strong>{{ mirrorPokemon.name }}</strong></template
+          >
+        </i18n-t>
       </HighlightBanner>
     </section>
 
     <div v-else-if="selectedDate && pokemonError" class="result-error" role="alert">
       <Icon name="lucide:wifi-off" aria-hidden="true" />
-      <p>Ton Pokémon n'a pas pu s'afficher. Vérifie ta connexion, puis réessaie.</p>
-      <button class="btn btn--ghost btn--sm" type="button" @click="retryPokemon()">Réessayer</button>
+      <p>{{ t('home.loadError') }}</p>
+      <button class="btn btn--ghost btn--sm" type="button" @click="retryPokemon()">{{ t('common.retry') }}</button>
     </div>
 
     <section class="section" aria-labelledby="how-it-works">
-      <h2 id="how-it-works" class="section__title">Comment ça marche&nbsp;?</h2>
+      <h2 id="how-it-works" class="section__title">{{ t('home.howTitle') }}</h2>
       <ol class="steps">
         <li>
-          <strong>Entre une date</strong>Ton anniversaire, celui de tes potes ou n'importe quel jour qui compte pour
-          toi.
+          <strong>{{ t('home.stepDateTitle') }}</strong
+          >{{ t('home.stepDateText') }}
         </li>
         <li>
-          <strong>Trois chiffres, un Pokémon</strong>Les derniers chiffres du jour, du mois et de l'année donnent un
-          numéro entre 1 et 1000.
+          <strong>{{ t('home.stepDigitsTitle') }}</strong
+          >{{ t('home.stepDigitsText') }}
         </li>
         <li>
-          <strong>Défie tes potes</strong>Lance un <NuxtLink to="/duel" class="text-link">duel</NuxtLink> et complète
-          ton <NuxtLink to="/pokedex" class="text-link">Pokédex</NuxtLink> au fil des dates.
+          <strong>{{ t('home.stepChallengeTitle') }}</strong
+          ><i18n-t keypath="home.stepChallengeText" scope="global">
+            <template #duel
+              ><NuxtLinkLocale to="/duel" class="text-link">{{ t('home.stepChallengeDuel') }}</NuxtLinkLocale></template
+            >
+            <template #pokedex><NuxtLinkLocale to="/pokedex" class="text-link">Pokédex</NuxtLinkLocale></template>
+          </i18n-t>
         </li>
       </ol>
     </section>
 
     <section class="section" aria-labelledby="faq">
-      <h2 id="faq" class="section__title">Questions fréquentes</h2>
+      <h2 id="faq" class="section__title">{{ t('home.faqTitle') }}</h2>
       <div class="faq">
-        <AccordionItem v-for="item in HOME_FAQ" :key="item.question" :question="item.question" group="faq">
-          <p>{{ item.answer }}</p>
+        <AccordionItem v-for="key in HOME_FAQ_KEYS" :key="key" :question="t(`faq.${key}.question`)" group="faq">
+          <p>{{ t(`faq.${key}.answer`) }}</p>
         </AccordionItem>
       </div>
     </section>

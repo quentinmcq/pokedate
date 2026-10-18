@@ -1,32 +1,34 @@
 <script setup lang="ts">
 import type { SectionSwitchOption } from '~/components/ui/SectionSwitch.vue'
 
-const CHALLENGE_OPTIONS: SectionSwitchOption[] = [
-  { label: '1 contre 1', to: '/duel', icon: 'lucide:swords' },
-  { label: 'Tournoi', to: '/tournoi', icon: 'lucide:trophy' },
-]
-const POKEDEX_OPTIONS: SectionSwitchOption[] = [
-  { label: 'Mon Pokédex', to: '/pokedex', icon: 'lucide:book-open' },
-  { label: 'Tous les Pokémon', to: '/pokemon', icon: 'lucide:layout-grid' },
-]
+const { t } = useLocaleTools()
+const localePath = useLocalePath()
+const pageName = useCurrentPageName()
 
-const route = useRoute()
+const challengeOptions = computed<SectionSwitchOption[]>(() => [
+  { label: t('sections.duel'), to: localePath('/duel'), icon: 'lucide:swords' },
+  { label: t('sections.tournament'), to: localePath('/tournoi'), icon: 'lucide:trophy' },
+])
+const pokedexOptions = computed<SectionSwitchOption[]>(() => [
+  { label: t('sections.myPokedex'), to: localePath('/pokedex'), icon: 'lucide:book-open' },
+  { label: t('sections.allPokemon'), to: localePath('/pokemon'), icon: 'lucide:layout-grid' },
+])
 </script>
 
 <template>
   <AppHeader />
   <main id="contenu" class="site-main" tabindex="-1">
     <SectionSwitch
-      v-if="isSectionPath('challenges', route.path)"
+      v-if="isSectionPage('challenges', pageName)"
       key="challenges"
-      label="Type de défi"
-      :options="CHALLENGE_OPTIONS"
+      :label="t('sections.challengesLabel')"
+      :options="challengeOptions"
     />
     <SectionSwitch
-      v-else-if="isSectionPath('pokedex', route.path)"
+      v-else-if="isSectionPage('pokedex', pageName)"
       key="pokedex"
-      label="Vue du Pokédex"
-      :options="POKEDEX_OPTIONS"
+      :label="t('sections.pokedexLabel')"
+      :options="pokedexOptions"
     />
     <slot />
   </main>

@@ -3,16 +3,16 @@ import type { DrawsActivity } from '#shared/types/pokemon'
 
 const props = defineProps<{ activity: DrawsActivity }>()
 
-const plural = (count: number, singular: string, pluralForm = `${singular}s`) =>
-  `${count} ${count > 1 ? pluralForm : singular}`
-
-const revealsLabel = computed(() => plural(props.activity.todayReveals, 'Pokémon révélé', 'Pokémon révélés'))
+const { t } = useLocaleTools()
+const revealsLabel = computed(() =>
+  t('activity.reveals', { count: props.activity.todayReveals }, props.activity.todayReveals),
+)
 </script>
 
 <template>
   <section class="activity" aria-labelledby="activity-title">
     <h2 id="activity-title" class="activity__title">
-      <Icon name="lucide:activity" aria-hidden="true" /> Aujourd'hui sur PokéDate
+      <Icon name="lucide:activity" aria-hidden="true" /> {{ t('activity.title') }}
     </h2>
     <p v-if="activity.todayReveals" class="activity__numbers">
       <b>{{ revealsLabel }}</b
@@ -21,14 +21,16 @@ const revealsLabel = computed(() => plural(props.activity.todayReveals, 'Pokémo
         <Icon name="lucide:sparkles" class="activity__sparkle" aria-hidden="true"
       /></template>
     </p>
-    <p v-else class="activity__numbers">
-      Pas encore de Pokémon révélé aujourd'hui. <NuxtLink to="/" class="text-link">Lance-toi</NuxtLink>&nbsp;!
-    </p>
+    <i18n-t v-else keypath="activity.none" tag="p" class="activity__numbers" scope="global">
+      <template #start
+        ><NuxtLinkLocale to="/" class="text-link">{{ t('activity.start') }}</NuxtLinkLocale></template
+      >
+    </i18n-t>
     <p v-if="activity.weekFavourite" class="activity__favourite">
-      Le plus tiré cette semaine&nbsp;:
+      {{ t('activity.favourite') }}
       <span class="activity__pokemon">
         <img :src="spriteUrl(activity.weekFavourite.id)" alt="" width="40" height="40" loading="lazy" />
-        <NuxtLink :to="pokemonPath(activity.weekFavourite)">{{ activity.weekFavourite.name }}</NuxtLink>
+        <NuxtLinkLocale :to="pokemonPath(activity.weekFavourite)">{{ activity.weekFavourite.name }}</NuxtLinkLocale>
         <span class="activity__count">×{{ activity.weekFavourite.count }}</span>
       </span>
     </p>

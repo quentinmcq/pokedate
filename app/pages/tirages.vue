@@ -4,25 +4,35 @@ import type { DrawsActivity, PublicDraw } from '#shared/types/pokemon'
 const REFRESH_INTERVAL_MS = 30_000
 
 const { resetAccent } = usePageAccent()
+const { t, locale } = useLocaleTools()
 resetAccent()
 
 const [{ data: draws, error, refresh: refreshDraws }, { data: activity, refresh: refreshActivity }] = await Promise.all(
   [
-    useFetch<PublicDraw[]>('/api/draws', { key: 'public-draws' }),
-    useFetch<DrawsActivity>('/api/activity', { key: 'draws-activity' }),
+    useFetch<PublicDraw[]>('/api/draws', { key: () => `public-draws-${locale.value}`, query: { lang: locale } }),
+    useFetch<DrawsActivity>('/api/activity', { key: () => `draws-activity-${locale.value}`, query: { lang: locale } }),
   ],
 )
 
 const refreshPage = () => Promise.all([refreshDraws(), refreshActivity()])
 
-const timeFormat = new Intl.DateTimeFormat('fr-FR', {
-  timeZone: 'Europe/Paris',
-  day: '2-digit',
-  month: '2-digit',
-  hour: '2-digit',
-  minute: '2-digit',
-})
-const drawnAt = (draw: PublicDraw) => timeFormat.format(new Date(draw.createdAt)).replace(' ', ' à ')
+const dayFormat = computed(
+  () =>
+    new Intl.DateTimeFormat(LOCALE_TAGS[locale.value], { timeZone: 'Europe/Paris', day: '2-digit', month: '2-digit' }),
+)
+const hourFormat = computed(
+  () =>
+    new Intl.DateTimeFormat(LOCALE_TAGS[locale.value], {
+      timeZone: 'Europe/Paris',
+      hour: '2-digit',
+      minute: '2-digit',
+    }),
+)
+const drawnAt = (draw: PublicDraw) => {
+  const createdAt = new Date(draw.createdAt)
+  return t('draws.drawnAt', { day: dayFormat.value.format(createdAt), time: hourFormat.value.format(createdAt) })
+}
+const nicknameOf = (draw: PublicDraw) => (draw.nickname === ANONYMOUS_NICKNAME ? t('common.anonymous') : draw.nickname)
 
 let refreshTimer: ReturnType<typeof setInterval> | undefined
 onMounted(() => {
@@ -31,8 +41,8 @@ onMounted(() => {
 onBeforeUnmount(() => clearInterval(refreshTimer))
 
 usePageSeo({
-  title: 'Derniers tirages',
-  description: "L'activité du jour sur PokéDate et les tirages partagés par les joueurs.",
+  title: () => t('draws.title'),
+  description: () => t('draws.seoDescription'),
   noindex: true,
 })
 </script>
@@ -40,20 +50,21 @@ usePageSeo({
 <template>
   <div>
     <div class="hero">
-      <h1>Derniers tirages</h1>
-      <p class="lead">L'activité du jour et les derniers Pokémon révélés par les joueurs.</p>
+      <h1>{{ t('draws.title') }}</h1>
+      <p class="lead">{{ t('draws.lead') }}</p>
     </div>
 
     <DrawsActivity v-if="activity" :activity="activity" />
 
-    <h2 class="draws-title">Tirages partagés</h2>
-    <p class="draws-hint">Du plus récent au plus ancien, 7 jours au plus.</p>
+    <h2 class="draws-title">{{ t('draws.listTitle') }}</h2>
+    <p class="draws-hint">{{ t('draws.listHint') }}</p>
 
-    <p v-if="error" class="draws-empty">Les derniers tirages sont indisponibles pour le moment.</p>
-    <p v-else-if="!draws?.length" class="draws-empty">
-      Aucun tirage pour l'instant. <NuxtLink to="/" class="text-link">Révèle ton Pokémon</NuxtLink>&nbsp;: il apparaîtra
-      ici.
-    </p>
+    <p v-if="error" class="draws-empty">{{ t('draws.unavailable') }}</p>
+    <i18n-t v-else-if="!draws?.length" keypath="draws.empty" tag="p" class="draws-empty" scope="global">
+      <template #reveal
+        ><NuxtLinkLocale to="/" class="text-link">{{ t('draws.revealYours') }}</NuxtLinkLocale></template
+      >
+    </i18n-t>
     <ol v-else class="draws">
       <li v-for="draw in draws" :key="draw.id" class="draws__item">
         <img
@@ -64,16 +75,29 @@ usePageSeo({
           height="56"
           loading="lazy"
         />
-        <p class="draws__text">
-          <b>{{ draw.nickname }}</b> a tiré
-          <NuxtLink :to="pokemonPath({ id: draw.pokemonId, name: draw.pokemonName })">{{ draw.pokemonName }}</NuxtLink>
-          <span v-if="draw.shiny" class="draws__shiny"> <Icon name="lucide:sparkles" aria-hidden="true" /> shiny</span
-          ><template v-if="draw.bonusPokemon"
-            >, avec
-            <NuxtLink :to="pokemonPath(draw.bonusPokemon)">{{ draw.bonusPokemon.name }}</NuxtLink>
-            en bonus</template
+        <i18n-t
+          :keypath="draw.bonusPokemon ? 'draws.drewWithBonus' : 'draws.drew'"
+          tag="p"
+          class="draws__text"
+          scope="global"
+        >
+          <template #nickname
+            ><b>{{ nicknameOf(draw) }}</b></template
           >
-        </p>
+          <template #pokemon
+            ><NuxtLinkLocale :to="pokemonPath({ id: draw.pokemonId, name: draw.pokemonName })">{{
+              draw.pokemonName
+            }}</NuxtLinkLocale
+            ><span v-if="draw.shiny" class="draws__shiny">
+              <Icon name="lucide:sparkles" aria-hidden="true" /> shiny</span
+            ></template
+          >
+          <template v-if="draw.bonusPokemon" #bonus
+            ><NuxtLinkLocale :to="pokemonPath(draw.bonusPokemon)">{{
+              draw.bonusPokemon.name
+            }}</NuxtLinkLocale></template
+          >
+        </i18n-t>
         <time class="draws__time" :datetime="draw.createdAt">{{ drawnAt(draw) }}</time>
       </li>
     </ol>

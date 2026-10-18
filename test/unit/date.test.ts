@@ -10,6 +10,7 @@ import {
   toDateFieldValue,
   toIsoDate,
 } from '../../shared/utils/date'
+import { translateFr } from './translators'
 
 describe('pokemonIdFromDate', () => {
   it('assemble le dernier chiffre du jour, du mois et de l’année', () => {
@@ -70,7 +71,10 @@ describe('mirrorPokemonIdForDate', () => {
   })
 })
 
-const errorFor = (day: string, month: string, year: string) => parseDateFieldValue({ day, month, year })
+function errorFor(day: string, month: string, year: string) {
+  const result = parseDateFieldValue({ day, month, year })
+  return result.ok ? result : { ...result, error: translateFr(result.error.key, result.error.params) }
+}
 
 describe('parseDateFieldValue', () => {
   it('accepte une date valide', () => {

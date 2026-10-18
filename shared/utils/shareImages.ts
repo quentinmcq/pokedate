@@ -1,3 +1,4 @@
+import type { Locale } from '../types/pokemon'
 import { POKEMON_COUNT } from './pokemon'
 
 export const SHARE_FRAMES = {
@@ -16,17 +17,23 @@ export interface SharedFighter {
 
 const fighterSegment = ({ pokemonId, shiny }: SharedFighter) => `${pokemonId}${shiny ? 's' : ''}`
 
-export const duelShareImagePath = (fighterA: SharedFighter, fighterB: SharedFighter) =>
-  `/og/duel/${fighterSegment(fighterA)}-${fighterSegment(fighterB)}.jpg`
+const imageExtension = (locale: Locale) => (locale === 'en' ? '.en.jpg' : '.jpg')
 
-export const tournamentShareImagePath = (podium: readonly SharedFighter[]) =>
-  `/og/tournoi/${podium.map(fighterSegment).join('-')}.jpg`
+export const duelShareImagePath = (fighterA: SharedFighter, fighterB: SharedFighter, locale: Locale = 'fr') =>
+  `/og/duel/${fighterSegment(fighterA)}-${fighterSegment(fighterB)}${imageExtension(locale)}`
+
+export const tournamentShareImagePath = (podium: readonly SharedFighter[], locale: Locale = 'fr') =>
+  `/og/tournoi/${podium.map(fighterSegment).join('-')}${imageExtension(locale)}`
 
 const FIGHTER_SEGMENT = /^([1-9]\d{0,3})(s?)$/
+const SHARE_IMAGE_FILE = /^([\ds-]+?)(\.en)?\.jpg$/
+
+export const shareImageLocale = (fileName: string): Locale => (fileName.endsWith('.en.jpg') ? 'en' : 'fr')
 
 export function parseSharedFighters(fileName: string, count: number): SharedFighter[] | null {
-  const segments = fileName.replace(/\.jpg$/, '').split('-')
-  if (!fileName.endsWith('.jpg') || segments.length !== count) return null
+  const fighterList = SHARE_IMAGE_FILE.exec(fileName)?.[1]
+  const segments = fighterList?.split('-') ?? []
+  if (segments.length !== count) return null
   const fighters: SharedFighter[] = []
   for (const segment of segments) {
     const match = FIGHTER_SEGMENT.exec(segment)

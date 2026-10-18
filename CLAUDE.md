@@ -20,7 +20,11 @@ Nuxt 4 rendu côté serveur sur Cloudflare Workers, Bun, SCSS, Nuxt Icon (Lucide
   pas de « Generated with Claude Code »).
 - Commits directement sur `main` (pas de PR), historique linéaire. Tout lancer en local avant de pousser :
   chaque push sur `main` passe la CI puis déploie.
-- Textes de l'interface en français, tutoiement.
+- Textes de l'interface dans `i18n/locales/fr.json` (tutoiement, espaces insécables avant `? ! : ;`) et
+  `en.json`, jamais en dur dans les composants. La logique partagée renvoie des clés (`Message`) ou reçoit une
+  fonction `Translate` ; le serveur et les tests unitaires lisent les mêmes fichiers (`createTranslator`).
+- Français à la racine, anglais sous `/en` (adresses traduites dans `shared/utils/localizedPages.ts`). Liens
+  internes avec `<NuxtLinkLocale>` ou `localePath()`, appels d'API avec `lang`.
 - Icônes : `<Icon name="lucide:…" />`, pas d'emoji dans l'interface (seulement dans les textes partagés).
 - Actions GitHub épinglées par hash de commit ; Renovate (messages en anglais) gère les mises à jour.
 - `bunfig.toml` : Bun et Renovate ignorent les versions publiées depuis moins d'un jour.

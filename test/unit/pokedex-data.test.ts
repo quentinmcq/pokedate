@@ -25,6 +25,21 @@ describe('données des Pokémon', () => {
     expect(slugs.every((slug) => /^[a-z0-9]+(-[a-z0-9]+)*$/.test(slug))).toBe(true)
   })
 
+  it('a aussi des adresses uniques en anglais', () => {
+    const slugs = listPokedexEntries('en').map((entry) => slugify(entry.name))
+    expect(new Set(slugs).size).toBe(slugs.length)
+    expect(slugs.every((slug) => /^[a-z0-9]+(-[a-z0-9]+)*$/.test(slug))).toBe(true)
+  })
+
+  it('donne la fiche en anglais', () => {
+    expect(findPokemon(706, 'en')).toMatchObject({
+      name: 'Goodra',
+      otherLanguageName: 'Muplodocus',
+      genus: 'Dragon Pokémon',
+    })
+    expect(findPokemon(706, 'en')!.description.length).toBeGreaterThan(0)
+  })
+
   it('renvoie la fiche complète avec ses voisins', () => {
     const pokemon = findPokemon(706)!
     expect(pokemon).toMatchObject({ id: 706, name: 'Muplodocus', types: ['dragon'] })

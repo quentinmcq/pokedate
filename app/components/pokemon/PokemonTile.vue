@@ -6,31 +6,37 @@ const props = withDefaults(
   defineProps<{ pokemon: PokemonSummary; shiny?: boolean; seenShiny?: boolean; state?: DiscoveryState }>(),
   { shiny: false, seenShiny: false, state: 'caught' },
 )
+const { t } = useLocaleTools()
 const link = computed(() => ({ path: pokemonPath(props.pokemon), query: props.shiny ? { shiny: '1' } : {} }))
 </script>
 
 <template>
   <div v-if="state === 'unknown'" class="dex-cell dex-cell--unknown">
     <span class="dex-cell__unknown" aria-hidden="true">?</span>
-    <span><span class="visually-hidden">Pas encore découvert : </span>#{{ padNumber(pokemon.id, 4) }}</span>
+    <span
+      ><span class="visually-hidden">{{ t('tile.unknown') }}</span
+      >#{{ padNumber(pokemon.id, 4) }}</span
+    >
   </div>
-  <NuxtLink
+  <NuxtLinkLocale
     v-else
     class="dex-cell"
     :class="{ 'dex-cell--shiny': shiny, 'dex-cell--seen': state === 'seen' }"
     :to="link"
   >
     <img loading="lazy" decoding="async" :src="spriteUrl(pokemon.id, shiny)" alt="" width="72" height="72" />
-    <span v-if="state === 'seen' && seenShiny" class="dex-cell__seen-shiny" title="Vu en shiny"
-      ><Icon name="lucide:sparkles" aria-hidden="true" /><span class="visually-hidden">Vu en shiny</span></span
+    <span v-if="state === 'seen' && seenShiny" class="dex-cell__seen-shiny" :title="t('tile.seenShiny')"
+      ><Icon name="lucide:sparkles" aria-hidden="true" /><span class="visually-hidden">{{
+        t('tile.seenShiny')
+      }}</span></span
     >
     <b>{{ pokemon.name }}</b>
     <span
-      ><template v-if="state === 'seen'">Vu<span class="visually-hidden">, pas encore attrapé</span> · </template>#{{
-        padNumber(pokemon.id, 4)
-      }}</span
+      ><template v-if="state === 'seen'"
+        >{{ t('tile.seen') }}<span class="visually-hidden">{{ t('tile.notCaught') }}</span> · </template
+      >#{{ padNumber(pokemon.id, 4) }}</span
     >
-  </NuxtLink>
+  </NuxtLinkLocale>
 </template>
 
 <style scoped lang="scss" src="./PokemonTile.scss" />

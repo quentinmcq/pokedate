@@ -1,26 +1,28 @@
 <script setup lang="ts">
 const { portfolioUrl } = useRuntimeConfig().public
+const { t } = useLocaleTools()
 </script>
 
 <template>
   <footer class="site-footer">
     <div class="site-footer__inner">
-      <nav class="site-footer__nav" aria-label="Liens du site">
-        <NuxtLink to="/duel">Duel</NuxtLink>
-        <NuxtLink to="/tournoi">Tournoi</NuxtLink>
-        <NuxtLink to="/pokemon">Les 1025 Pokémon</NuxtLink>
-        <NuxtLink to="/tirages">Derniers tirages</NuxtLink>
-        <NuxtLink to="/mentions-legales">Mentions légales</NuxtLink>
+      <nav class="site-footer__nav" :aria-label="t('footer.navLabel')">
+        <NuxtLinkLocale to="/duel">{{ t('footer.duel') }}</NuxtLinkLocale>
+        <NuxtLinkLocale to="/tournoi">{{ t('footer.tournament') }}</NuxtLinkLocale>
+        <NuxtLinkLocale to="/pokemon">{{ t('footer.allPokemon') }}</NuxtLinkLocale>
+        <NuxtLinkLocale to="/tirages">{{ t('footer.draws') }}</NuxtLinkLocale>
+        <NuxtLinkLocale to="/mentions-legales">{{ t('footer.legal') }}</NuxtLinkLocale>
       </nav>
-      <p class="site-footer__author">
-        Fait avec <Icon name="lucide:heart" class="site-footer__heart" aria-label="amour" /> par
-        <a :href="portfolioUrl" target="_blank" rel="noopener">Quentin Macq</a>
-      </p>
-      <p class="site-footer__legal">
-        Données : <a href="https://pokeapi.co" target="_blank" rel="noopener">PokeAPI</a> et
-        <a href="https://www.pokepedia.fr" target="_blank" rel="noopener">Poképédia</a>. Pokémon © Nintendo / Game Freak
-        / The Pokémon Company. Projet de fan, non officiel et sans but commercial.
-      </p>
+      <i18n-t keypath="footer.author" tag="p" class="site-footer__author" scope="global">
+        <template #heart
+          ><Icon name="lucide:heart" class="site-footer__heart" :aria-label="t('footer.love')"
+        /></template>
+        <template #name><a :href="portfolioUrl" target="_blank" rel="noopener">Quentin Macq</a></template>
+      </i18n-t>
+      <i18n-t keypath="footer.credits" tag="p" class="site-footer__legal" scope="global">
+        <template #pokeapi><a href="https://pokeapi.co" target="_blank" rel="noopener">PokeAPI</a></template>
+        <template #pokepedia><a href="https://www.pokepedia.fr" target="_blank" rel="noopener">Poképédia</a></template>
+      </i18n-t>
       <div class="site-footer__install">
         <InstallAppButton />
       </div>

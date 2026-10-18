@@ -12,7 +12,7 @@ const hasManyBranches = computed(() => props.stages.some((stage) => stage.length
     <template v-for="(stage, stageIndex) in stages" :key="stageIndex">
       <span v-if="stageIndex > 0" class="evo__arrow" aria-hidden="true">→</span>
       <div class="evo__stage">
-        <NuxtLink
+        <NuxtLinkLocale
           v-for="evolution in stage"
           :key="evolution.id"
           class="evo__link"
@@ -21,7 +21,7 @@ const hasManyBranches = computed(() => props.stages.some((stage) => stage.length
         >
           <img loading="lazy" decoding="async" :src="spriteUrl(evolution.id)" alt="" width="56" height="56" />
           {{ evolution.name }}
-        </NuxtLink>
+        </NuxtLinkLocale>
       </div>
     </template>
   </div>

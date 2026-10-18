@@ -3,6 +3,7 @@ const STATS_QUERY_KEY = 'stats'
 
 export default defineNuxtPlugin((nuxtApp) => {
   const { cloudflareAnalyticsToken } = useRuntimeConfig().public
+  const { t } = nuxtApp.$i18n
   const isCountedVisit = useIsCountedVisit()
   const router = useRouter()
   const { showToast } = useToast()
@@ -11,7 +12,7 @@ export default defineNuxtPlugin((nuxtApp) => {
     const preference = router.currentRoute.value.query[STATS_QUERY_KEY]
     if (preference !== 'off' && preference !== 'on') return
     setStatsOptOut(preference === 'off')
-    showToast(preference === 'off' ? 'Tes visites ne sont plus comptées ici' : 'Tes visites sont de nouveau comptées')
+    showToast(preference === 'off' ? t('statsOptOut.optedOut') : t('statsOptOut.optedIn'))
     router.replace({ query: { ...router.currentRoute.value.query, [STATS_QUERY_KEY]: undefined } })
   }
 

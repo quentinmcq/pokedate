@@ -2,6 +2,7 @@
 import type { TypeKey } from '#shared/types/pokemon'
 
 const { resetAccent } = usePageAccent()
+const { t } = useLocaleTools()
 rememberCurrentPath('pokedex')
 resetAccent()
 
@@ -27,52 +28,52 @@ function resetFilters() {
 }
 
 usePageSeo({
-  title: 'Les 1025 Pokémon : liste complète par génération',
-  description:
-    'La liste des 1025 Pokémon, de Bulbizarre à Pêchaminus, rangés par génération. Types, statistiques, faiblesses et évolutions de chaque Pokémon.',
+  title: () => t('pokemonList.seoTitle'),
+  description: () => t('pokemonList.seoDescription'),
 })
 </script>
 
 <template>
   <div>
     <div class="hero">
-      <h1>Les 1025 Pokémon</h1>
-      <p class="lead">
-        Tout le Pokédex national, génération par génération. Envie de savoir lequel se cache dans ta date ?
-        <NuxtLink to="/" class="text-link">Fais le test</NuxtLink>.
-      </p>
+      <h1>{{ t('pokemonList.title') }}</h1>
+      <i18n-t keypath="pokemonList.lead" tag="p" class="lead" scope="global">
+        <template #test
+          ><NuxtLinkLocale to="/" class="text-link">{{ t('pokemonList.test') }}</NuxtLinkLocale></template
+        >
+      </i18n-t>
 
       <div class="dex-search" role="search">
         <label class="dex-search__field">
           <Icon name="lucide:search" aria-hidden="true" />
-          <span class="visually-hidden">Rechercher un Pokémon</span>
+          <span class="visually-hidden">{{ t('pokemonList.search') }}</span>
           <input
             v-model="searchQuery"
             type="search"
-            placeholder="Nom ou numéro"
+            :placeholder="t('pokemonList.searchPlaceholder')"
             autocomplete="off"
             spellcheck="false"
             enterkeyhint="search"
           />
         </label>
         <label class="dex-search__field dex-search__field--type">
-          <span class="visually-hidden">Filtrer par type</span>
+          <span class="visually-hidden">{{ t('pokemonList.filterType') }}</span>
           <select v-model="selectedType">
-            <option :value="null">Tous les types</option>
-            <option v-for="type in TYPE_KEYS" :key="type" :value="type">{{ POKEMON_TYPES[type].label }}</option>
+            <option :value="null">{{ t('pokemonList.allTypes') }}</option>
+            <option v-for="type in TYPE_KEYS" :key="type" :value="type">{{ t(`types.${type}`) }}</option>
           </select>
         </label>
       </div>
       <p class="dex-search__status" role="status">
         <template v-if="isFiltering">
-          {{ matchingEntries.length }} Pokémon trouvé{{ matchingEntries.length > 1 ? 's' : '' }}
+          {{ t('pokemonList.found', { count: matchingEntries.length }, matchingEntries.length) }}
         </template>
       </p>
     </div>
 
     <div v-if="!matchingEntries.length" class="dex-search__empty">
-      <p>Aucun Pokémon ne correspond à ta recherche.</p>
-      <button class="btn btn--ghost btn--sm" type="button" @click="resetFilters">Tout afficher</button>
+      <p>{{ t('pokemonList.noMatch') }}</p>
+      <button class="btn btn--ghost btn--sm" type="button" @click="resetFilters">{{ t('pokemonList.showAll') }}</button>
     </div>
 
     <section
@@ -82,8 +83,8 @@ usePageSeo({
       :aria-labelledby="`generation-${generation.roman}`"
     >
       <h2 :id="`generation-${generation.roman}`">
-        Génération {{ generation.roman }}
-        <small>· {{ generation.region }} · {{ generation.pokemon.length }} Pokémon</small>
+        {{ t('pokemonList.generation', { roman: generation.roman }) }}
+        <small>· {{ t(`regions.${generation.region}`) }} · {{ generation.pokemon.length }} Pokémon</small>
       </h2>
       <ul class="dex-grid">
         <li v-for="entry in generation.pokemon" :key="entry.id">

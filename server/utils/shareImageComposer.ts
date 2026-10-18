@@ -1,3 +1,4 @@
+import type { Translate } from '../../shared/utils/messages'
 import { SHARE_FRAMES, type SharedFighter } from '../../shared/utils/shareImages'
 
 interface DrawPosition {
@@ -55,15 +56,16 @@ const headerLayers = (title: string): Layer[] => [
 ]
 
 export function duelLayers(
+  t: Translate,
   fighterA: ShareImageFighter,
   fighterB: ShareImageFighter,
   winner: 'A' | 'B' | null,
 ): ShareImageComposition {
   const title = winner
-    ? `${(winner === 'A' ? fighterA : fighterB).name} remporte le duel`
+    ? t('shareImage.duelWinner', { pokemon: (winner === 'A' ? fighterA : fighterB).name })
     : fighterA.pokemonId === fighterB.pokemonId
-      ? 'Match miroir !'
-      : 'Match nul !'
+      ? t('shareImage.mirror')
+      : t('shareImage.draw')
   const opacityOf = (side: 'A' | 'B') => (winner && winner !== side ? LOSER_OPACITY : 1)
   const nameColorOf = (side: 'A' | 'B') => (winner && winner !== side ? COLORS.muted : COLORS.text)
   const layers: Layer[] = [
@@ -91,9 +93,12 @@ export function duelLayers(
   return { frame, layers }
 }
 
-export function tournamentLayers([champion, second, third]: readonly ShareImageFighter[]): ShareImageComposition {
+export function tournamentLayers(
+  t: Translate,
+  [champion, second, third]: readonly ShareImageFighter[],
+): ShareImageComposition {
   const layers: Layer[] = [
-    ...headerLayers(`${champion!.name} remporte le tournoi`),
+    ...headerLayers(t('shareImage.tournamentWinner', { pokemon: champion!.name })),
     { kind: 'artwork', fighter: second!, width: 240, position: { left: 180, top: 280 } },
     { kind: 'artwork', fighter: third!, width: 220, position: { left: 790, top: 322 } },
     { kind: 'artwork', fighter: champion!, width: 300, position: { left: 450, top: 170 } },
