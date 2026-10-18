@@ -32,6 +32,10 @@ const drawnAt = (draw: PublicDraw) => {
   const createdAt = new Date(draw.createdAt)
   return t('draws.drawnAt', { day: dayFormat.value.format(createdAt), time: hourFormat.value.format(createdAt) })
 }
+const drawLink = (draw: PublicDraw) => ({
+  path: pokemonPath({ id: draw.pokemonId, name: draw.pokemonName }),
+  query: draw.shiny ? { shiny: '1' } : {},
+})
 const nicknameOf = (draw: PublicDraw) => (draw.nickname === ANONYMOUS_NICKNAME ? t('common.anonymous') : draw.nickname)
 
 let refreshTimer: ReturnType<typeof setInterval> | undefined
@@ -85,9 +89,7 @@ usePageSeo({
             ><b>{{ nicknameOf(draw) }}</b></template
           >
           <template #pokemon
-            ><NuxtLinkLocale :to="pokemonPath({ id: draw.pokemonId, name: draw.pokemonName })">{{
-              draw.pokemonName
-            }}</NuxtLinkLocale
+            ><NuxtLinkLocale :to="drawLink(draw)">{{ draw.pokemonName }}</NuxtLinkLocale
             ><span v-if="draw.shiny" class="draws__shiny">
               <Icon name="lucide:sparkles" aria-hidden="true" /> shiny</span
             ></template
