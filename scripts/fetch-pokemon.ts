@@ -132,9 +132,11 @@ const fetched = await mapInParallel(pokemonIds, async (id) => {
 console.info('Talents…')
 const abilityUrls = [...new Set(fetched.flatMap(({ pokemon }) => pokemon.abilities.map(({ ability }) => ability.url)))]
 const frenchAbilityNames = new Map<string, string>()
+const englishAbilityNames = new Map<string, string>()
 await mapInParallel(abilityUrls, async (url) => {
   const ability = await fetchJson<ApiAbility>(url)
   frenchAbilityNames.set(url, inLanguage(ability.names, 'fr')[0]?.name ?? ability.name)
+  englishAbilityNames.set(url, inLanguage(ability.names, 'en')[0]?.name ?? ability.name)
 })
 
 console.info("Chaînes d'évolution…")
@@ -189,7 +191,9 @@ function toStoredPokemon({ pokemon, species }: { pokemon: ApiPokemon; species: A
   const englishFlavorTexts = inLanguage(species.flavor_text_entries, 'en')
   const flavorText = (frenchFlavorTexts.at(-1) ?? englishFlavorTexts.at(-1))?.flavor_text ?? ''
   const baseStat = (statName: string) => pokemon.stats.find(({ stat }) => stat.name === statName)?.base_stat ?? 0
-  const genus = inLanguage(species.genera, 'fr')[0]?.genus ?? inLanguage(species.genera, 'en')[0]?.genus ?? ''
+  const englishGenus = inLanguage(species.genera, 'en')[0]?.genus ?? ''
+  const genus = inLanguage(species.genera, 'fr')[0]?.genus ?? englishGenus
+  const sortedAbilities = pokemon.abilities.toSorted((a, b) => a.slot - b.slot)
 
   return {
     id: pokemon.id,
@@ -202,10 +206,14 @@ function toStoredPokemon({ pokemon, species }: { pokemon: ApiPokemon; species: A
     h: pokemon.height / 10,
     w: pokemon.weight / 10,
     stats: STAT_NAMES.map(baseStat) as StoredPokemon['stats'],
-    ab: pokemon.abilities
-      .toSorted((a, b) => a.slot - b.slot)
-      .map(({ ability, is_hidden }) => [frenchAbilityNames.get(ability.url) ?? ability.name, is_hidden ? 1 : 0]),
+    ab: sortedAbilities.map(({ ability, is_hidden }) => [
+      frenchAbilityNames.get(ability.url) ?? ability.name,
+      is_hidden ? 1 : 0,
+    ]),
+    abEn: sortedAbilities.map(({ ability }) => englishAbilityNames.get(ability.url) ?? ability.name),
     desc: cleanFlavorText(flavorText),
+    descEn: cleanFlavorText(englishFlavorTexts.at(-1)?.flavor_text ?? ''),
+    genusEn: englishGenus,
     gen: GENERATION_NUMBERS[species.generation.name] ?? 0,
     rare: species.is_mythical ? 2 : species.is_legendary ? 1 : 0,
     baby: species.is_baby ? 1 : 0,
