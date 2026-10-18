@@ -20,11 +20,15 @@
 @keyframes publish-nudge {
   0%,
   100% {
-    box-shadow: 0 0 0 0 transparent;
+    box-shadow:
+      var(--ghost-relief),
+      0 0 0 0 transparent;
     border-color: color('line');
   }
   40% {
-    box-shadow: 0 0 0 6px color-mix(in srgb, var(--color-highlight) 30%, transparent);
+    box-shadow:
+      var(--ghost-relief),
+      0 0 0 6px color-mix(in srgb, var(--color-highlight) 30%, transparent);
     border-color: color('highlight');
   }
 }

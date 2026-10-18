@@ -41,11 +41,19 @@
   }
 
   &--ghost {
+    --ghost-relief: 0 4px 0 rgba(0, 0, 0, 0.35);
+
     background: rgba(255, 255, 255, 0.07);
     border: 1px solid color('line');
+    box-shadow: var(--ghost-relief);
 
     &:hover {
       background: rgba(255, 255, 255, 0.13);
+      transform: translateY(-1px);
+    }
+    &:active {
+      box-shadow: 0 1px 0 rgba(0, 0, 0, 0.35);
+      transform: translateY(3px);
     }
   }
 

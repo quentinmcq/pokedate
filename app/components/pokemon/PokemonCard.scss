@@ -304,7 +304,8 @@
 
   &__actions {
     display: flex;
-    gap: space(2);
+    // The extra row gap makes up for the buttons' bottom relief.
+    gap: calc(#{space(2)} + 6px) space(2);
     flex-wrap: wrap;
 
     @include bp(phone) {
