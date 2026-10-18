@@ -201,7 +201,7 @@ test.describe('Tournoi', () => {
     const addPlayer = page.getByRole('button', { name: 'Ajouter un joueur' })
     for (let added = 0; added < 5; added++) await addPlayer.click()
     await expect(page.locator('.players__row')).toHaveCount(8)
-    await expect(addPlayer).toHaveCount(0)
+    await expect(page.getByRole('button', { name: '8 joueurs maximum' })).toBeDisabled()
     await page.getByRole('button', { name: 'Retirer le joueur 8' }).click()
     await expect(page.locator('.players__row')).toHaveCount(7)
   })

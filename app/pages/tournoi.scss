@@ -154,6 +154,9 @@
 }
 
 .players {
+  // A flex column never collapses margins, so a leaving last row cannot make the content below jump.
+  display: flex;
+  flex-direction: column;
   margin: 0 0 space(1);
   padding: 0;
   list-style: none;

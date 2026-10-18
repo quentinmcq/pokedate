@@ -268,8 +268,9 @@ usePageSeo({
           </button>
         </li>
       </TransitionGroup>
-      <button v-if="canAddPlayer" class="btn btn--ghost btn--sm players__add" type="button" @click="addPlayer">
-        <Icon name="lucide:user-plus" aria-hidden="true" /> Ajouter un joueur
+      <button class="btn btn--ghost btn--sm players__add" type="button" :disabled="!canAddPlayer" @click="addPlayer">
+        <Icon name="lucide:user-plus" aria-hidden="true" />
+        {{ canAddPlayer ? 'Ajouter un joueur' : `${TOURNAMENT_PLAYER_LIMITS.max} joueurs maximum` }}
       </button>
       <p id="tournament-error" class="field-error" role="alert">{{ formError }}</p>
       <div class="actions">
@@ -277,7 +278,10 @@ usePageSeo({
           <Icon name="lucide:trophy" aria-hidden="true" /> Lancer le tournoi
         </button>
       </div>
-      <p class="field-hint">Seuls les Pokémon apparaissent dans le lien du tournoi, jamais vos dates.</p>
+      <p class="field-hint field-hint--privacy">
+        <Icon name="lucide:lock" aria-hidden="true" /> Vos dates restent sur cet appareil&nbsp;: le lien ne contient que
+        les Pokémon.
+      </p>
     </form>
   </div>
 </template>
