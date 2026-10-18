@@ -197,6 +197,9 @@ usePageSeo({
           <Icon name="lucide:share-2" aria-hidden="true" /> Partager le duel
         </button>
       </div>
+      <p class="field-hint field-hint--privacy">
+        <Icon name="lucide:lock" aria-hidden="true" /> Le lien partagé ne contient que les Pokémon, jamais vos dates.
+      </p>
     </section>
 
     <form
@@ -257,10 +260,6 @@ usePageSeo({
           <Icon name="lucide:swords" aria-hidden="true" /> Lancer le combat
         </button>
       </div>
-      <p class="field-hint field-hint--privacy">
-        <Icon name="lucide:lock" aria-hidden="true" /> Vos dates restent sur cet appareil&nbsp;: le lien ne contient que
-        les Pokémon.
-      </p>
     </form>
   </div>
 </template>
