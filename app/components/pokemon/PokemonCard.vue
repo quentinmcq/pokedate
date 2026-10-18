@@ -30,7 +30,7 @@ const { showToast } = useToast()
 const { t, formatLocalNumber } = useLocaleTools()
 const localePath = useLocalePath()
 
-// The number of draws this week reads the shared counters: it is fetched in the browser, after the card shows.
+// This week's draws come from the shared feed: they are fetched in the browser, after the card shows.
 const POPULAR_THRESHOLD = 2
 const weekRevealCount = ref(0)
 onMounted(async () => {
