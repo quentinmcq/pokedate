@@ -35,12 +35,10 @@ jobs:
       cancel-in-progress: true
     strategy:
       fail-fast: false
-      # The desktop suite is the longest: two shards run it on twice as many 2-core runners.
+      # Two shards per device run each suite on twice as many 2-core runners.
       matrix:
-        include:
-          - { project: desktop, shard: 1/2 }
-          - { project: desktop, shard: 2/2 }
-          - { project: mobile, shard: 1/1 }
+        project: [desktop, mobile]
+        shard: [1/2, 2/2]
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
