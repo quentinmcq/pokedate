@@ -3,7 +3,7 @@ import type { Discoveries } from '~/composables/usePokedex'
 
 const { discoveries, seenCount, caughtCount, shinyCount, isLoaded, discoveryStateOf } = usePokedex()
 const { resetAccent } = usePageAccent()
-const { t, formatLocalNumber } = useLocaleTools()
+const { t } = useLocaleTools()
 rememberCurrentPath('pokedex')
 resetAccent()
 
@@ -48,38 +48,28 @@ usePageSeo({
       <h1>{{ t('pokedex.title') }}</h1>
       <p class="lead">{{ t('pokedex.lead') }}</p>
       <PokedexImport v-if="incomingDiscoveries" :incoming="incomingDiscoveries" @done="finishImport" />
-      <template v-if="!isEmpty">
-        <div
-          class="progress"
-          role="progressbar"
-          :aria-label="t('pokedex.progress')"
-          :aria-valuenow="caughtCount"
-          aria-valuemin="0"
-          :aria-valuemax="totalCount"
-          :aria-valuetext="t('pokedex.progressText', { caught: caughtCount, total: totalCount })"
-        >
-          <div class="progress__fill" :style="{ width: `${completionPercent}%` }" />
-        </div>
-        <p class="dex-stats">
-          {{
-            t('pokedex.stats', {
-              caught: caughtCount,
-              total: totalCount,
-              percent: formatLocalNumber(completionPercent),
-            })
-          }}
-          · {{ t('pokedex.seen', { count: seenCount }, seenCount)
-          }}<template v-if="shinyCount">
-            · {{ shinyCount }} shiny <Icon name="lucide:sparkles" aria-hidden="true"
-          /></template>
-        </p>
-        <label class="toggle"
-          ><input v-model="showOnlyDiscovered" type="checkbox" /> {{ t('pokedex.hideUnseen') }}</label
-        >
-      </template>
     </div>
 
-    <PokedexGoals v-if="isLoaded && !isEmpty" :entries="entries" />
+    <section v-if="!isEmpty" class="dex-stats" :aria-label="t('pokedex.progress')">
+      <p class="dex-stats__count">{{ t('pokedex.caughtCount', { caught: caughtCount, total: totalCount }) }}</p>
+      <div
+        class="progress"
+        role="progressbar"
+        :aria-label="t('pokedex.progress')"
+        :aria-valuenow="caughtCount"
+        aria-valuemin="0"
+        :aria-valuemax="totalCount"
+        :aria-valuetext="t('pokedex.progressText', { caught: caughtCount, total: totalCount })"
+      >
+        <div class="progress__fill" :style="{ width: `${completionPercent}%` }" />
+      </div>
+      <p class="dex-stats__details">
+        {{ t('pokedex.seen', { count: seenCount }, seenCount)
+        }}<template v-if="shinyCount">
+          · {{ shinyCount }} shiny <Icon name="lucide:sparkles" aria-hidden="true"
+        /></template>
+      </p>
+    </section>
 
     <div v-if="isEmpty" class="empty-state">
       <PokeBall :size="56" />
@@ -89,18 +79,25 @@ usePageSeo({
       >
     </div>
 
-    <ul v-else class="dex-grid">
-      <li v-for="entry in visibleEntries" :key="entry.id">
-        <PokemonTile
-          :pokemon="entry"
-          :state="discoveryStateOf(entry.id)"
-          :shiny="discoveries[entry.id]?.shiny"
-          :seen-shiny="discoveries[entry.id]?.seenShiny"
-        />
-      </li>
-    </ul>
-
-    <PokedexTransfer v-if="isLoaded && !isEmpty" />
+    <template v-else>
+      <div class="dex-toolbar">
+        <label class="toggle"
+          ><input v-model="showOnlyDiscovered" type="checkbox" /> {{ t('pokedex.hideUnseen') }}</label
+        >
+      </div>
+      <ul class="dex-grid">
+        <li v-for="entry in visibleEntries" :key="entry.id">
+          <PokemonTile
+            :pokemon="entry"
+            :state="discoveryStateOf(entry.id)"
+            :shiny="discoveries[entry.id]?.shiny"
+            :seen-shiny="discoveries[entry.id]?.seenShiny"
+          />
+        </li>
+      </ul>
+      <PokedexGoals v-if="isLoaded" :entries="entries" />
+      <PokedexTransfer v-if="isLoaded" />
+    </template>
   </div>
 </template>
 

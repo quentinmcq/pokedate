@@ -3,7 +3,7 @@ import type { PokedexEntry } from '#shared/types/pokemon'
 
 const props = defineProps<{ entries: readonly PokedexEntry[] | null | undefined }>()
 
-const NEXT_GOALS_SHOWN = 3
+const NEXT_GOALS_SHOWN = 2
 
 const { t } = useLocaleTools()
 const { goalTitle, goalDescription } = useGoalTexts()

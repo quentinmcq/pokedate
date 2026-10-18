@@ -311,14 +311,14 @@
     "seoTitle": "My Pokédex",
     "seoDescription": "All the Pokémon you caught with PokéDate, by entering your dates and your friends' dates.",
     "title": "Your Pokédex",
-    "lead": "Every date you enter (yours, your friends', a duel's…) catches its Pokémon. The ones you meet at random or on their card are only seen. Gotta catch 'em all!",
+    "lead": "Every date you enter catches its Pokémon. The ones met at random or on their card are only seen.",
     "progress": "Pokédex progress",
     "progressText": "{caught} Pokémon caught out of {total}",
-    "stats": "{caught} / {total} caught ({percent}%)",
     "seen": "{count} seen | {count} seen | {count} seen",
     "hideUnseen": "Hide Pokémon never seen",
     "empty": "Your Pokédex is empty. Reveal your date's Pokémon to start your collection.",
-    "revealFirst": "Reveal my first Pokémon"
+    "revealFirst": "Reveal my first Pokémon",
+    "caughtCount": "{caught} / {total} caught"
   },
   "import": {
     "added": "{count} more Pokémon caught! | {count} more Pokémon caught! | {count} more Pokémon caught!",

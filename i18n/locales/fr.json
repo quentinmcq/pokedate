@@ -311,14 +311,14 @@
     "seoTitle": "Mon Pokédex",
     "seoDescription": "Tous les Pokémon que tu as attrapés avec PokéDate, en entrant tes dates et celles de tes potes.",
     "title": "Ton Pokédex",
-    "lead": "Chaque date que tu entres (la tienne, celles de tes potes, celles d'un duel…) te fait attraper son Pokémon. Ceux que tu croises au hasard ou sur leur fiche sont seulement vus. Attrape-les tous !",
+    "lead": "Chaque date que tu entres te fait attraper son Pokémon. Ceux croisés au hasard ou sur leur fiche sont seulement vus.",
     "progress": "Progression du Pokédex",
     "progressText": "{caught} Pokémon attrapés sur {total}",
-    "stats": "{caught} / {total} attrapés ({percent} %)",
     "seen": "{count} vu | {count} vu | {count} vus",
     "hideUnseen": "Masquer les Pokémon jamais vus",
     "empty": "Ton Pokédex est vide. Révèle le Pokémon de ta date pour commencer ta collection.",
-    "revealFirst": "Révéler mon premier Pokémon"
+    "revealFirst": "Révéler mon premier Pokémon",
+    "caughtCount": "{caught} / {total} attrapés"
   },
   "import": {
     "added": "{count} Pokémon attrapé en plus ! | {count} Pokémon attrapé en plus ! | {count} Pokémon attrapés en plus !",

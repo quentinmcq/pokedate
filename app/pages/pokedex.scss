@@ -18,8 +18,33 @@
 }
 
 .dex-stats {
-  color: color('text-muted');
-  font-family: var(--font-mono), monospace;
+  max-width: 520px;
+  margin: 0 auto space(6);
+  padding: space(4) space(5);
+  border: 1px solid color('line');
+  border-radius: radius('lg');
+  background: color('surface-1');
+  text-align: center;
+
+  &__count {
+    margin: 0 0 space(3);
+    font-family: var(--font-mono), monospace;
+    font-size: font-size('lg');
+    font-weight: weight('bold');
+  }
+
+  &__details {
+    margin: space(3) 0 0;
+    color: color('text-muted');
+    font-family: var(--font-mono), monospace;
+    font-size: font-size('sm');
+  }
+}
+
+.dex-toolbar {
+  display: flex;
+  justify-content: center;
+  margin-bottom: space(3);
 }
 
 .empty-state {
