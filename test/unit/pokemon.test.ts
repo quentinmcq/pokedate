@@ -3,7 +3,6 @@ import {
   POKEMON_TYPES,
   TYPE_KEYS,
   defensiveMatchups,
-  describeHeight,
   formatMultiplier,
   pokemonPath,
   slugify,
@@ -90,12 +89,5 @@ describe('adresses des fiches', () => {
 
   it('préfixe le numéro', () => {
     expect(pokemonPath({ id: 706, name: 'Muplodocus' })).toBe('/pokemon/706-muplodocus')
-  })
-})
-
-describe('describeHeight', () => {
-  it('compare la taille à un humain', () => {
-    expect(describeHeight(0.2)).toContain('poche')
-    expect(describeHeight(3.4)).toBe('2 fois plus grand que toi')
   })
 })

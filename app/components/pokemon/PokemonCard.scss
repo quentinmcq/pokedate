@@ -265,14 +265,6 @@
     }
   }
 
-  &__hint {
-    display: block;
-    font-size: 0.78rem;
-    color: color('text-muted');
-    font-weight: weight('regular');
-    margin-top: 2px;
-  }
-
   &__abilities {
     display: flex;
     flex-wrap: wrap;

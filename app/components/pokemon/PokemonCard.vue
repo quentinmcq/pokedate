@@ -183,10 +183,7 @@ function sharePokemon() {
       <dl class="mon-card__facts">
         <div class="mon-card__fact">
           <dt>Taille</dt>
-          <dd>
-            {{ formatNumber(pokemon.heightMeters) }} m
-            <span class="mon-card__hint">{{ describeHeight(pokemon.heightMeters) }}</span>
-          </dd>
+          <dd>{{ formatNumber(pokemon.heightMeters) }} m</dd>
         </div>
         <div class="mon-card__fact">
           <dt>Poids</dt>
