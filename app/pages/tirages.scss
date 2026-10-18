@@ -64,6 +64,11 @@
     }
   }
 
+  // The shiny badge stays on the same line as the name it belongs to.
+  &__pokemon {
+    white-space: nowrap;
+  }
+
   &__shiny {
     display: inline-flex;
     align-items: center;

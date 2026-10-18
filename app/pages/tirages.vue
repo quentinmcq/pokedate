@@ -95,9 +95,11 @@ usePageSeo({
             ><b>{{ nicknameOf(draw) }}</b></template
           >
           <template #pokemon
-            ><NuxtLinkLocale :to="drawLink(draw)">{{ draw.pokemonName }}</NuxtLinkLocale
-            ><span v-if="draw.shiny" class="draws__shiny">
-              <Icon name="lucide:sparkles" aria-hidden="true" /> shiny</span
+            ><span class="draws__pokemon"
+              ><NuxtLinkLocale :to="drawLink(draw)">{{ draw.pokemonName }}</NuxtLinkLocale
+              ><span v-if="draw.shiny" class="draws__shiny">
+                <Icon name="lucide:sparkles" aria-hidden="true" /> shiny</span
+              ></span
             ></template
           >
           <template v-if="draw.bonusPokemon" #bonus
