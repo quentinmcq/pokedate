@@ -41,7 +41,7 @@ usePageSeo({
   <div>
     <div class="hero">
       <h1>Derniers tirages</h1>
-      <p class="lead">L'activité du jour et les tirages que les joueurs ont choisi de partager.</p>
+      <p class="lead">L'activité du jour et les derniers Pokémon révélés par les joueurs.</p>
     </div>
 
     <DrawsActivity v-if="activity" :activity="activity" />
@@ -51,8 +51,8 @@ usePageSeo({
 
     <p v-if="error" class="draws-empty">Les derniers tirages sont indisponibles pour le moment.</p>
     <p v-else-if="!draws?.length" class="draws-empty">
-      Aucun tirage publié pour l'instant. <NuxtLink to="/" class="text-link">Révèle ton Pokémon</NuxtLink> et publie le
-      premier tirage&nbsp;!
+      Aucun tirage pour l'instant. <NuxtLink to="/" class="text-link">Révèle ton Pokémon</NuxtLink>&nbsp;: il apparaîtra
+      ici.
     </p>
     <ol v-else class="draws">
       <li v-for="draw in draws" :key="draw.id" class="draws__item">

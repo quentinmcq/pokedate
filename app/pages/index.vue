@@ -173,13 +173,12 @@ usePageSeo({
         :new-discovery="isNewDiscovery"
         animate
       >
-        <template v-if="!isRandomDraw" #actions="{ revealed }">
-          <PublishDrawButton
-            :nudge="revealed"
+        <template v-if="!isRandomDraw" #after-actions="{ revealed }">
+          <DrawPublication
+            :ready="revealed"
             :pokemon-id="pokemon.id"
-            :pokemon-name="pokemon.name"
             :shiny="isShiny"
-            :bonus-pokemon="mirrorPokemon ? { id: mirrorPokemon.id, name: mirrorPokemon.name } : null"
+            :bonus-pokemon-id="mirrorPokemonId"
           />
         </template>
       </PokemonCard>

@@ -174,8 +174,8 @@ function sharePokemon() {
           <NuxtLink v-if="date" class="btn btn--ghost btn--sm" :to="{ path: '/duel', query: { a: toIsoDate(date) } }"
             ><Icon name="lucide:swords" aria-hidden="true" /> Défier</NuxtLink
           >
-          <slot name="actions" :revealed="isRevealed" />
         </div>
+        <slot name="after-actions" :revealed="isRevealed" />
       </header>
 
       <p class="mon-card__summary">{{ pokemon.description }}</p>

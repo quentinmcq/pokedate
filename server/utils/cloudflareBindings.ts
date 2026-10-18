@@ -5,7 +5,7 @@ export interface D1PreparedStatement {
   bind: (...values: unknown[]) => D1PreparedStatement
   all: <Row>() => Promise<{ results: Row[] }>
   first: <Row>() => Promise<Row | null>
-  run: () => Promise<unknown>
+  run: () => Promise<{ meta: { changes: number } }>
 }
 
 export interface D1Database {

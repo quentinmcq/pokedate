@@ -85,6 +85,11 @@ export interface PublicDraw {
   createdAt: string
 }
 
+export interface PublishedDraw {
+  draw: PublicDraw
+  editToken: string
+}
+
 export interface DrawsActivity {
   todayReveals: number
   todayShiny: number

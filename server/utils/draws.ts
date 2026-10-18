@@ -1,4 +1,4 @@
-import type { PublicDraw } from '#shared/types/pokemon'
+import type { PublicDraw, PublishedDraw } from '#shared/types/pokemon'
 import type { D1Database } from './cloudflareBindings'
 
 export const DRAWS_SHOWN = 50
@@ -48,20 +48,47 @@ const pruneStatement = (db: D1Database, now: number) =>
     .prepare('DELETE FROM draws WHERE created_at < ? OR id NOT IN (SELECT id FROM draws ORDER BY id DESC LIMIT ?)')
     .bind(now - DRAW_LIFETIME_MS, DRAWS_SHOWN)
 
+const toHex = (bytes: ArrayBuffer | Uint8Array) =>
+  [...new Uint8Array(bytes)].map((byte) => byte.toString(16).padStart(2, '0')).join('')
+
+// Only a hash is stored: a leaked database cannot be used to rename or remove someone else's draw.
+const hashEditToken = async (editToken: string) =>
+  toHex(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(editToken)))
+
+export const isEditToken = (value: unknown): value is string =>
+  typeof value === 'string' && /^[0-9a-f]{32}$/.test(value)
+
 export async function publishDraw(
   db: D1Database,
   draw: { pokemonId: number; shiny: boolean; bonusPokemonId: number | null; nickname: string },
   now = Date.now(),
-) {
+): Promise<PublishedDraw> {
+  const editToken = toHex(crypto.getRandomValues(new Uint8Array(16)))
   const row = await db
     .prepare(
-      'INSERT INTO draws (pokemon_id, shiny, bonus_pokemon_id, nickname, created_at) VALUES (?, ?, ?, ?, ?) RETURNING *',
+      'INSERT INTO draws (pokemon_id, shiny, bonus_pokemon_id, nickname, created_at, edit_token_hash) VALUES (?, ?, ?, ?, ?, ?) RETURNING *',
     )
-    .bind(draw.pokemonId, draw.shiny ? 1 : 0, draw.bonusPokemonId, draw.nickname, now)
+    .bind(draw.pokemonId, draw.shiny ? 1 : 0, draw.bonusPokemonId, draw.nickname, now, await hashEditToken(editToken))
     .first<DrawRow>()
   await pruneStatement(db, now).run()
   if (!row) throw new Error('Draw insertion returned no row')
-  return toPublicDraw(row)
+  return { draw: toPublicDraw(row), editToken }
+}
+
+export async function renameDraw(db: D1Database, drawId: number, editToken: string, nickname: string) {
+  const { meta } = await db
+    .prepare('UPDATE draws SET nickname = ? WHERE id = ? AND edit_token_hash = ?')
+    .bind(nickname, drawId, await hashEditToken(editToken))
+    .run()
+  return meta.changes > 0
+}
+
+export async function removeDraw(db: D1Database, drawId: number, editToken: string) {
+  const { meta } = await db
+    .prepare('DELETE FROM draws WHERE id = ? AND edit_token_hash = ?')
+    .bind(drawId, await hashEditToken(editToken))
+    .run()
+  return meta.changes > 0
 }
 
 export const purgeExpiredDraws = (db: D1Database, now = Date.now()) => pruneStatement(db, now).run()

@@ -44,7 +44,8 @@ Nuxt 4 rendu côté serveur sur Cloudflare Workers, Bun, SCSS, Nuxt Icon (Lucide
 ## Points de vigilance
 
 - Confidentialité : jamais de date de naissance dans un lien partagé, une URL de résultat de duel ou un journal.
-  Le serveur n'enregistre que les tirages publiés volontairement (pseudo, Pokémon, heure) dans D1, 7 jours au plus.
+  Le serveur n'enregistre que les tirages publiés (pseudo, Pokémon, heure) dans D1, 7 jours au plus : ajoutés
+  automatiquement depuis l'accueil, retirables et désactivables depuis la fiche (clé de modification gardée dans le navigateur).
 - Vue reste en 3.5.x tant que Nuxt n'accepte pas Vue 3.6 (sinon deux copies de Vue sont installées).
 - `siteUrl` (`https://pokedate.fr`) alimente les liens canoniques, le sitemap et l'activation de la mesure
   d'audience. `www.pokedate.fr` et l'adresse `workers.dev` redirigent vers lui (`server/utils/canonicalHost.ts`).
