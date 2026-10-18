@@ -105,7 +105,7 @@ export function usePublishedDraws() {
   async function remove(publication: Publication) {
     await $fetch(`/api/draws/${publication.drawId}`, {
       method: 'DELETE',
-      body: { editToken: publication.editToken },
+      headers: { 'x-edit-token': publication.editToken },
     })
     const removed: Publication = { ...publication, removed: true }
     savePublications(publications.value.map((entry) => (entry.drawId === publication.drawId ? removed : entry)))
