@@ -14,11 +14,13 @@
   margin: space(3) 0 0;
 
   &--privacy {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: space(2);
     margin-top: space(6);
+    text-align: center;
+
+    svg {
+      margin-right: space(1);
+      vertical-align: -0.15em;
+    }
   }
 }
 
