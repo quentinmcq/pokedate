@@ -60,6 +60,8 @@ function readPublications() {
   }
 }
 
+const pendingPublications: Record<string, Promise<Publication>> = {}
+
 const isSamePokemon = (entry: Publication, pokemon: Pick<PublishedPokemon, 'pokemonId' | 'shiny'>) =>
   entry.pokemonId === pokemon.pokemonId && entry.shiny === pokemon.shiny
 
@@ -86,7 +88,7 @@ export function usePublishedDraws() {
   const hasReachedDailyLimit = () =>
     publications.value.filter((entry) => entry.day === todayIso()).length >= DAILY_AUTO_PUBLISH_LIMIT
 
-  async function publish(pokemon: PublishedPokemon) {
+  async function sendPublication(pokemon: PublishedPokemon) {
     const { draw, editToken } = await $fetch<PublishedDraw>('/api/draws', {
       method: 'POST',
       body: { ...pokemon, nickname: nickname.value },
@@ -100,6 +102,13 @@ export function usePublishedDraws() {
     }
     savePublications([...publications.value.filter((entry) => !isSamePokemon(entry, pokemon)), publication])
     return publication
+  }
+
+  // Two reveals in a row mount two cards before the first answer arrives: they share one request.
+  function publish(pokemon: PublishedPokemon) {
+    const key = `${pokemon.pokemonId}-${pokemon.shiny}`
+    pendingPublications[key] ??= sendPublication(pokemon).finally(() => delete pendingPublications[key])
+    return pendingPublications[key]
   }
 
   async function remove(publication: Publication) {
