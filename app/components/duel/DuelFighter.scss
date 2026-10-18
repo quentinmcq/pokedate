@@ -84,8 +84,16 @@
       white-space: nowrap;
     }
 
+    // On narrow cards the value goes under its label instead of overflowing the card.
     @include bp(small) {
       font-size: 0.75rem;
+
+      span {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        line-height: 1.3;
+      }
     }
 
     b {

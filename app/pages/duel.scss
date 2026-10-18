@@ -47,12 +47,14 @@
   align-items: stretch;
 
   @include bp(small) {
-    gap: space(1);
+    gap: space(2);
   }
 
   &__vs {
     display: grid;
     place-items: center;
+    // The italic letters lean past their box on the right: the extra padding keeps them off the card.
+    padding-right: 0.2em;
     font-weight: weight('black');
     font-size: 2.2rem;
     font-style: italic;
