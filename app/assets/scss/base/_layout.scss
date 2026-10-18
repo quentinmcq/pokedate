@@ -1,4 +1,5 @@
 @use '../abstracts/functions' as *;
+@use '../abstracts/mixins' as *;
 
 .hero {
   text-align: center;
@@ -16,7 +17,13 @@
   list-style: none;
   padding: 0;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(96px, 120px));
+  justify-content: center;
   gap: 10px;
+
+  // The column count follows the 120 px maximum, which would leave only two columns on phones.
+  @include bp(small) {
+    grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+  }
   margin: space(5) 0 0;
 }
