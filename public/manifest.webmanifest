@@ -1,7 +1,7 @@
 {
   "name": "PokéDate",
   "short_name": "PokéDate",
-  "description": "Quel Pokémon se cache dans ta date de naissance ? Révèle-le, défie tes amis et complète ton Pokédex.",
+  "description": "Quel Pokémon se cache dans ta date de naissance ? Révèle-le, défie tes potes et complète ton Pokédex.",
   "lang": "fr",
   "dir": "ltr",
   "start_url": "/",
