@@ -170,7 +170,11 @@ function sharePokemon() {
           <span v-if="newDiscovery ?? isNewDiscovery" class="tag tag--new">{{ t('card.new') }}</span>
         </div>
         <component :is="headingLevel" :id="`pokemon-${pokemon.id}-name`" class="mon-card__name">
-          {{ pokemon.name }}<small>{{ pokemon.otherLanguageName }} · {{ pokemon.genus }}</small>
+          {{ pokemon.name
+          }}<small
+            ><template v-if="pokemon.otherLanguageName !== pokemon.name">{{ pokemon.otherLanguageName }} · </template
+            >{{ pokemon.genus }}</small
+          >
         </component>
         <div class="chip-list">
           <TypeChip v-for="type in pokemon.types" :key="type" :type="type" />
