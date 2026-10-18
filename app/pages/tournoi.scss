@@ -176,17 +176,9 @@
   }
 
   &__number {
-    display: grid;
-    place-items: center;
+    @include eyebrow;
     flex: none;
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    background: color('highlight');
-    color: color('on-light');
-    font-family: var(--font-mono), monospace;
-    font-size: font-size('sm');
-    font-weight: weight('bold');
+    min-width: 5em;
   }
 
   // Lighter than a heading, so it reads as a field to fill in.
@@ -197,21 +189,20 @@
     border-bottom-style: solid;
   }
 
-  // On phones the number sits on the left, the name and the date stacked beside it.
+  // On phones each player is a small card, like the duel: the label on top, then the name and the date.
   @include bp(small) {
     &__row {
-      display: grid;
-      grid-template-columns: auto 1fr;
-      gap: space(2) space(3);
-      padding: space(3) space(10) space(3) space(3);
+      flex-direction: column;
+      gap: space(2);
+      padding: space(3) space(4) space(4);
     }
 
     &__number {
-      grid-row: span 2;
+      min-width: 0;
     }
 
     &__name {
-      max-width: none;
+      max-width: 260px;
     }
   }
 

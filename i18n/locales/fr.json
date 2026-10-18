@@ -236,7 +236,8 @@
     "removePlayer": "Retirer le joueur {number}",
     "addPlayer": "Ajouter un joueur",
     "maxPlayers": "{max} joueurs maximum",
-    "start": "Lancer le tournoi"
+    "start": "Lancer le tournoi",
+    "namePlaceholder": "Prénom"
   },
   "shareImage": {
     "duelWinner": "{pokemon} remporte le duel",

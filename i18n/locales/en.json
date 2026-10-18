@@ -236,7 +236,8 @@
     "removePlayer": "Remove player {number}",
     "addPlayer": "Add a player",
     "maxPlayers": "{max} players at most",
-    "start": "Start the tournament"
+    "start": "Start the tournament",
+    "namePlaceholder": "Name"
   },
   "shareImage": {
     "duelWinner": "{pokemon} wins the duel",

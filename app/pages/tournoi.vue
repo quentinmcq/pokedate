@@ -264,7 +264,7 @@ usePageSeo({
       </h2>
       <TransitionGroup tag="ol" name="player-row" class="players" @leave="collapsePlayerRow">
         <li v-for="(draft, index) in drafts" :key="draft.key" class="players__row">
-          <span class="players__number" aria-hidden="true">{{ index + 1 }}</span>
+          <span class="players__number" aria-hidden="true">{{ t('challenge.player', { number: index + 1 }) }}</span>
           <label class="visually-hidden" :for="`player-name-${draft.key}`">{{
             t('challenge.playerName', { number: index + 1 })
           }}</label>
@@ -272,7 +272,7 @@ usePageSeo({
             :id="`player-name-${draft.key}`"
             v-model="draft.name"
             class="text-input players__name"
-            :placeholder="t('challenge.player', { number: index + 1 })"
+            :placeholder="t('tournament.namePlaceholder')"
             :maxlength="PLAYER_NAME_MAX_LENGTH"
           />
           <DateField
