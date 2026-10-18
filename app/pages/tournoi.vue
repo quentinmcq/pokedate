@@ -80,6 +80,7 @@ const formError = ref('')
 const invalidPart = ref<{ draftKey: number; part: DateFieldKey } | null>(null)
 const dateFields = useTemplateRef<{ focusInvalidPart: (part: DateFieldKey) => void }[]>('dateFields')
 const resultSection = useTemplateRef<HTMLElement>('resultSection')
+const scrollToResult = useScrollToResult(resultSection)
 
 const canAddPlayer = computed(() => drafts.value.length < TOURNAMENT_PLAYER_LIMITS.max)
 const canRemovePlayer = computed(() => drafts.value.length > TOURNAMENT_PLAYER_LIMITS.min)
@@ -102,9 +103,7 @@ async function startTournament() {
   invalidPart.value = null
   trackEvent('tournament')
   await router.push({ query: buildTournamentQuery(players) })
-  await nextTick()
-  resultSection.value?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-  resultSection.value?.focus({ preventScroll: true })
+  await scrollToResult()
 }
 
 function shareTournament() {

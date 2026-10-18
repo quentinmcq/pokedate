@@ -19,6 +19,7 @@ const invalidDatePart = ref<DateFieldKey | null>(null)
 const dateField = useTemplateRef('dateField')
 const revealCount = ref(0)
 const resultSection = useTemplateRef<HTMLElement>('resultSection')
+const scrollToResult = useScrollToResult(resultSection)
 
 const DATE_FIELD_NAMES = { day: 'jour', month: 'mois', year: 'annee' } as const
 
@@ -64,9 +65,7 @@ async function revealPokemonFor(date: CalendarDate, { isRandom = false } = {}) {
   revealCount.value++
   trackEvent(isRandom ? 'random' : 'reveal')
   await router.push({ query: { date: toIsoDate(date), ...(isRandom ? { hasard: '1' } : {}) } })
-  await nextTick()
-  resultSection.value?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-  resultSection.value?.focus({ preventScroll: true })
+  await scrollToResult()
 }
 
 function submitDate() {

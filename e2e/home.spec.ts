@@ -23,6 +23,20 @@ test.describe('Mon Pokémon', () => {
     await expect(page.locator('.mon-card .tag--new')).toHaveCount(0)
   })
 
+  test('descend jusqu’au Pokémon dès le premier clic, même si sa fiche tarde', async ({ page }) => {
+    await page.route('**/api/pokemon/**', async (route) => {
+      await new Promise((resolve) => setTimeout(resolve, 1500))
+      await route.continue()
+    })
+    await gotoHydrated(page, '/')
+    await fillDate(page, '.hero', '17', '10', '2026')
+    await page.getByRole('button', { name: 'Révéler mon Pokémon' }).click()
+    await expect(page.locator('.mon-card')).toBeVisible({ timeout: 8000 })
+    await expect
+      .poll(() => page.evaluate(() => Math.round(document.querySelector('.result')!.getBoundingClientRect().top)))
+      .toBeLessThan(120)
+  })
+
   test('affiche une erreur claire pour une date impossible', async ({ page }) => {
     await gotoHydrated(page, '/')
     await fillDate(page, '.hero', '31', '02', '2026')

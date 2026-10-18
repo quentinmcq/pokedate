@@ -25,6 +25,7 @@ const invalidDatePartB = ref<DateFieldKey | null>(null)
 const dateFieldA = useTemplateRef('dateFieldA')
 const dateFieldB = useTemplateRef('dateFieldB')
 const resultSection = useTemplateRef<HTMLElement>('resultSection')
+const scrollToResult = useScrollToResult(resultSection)
 
 const prefilledDate = parseIsoDate(route.query.a)
 if (prefilledDate) dateA.value = toDateFieldValue(prefilledDate)
@@ -120,9 +121,7 @@ async function startDuel() {
       playerNameB: playerNameInputB.value,
     }),
   })
-  await nextTick()
-  resultSection.value?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-  resultSection.value?.focus({ preventScroll: true })
+  await scrollToResult()
 }
 
 function shareDuel() {
