@@ -149,11 +149,18 @@ test.describe('Mesure d’audience', () => {
     const headers = { origin: baseURL!, 'cf-connecting-ip': `e2e-activity-${Date.now()}` }
     for (let reveal = 0; reveal < 3; reveal++)
       await request.post('/api/events', { data: { name: 'reveal', pokemonId: 25, shiny: reveal === 0 }, headers })
+    // The week's favourite comes from the published draws and needs a Pokémon drawn twice at least.
+    for (let draw = 0; draw < 2; draw++)
+      await request.post('/api/draws', {
+        data: { pokemonId: 25, shiny: false, bonusPokemonId: null, nickname: '' },
+        headers,
+      })
     await gotoHydrated(page, '/tirages')
     const activity = page.getByRole('region', { name: "Aujourd'hui sur PokéDate" })
     await expect(activity).toContainText('Pokémon révélés')
     await expect(activity).toContainText('shiny')
     await expect(activity).toContainText('Le plus tiré cette semaine')
+    await expect(activity.locator('.activity__count')).toHaveText(/^×([2-9]|\d{2,})$/)
     await expect(page.getByRole('heading', { name: 'Pokémon révélés' })).toBeVisible()
   })
 

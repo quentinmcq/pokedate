@@ -1,6 +1,7 @@
 import type { DrawsActivity } from '#shared/types/pokemon'
 
 const DAYS_IN_WEEK = 7
+const FAVOURITE_MIN_DRAWS = 2
 
 export default defineEventHandler(async (event): Promise<DrawsActivity> => {
   setResponseHeader(event, 'cache-control', 'public, max-age=60')
@@ -13,10 +14,11 @@ export default defineEventHandler(async (event): Promise<DrawsActivity> => {
   )
     .bind(today)
     .first<{ reveals: number; shiny: number }>()
+  // Counted from the published draws, so the favourite always matches the list shown below it.
   const weekFavourite = await DB.prepare(
-    'SELECT pokemon_id, SUM(count) AS total FROM pokemon_reveal_counts WHERE day >= date(?, ?) GROUP BY pokemon_id ORDER BY total DESC, pokemon_id LIMIT 1',
+    'SELECT pokemon_id, COUNT(*) AS total FROM draws WHERE created_at >= ? GROUP BY pokemon_id HAVING total >= ? ORDER BY total DESC, MAX(created_at) DESC LIMIT 1',
   )
-    .bind(today, `-${DAYS_IN_WEEK - 1} days`)
+    .bind(Date.now() - DAYS_IN_WEEK * 24 * 60 * 60 * 1000, FAVOURITE_MIN_DRAWS)
     .first<{ pokemon_id: number; total: number }>()
 
   const favouritePokemon = weekFavourite ? findPokemon(weekFavourite.pokemon_id, requestLocale(event)) : null
