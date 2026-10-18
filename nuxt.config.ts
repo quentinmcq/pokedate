@@ -15,7 +15,7 @@ function writeServiceWorker(publicDir: string) {
     .filter((entry) => entry.isFile())
     .map((entry) => `/${relative(publicDir, join(entry.parentPath, entry.name)).split(sep).join('/')}`)
     .filter((path) => !path.startsWith('/_nuxt/builds/'))
-    .sort()
+    .toSorted()
   const source = readFileSync(SERVICE_WORKER_SOURCE, 'utf8')
   const buildId = createHash('sha256').update(source).update(precachedAssets.join()).digest('hex').slice(0, 12)
   const header = `const BUILD_ID = '${buildId}'\nconst PRECACHED_ASSETS = ${JSON.stringify(precachedAssets)}\n`
