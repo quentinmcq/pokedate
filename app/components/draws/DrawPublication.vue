@@ -60,11 +60,15 @@ function hasSeenNicknamePrompt() {
   }
 }
 
-function showNicknamePrompt() {
-  if (nickname.value !== ANONYMOUS_NICKNAME || hasSeenNicknamePrompt()) return
+function markNicknamePromptSeen() {
   try {
     localStorage.setItem(NICKNAME_PROMPT_STORAGE_KEY, '1')
   } catch {}
+}
+
+function showNicknamePrompt() {
+  if (nickname.value !== ANONYMOUS_NICKNAME || hasSeenNicknamePrompt()) return
+  markNicknamePromptSeen()
   isNicknamePromptShown.value = true
   nicknamePromptTimer = setTimeout(hideNicknamePrompt, NICKNAME_PROMPT_DURATION_MS)
 }
@@ -153,6 +157,8 @@ async function saveSettings() {
   dialogError.value = ''
   try {
     await savePreferences({ nickname: check.nickname, autoPublish: autoPublishInput.value }, publication.value)
+    // Whoever saved these settings chose their name on purpose, even when it stays anonymous.
+    markNicknamePromptSeen()
     closeSettings()
     if (status.value === 'disabled' && autoPublishInput.value) {
       status.value = 'waiting'
