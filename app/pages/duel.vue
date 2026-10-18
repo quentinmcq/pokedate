@@ -142,8 +142,13 @@ usePageSeo({
       : "Duel d'anniversaires",
   description:
     "Ta date contre celle de ton adversaire : quel Pokémon gagne le combat ? Un duel de dates d'anniversaire façon Pokémon.",
-  shareImagePath: () => (winnerPokemon.value ? shareImagePath(winnerPokemon.value.id) : undefined),
-  shareImageAlt: () => winnerPokemon.value?.name,
+  shareImagePath: () => {
+    const { pokemonIdA, pokemonIdB, shinyA, shinyB } = duelQuery.value
+    if (!hasResult.value || !pokemonIdA || !pokemonIdB) return undefined
+    return duelShareImagePath({ pokemonId: pokemonIdA, shiny: shinyA }, { pokemonId: pokemonIdB, shiny: shinyB })
+  },
+  shareImageAlt: () =>
+    pokemonA.value && pokemonB.value ? `${pokemonA.value.name} contre ${pokemonB.value.name}` : undefined,
   noindex: () => hasBothPokemon.value,
 })
 </script>

@@ -1,4 +1,5 @@
 import type { H3Event } from 'h3'
+import type { ImagesBinding } from './shareImageComposer'
 
 export interface D1PreparedStatement {
   bind: (...values: unknown[]) => D1PreparedStatement
@@ -16,10 +17,17 @@ interface RateLimiter {
   limit: (options: { key: string }) => Promise<{ success: boolean }>
 }
 
+interface AssetsBinding {
+  fetch: (request: Request | URL | string) => Promise<Response>
+}
+
 export interface PokedateBindings {
   DB?: D1Database
+  ASSETS?: AssetsBinding
+  IMAGES?: ImagesBinding
   PUBLISH_RATE_LIMITER?: RateLimiter
   EVENT_RATE_LIMITER?: RateLimiter
+  SHARE_IMAGE_RATE_LIMITER?: RateLimiter
 }
 
 type ContextWithCloudflare = { cloudflare?: { env?: PokedateBindings } }

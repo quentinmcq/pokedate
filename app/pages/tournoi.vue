@@ -155,8 +155,15 @@ usePageSeo({
   title: () => (champion.value ? `${champion.value.pokemon.name} remporte le tournoi` : "Tournoi d'anniversaires"),
   description:
     'De 3 à 8 personnes, une date chacune : quel Pokémon remporte le tournoi ? Chaque Pokémon affronte tous les autres.',
-  shareImagePath: () => (champion.value ? shareImagePath(champion.value.pokemon.id) : undefined),
-  shareImageAlt: () => champion.value?.pokemon.name,
+  shareImagePath: () =>
+    champion.value ? tournamentShareImagePath(ranking.value.slice(0, 3).map(({ contender }) => contender)) : undefined,
+  shareImageAlt: () =>
+    champion.value
+      ? `Podium du tournoi : ${ranking.value
+          .slice(0, 3)
+          .map(({ contender }) => contender.pokemon.name)
+          .join(', ')}`
+      : undefined,
   noindex: () => !!tournamentPlayers.value,
 })
 </script>

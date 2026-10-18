@@ -3,6 +3,7 @@ import { dirname, join } from 'node:path'
 import sharp from 'sharp'
 import type { StoredPokedex, StoredPokemon } from '../server/data/storedPokedex'
 import { POKEMON_COUNT, POKEMON_TYPES } from '../shared/utils/pokemon'
+import { generateShareFrames } from './shareFrames'
 
 const OUTPUT_DIR = join(import.meta.dirname, '..', 'generated')
 const SPRITES_BASE_URL = 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon'
@@ -141,7 +142,11 @@ await Promise.all(
   }),
 )
 
-console.info(`OK : ${POKEMON_COUNT} Pokémon dans generated/sprites (art, mini, og) et generated/cries`)
+await generateShareFrames(OUTPUT_DIR)
+
+console.info(
+  `OK : ${POKEMON_COUNT} Pokémon dans generated/sprites (art, mini, og), generated/cries et les fonds de partage dans generated/og`,
+)
 if (report.spritesBuiltFromArtwork)
   console.info(`Sprites fabriqués à partir de l'artwork : ${report.spritesBuiltFromArtwork}`)
 if (report.missingCries.length) console.info(`Cris introuvables : ${report.missingCries.join(', ')}`)
