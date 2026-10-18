@@ -171,7 +171,7 @@ test.describe('Mon Pokémon', () => {
   test('un lien partagé invite à tester sa propre date', async ({ page }) => {
     await gotoHydrated(page, '/pokemon/706-muplodocus?partage=1')
     const banner = page.locator('.banner--top')
-    await expect(banner).toContainText('est tombé·e sur Muplodocus')
+    await expect(banner).toContainText('est tombé sur Muplodocus')
     await banner.click()
     await expect(page).toHaveURL('/')
     await expect(page.getByLabel('Jour')).toBeVisible()

@@ -9,9 +9,9 @@ const { portfolioUrl } = useRuntimeConfig().public
         <NuxtLink to="/">Mon Pokémon</NuxtLink>
         <NuxtLink to="/duel">Duel</NuxtLink>
         <NuxtLink to="/tournoi">Tournoi</NuxtLink>
-        <NuxtLink to="/tirages">Derniers tirages</NuxtLink>
-        <NuxtLink to="/pokedex">Mon Pokédex</NuxtLink>
+        <NuxtLink to="/pokedex">Pokédex</NuxtLink>
         <NuxtLink to="/pokemon">Les 1025 Pokémon</NuxtLink>
+        <NuxtLink to="/tirages">Derniers tirages</NuxtLink>
         <NuxtLink to="/mentions-legales">Mentions légales</NuxtLink>
       </nav>
       <p class="site-footer__author">

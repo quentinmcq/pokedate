@@ -96,6 +96,6 @@ describe('adresses des fiches', () => {
 describe('describeHeight', () => {
   it('compare la taille à un humain', () => {
     expect(describeHeight(0.2)).toContain('poche')
-    expect(describeHeight(3.4)).toContain('2× ta taille')
+    expect(describeHeight(3.4)).toBe('2 fois plus grand que toi')
   })
 })

@@ -154,7 +154,7 @@ function shareTournament() {
 usePageSeo({
   title: () => (champion.value ? `${champion.value.pokemon.name} remporte le tournoi` : "Tournoi d'anniversaires"),
   description:
-    'De 3 à 8 amis, une date chacun : quel Pokémon remporte le tournoi ? Chaque Pokémon affronte tous les autres, le meilleur gagne.',
+    'De 3 à 8 personnes, une date chacune : quel Pokémon remporte le tournoi ? Chaque Pokémon affronte tous les autres.',
   shareImagePath: () => (champion.value ? shareImagePath(champion.value.pokemon.id) : undefined),
   shareImageAlt: () => champion.value?.pokemon.name,
   noindex: () => !!tournamentPlayers.value,
@@ -166,7 +166,7 @@ usePageSeo({
     <div class="hero" :class="{ 'tournament-heading': ranking.length }">
       <h1>Tournoi d'anniversaires</h1>
       <p v-if="!ranking.length" class="lead">
-        De 3 à 8 amis, une date chacun&nbsp;: chaque Pokémon affronte tous les autres. Qui finira en tête&nbsp;?
+        De 3 à 8 personnes, une date chacune&nbsp;: chaque Pokémon affronte tous les autres. Qui finira en tête&nbsp;?
       </p>
     </div>
 

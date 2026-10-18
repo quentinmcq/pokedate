@@ -12,7 +12,7 @@ export const HOME_FAQ: FaqItem[] = [
   {
     question: 'Quel Pokémon suis-je selon ma date de naissance ?',
     answer:
-      "Entre ta date d'anniversaire dans le formulaire en haut de la page : ton Pokémon s'affiche avec ses types, ses statistiques, ses faiblesses et ses évolutions. Tes amis nés le même jour que toi, à quelques années près, peuvent tomber sur un autre Pokémon.",
+      "Entre ta date d'anniversaire dans le formulaire en haut de la page : ton Pokémon s'affiche avec ses types, ses statistiques, ses faiblesses et ses évolutions. Une personne née le même jour que toi mais une autre année tombe en général sur un autre Pokémon : le dernier chiffre de l'année change tout.",
   },
   {
     question: "C'est quoi un Pokémon shiny ?",

@@ -172,7 +172,7 @@ function sharePokemon() {
             <Icon name="lucide:share-2" aria-hidden="true" /> Partager
           </button>
           <NuxtLink v-if="date" class="btn btn--ghost btn--sm" :to="{ path: '/duel', query: { a: toIsoDate(date) } }"
-            ><Icon name="lucide:swords" aria-hidden="true" /> Défier un ami</NuxtLink
+            ><Icon name="lucide:swords" aria-hidden="true" /> Lancer un duel</NuxtLink
           >
           <slot name="actions" />
         </div>
@@ -208,7 +208,7 @@ function sharePokemon() {
       </section>
 
       <section class="mon-card__matchups">
-        <component :is="sectionHeadingTag" class="mon-card__section-title">Types face à lui</component>
+        <component :is="sectionHeadingTag" class="mon-card__section-title">Faiblesses et résistances</component>
         <PokemonMatchups :types="pokemon.types" />
       </section>
 

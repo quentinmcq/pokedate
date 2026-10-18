@@ -31,7 +31,7 @@ defineProps<{
     <div class="chip-list"><TypeChip v-for="type in pokemon.types" :key="type" :type="type" small /></div>
     <div class="fighter__power">
       <span
-        >Total stats <b>{{ statTotal(pokemon.stats) }}</b></span
+        >Total des stats <b>{{ statTotal(pokemon.stats) }}</b></span
       >
       <span
         >Vitesse <b>{{ pokemon.stats.speed }}</b></span

@@ -175,9 +175,9 @@ const AVERAGE_HUMAN_HEIGHT_METERS = 1.7
 export function describeHeight(heightMeters: number) {
   if (heightMeters <= 0.3) return 'Tient dans ta poche'
   if (heightMeters <= 0.7) return 'Tient dans ton sac à dos'
-  if (heightMeters < 1.4) return "T'arrive à peu près à la taille"
-  if (heightMeters <= 2) return 'À peu près ta hauteur'
-  return `${formatNumber(heightMeters / AVERAGE_HUMAN_HEIGHT_METERS)}× ta taille`
+  if (heightMeters < 1.4) return "T'arrive à peu près à la ceinture"
+  if (heightMeters <= 2) return 'À peu près aussi grand que toi'
+  return `${formatNumber(heightMeters / AVERAGE_HUMAN_HEIGHT_METERS)} fois plus grand que toi`
 }
 
 export const slugify = (text: string) =>

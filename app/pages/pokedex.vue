@@ -35,7 +35,7 @@ const completionPercent = computed(() => (caughtCount.value / totalCount.value) 
 
 usePageSeo({
   title: 'Mon Pokédex',
-  description: 'Tous les Pokémon que tu as découverts avec PokéDate, en entrant tes dates et celles de tes amis.',
+  description: 'Tous les Pokémon que tu as attrapés avec PokéDate, en entrant tes dates et celles de tes potes.',
   noindex: true,
 })
 </script>
@@ -45,8 +45,8 @@ usePageSeo({
     <div class="hero">
       <h1>Ton Pokédex</h1>
       <p class="lead">
-        Chaque date que tu entres (la tienne, celles de tes potes, les duels…) attrape son Pokémon. Ceux que tu croises
-        au hasard ou sur leur fiche sont seulement vus. Attrape-les tous&nbsp;!
+        Chaque date que tu entres (la tienne, celles de tes potes, celles d'un duel…) te fait attraper son Pokémon. Ceux
+        que tu croises au hasard ou sur leur fiche sont seulement vus. Attrape-les tous&nbsp;!
       </p>
       <PokedexImport v-if="incomingDiscoveries" :incoming="incomingDiscoveries" @done="finishImport" />
       <template v-if="!isEmpty">
@@ -72,7 +72,7 @@ usePageSeo({
           <NuxtLink to="/pokemon" class="text-link">Parcourir les 1025 Pokémon</NuxtLink>
         </p>
         <label class="toggle"
-          ><input v-model="showOnlyDiscovered" type="checkbox" /> Afficher seulement les découverts</label
+          ><input v-model="showOnlyDiscovered" type="checkbox" /> Masquer les Pokémon jamais vus</label
         >
       </template>
     </div>

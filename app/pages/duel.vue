@@ -141,7 +141,7 @@ usePageSeo({
       ? `${pokemonA.value.name} VS ${pokemonB.value.name}`
       : "Duel d'anniversaires",
   description:
-    "Ta date contre celle d'un ami : quel Pokémon gagne le combat ? Un duel de dates d'anniversaire façon Pokémon.",
+    "Ta date contre celle de ton adversaire : quel Pokémon gagne le combat ? Un duel de dates d'anniversaire façon Pokémon.",
   shareImagePath: () => (winnerPokemon.value ? shareImagePath(winnerPokemon.value.id) : undefined),
   shareImageAlt: () => winnerPokemon.value?.name,
   noindex: () => hasBothPokemon.value,
@@ -205,7 +205,7 @@ usePageSeo({
       <h2 v-if="hasResult" id="rematch-title" class="duel-rematch__title">Ta revanche&nbsp;?</h2>
       <template v-else>
         <h1>Duel d'anniversaires</h1>
-        <p class="lead">Ta date contre celle d'un·e ami·e : quel Pokémon l'emporte&nbsp;?</p>
+        <p class="lead">Ta date contre celle de ton adversaire&nbsp;: quel Pokémon l'emporte&nbsp;?</p>
       </template>
       <div class="duel-form">
         <div class="duel-form__side">

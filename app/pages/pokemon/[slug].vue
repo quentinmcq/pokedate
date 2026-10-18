@@ -26,7 +26,7 @@ const isSharedLink = route.query.partage === '1'
 usePageSeo({
   title: `${pokemon.name} (n° ${pokemon.id}) : types, stats, faiblesses et évolutions`,
   shareTitle: isSharedLink
-    ? `Un ami est tombé sur ${pokemon.name} avec sa date ! Et toi ?`
+    ? `Quelqu'un est tombé sur ${pokemon.name} avec sa date ! Et toi ?`
     : `${pokemon.name}, n° ${pokemon.id}`,
   description: pokemonMetaDescription(pokemon),
   shareImagePath: shareImagePath(pokemon.id),
@@ -58,7 +58,7 @@ usePageSeo({
       to="/"
       :image-src="spriteUrl(pokemon.id)"
       icon="lucide:party-popper"
-      :title="`Un·e ami·e est tombé·e sur ${pokemon.name} avec sa date !`"
+      :title="`Quelqu'un est tombé sur ${pokemon.name} avec sa date !`"
       placement="top"
     >
       Et toi, quel Pokémon se cache dans ta date ? Touche pour le découvrir.

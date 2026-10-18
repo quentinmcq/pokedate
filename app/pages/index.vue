@@ -91,7 +91,7 @@ const revealedPokemon = computed(() => (selectedDate.value ? pokemon.value : nul
 usePageSeo({
   title: () => (revealedPokemon.value ? `${revealedPokemon.value.name} #${revealedPokemon.value.id}` : undefined),
   description:
-    "Quel Pokémon se cache dans ta date de naissance ? Le dernier chiffre du jour, du mois et de l'année donnent ton Pokémon parmi les 1025 : types, stats, faiblesses, évolutions et duel entre amis.",
+    "Quel Pokémon se cache dans ta date de naissance ? Les derniers chiffres du jour, du mois et de l'année donnent ton Pokémon parmi les 1025 : types, stats, faiblesses, évolutions, duels et tournois entre potes.",
   shareImagePath: () => (revealedPokemon.value ? shareImagePath(revealedPokemon.value.id) : undefined),
   shareImageAlt: () => revealedPokemon.value?.name,
   noindex: () => !!route.query.date,
@@ -132,8 +132,8 @@ usePageSeo({
     <form class="hero" action="/" method="get" autocomplete="off" novalidate @submit.prevent="submitDate">
       <h1>Quel Pokémon<br />se cache dans ta date&nbsp;?</h1>
       <p class="lead">
-        Le dernier chiffre du <b>jour</b>, du <b>mois</b> et de l'<b>année</b> forment le numéro de ton Pokémon. Essaie
-        avec ta date de naissance&nbsp;!
+        Les derniers chiffres du <b>jour</b>, du <b>mois</b> et de l'<b>année</b> forment le numéro de ton Pokémon.
+        Essaie avec ta date de naissance&nbsp;!
       </p>
       <DateField
         ref="dateField"
@@ -199,15 +199,16 @@ usePageSeo({
       <h2 id="how-it-works" class="section__title">Comment ça marche&nbsp;?</h2>
       <ol class="steps">
         <li>
-          <strong>Entre une date</strong>Ton anniversaire, celui d'un ami, ou n'importe quel jour qui compte pour toi.
+          <strong>Entre une date</strong>Ton anniversaire, celui de tes potes ou n'importe quel jour qui compte pour
+          toi.
         </li>
         <li>
           <strong>Trois chiffres, un Pokémon</strong>Les derniers chiffres du jour, du mois et de l'année donnent un
           numéro entre 1 et 1000.
         </li>
         <li>
-          <strong>Défie tes amis</strong>Lance un <NuxtLink to="/duel" class="text-link">duel</NuxtLink> et complète ton
-          <NuxtLink to="/pokedex" class="text-link">Pokédex</NuxtLink> au fil des dates.
+          <strong>Défie tes potes</strong>Lance un <NuxtLink to="/duel" class="text-link">duel</NuxtLink> et complète
+          ton <NuxtLink to="/pokedex" class="text-link">Pokédex</NuxtLink> au fil des dates.
         </li>
       </ol>
     </section>

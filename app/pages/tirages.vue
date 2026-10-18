@@ -42,8 +42,8 @@ usePageSeo({
 
     <p v-if="error" class="draws-empty">Les derniers tirages sont indisponibles pour le moment.</p>
     <p v-else-if="!draws?.length" class="draws-empty">
-      Aucun tirage publié pour l'instant. <NuxtLink to="/" class="text-link">Révèle ton Pokémon</NuxtLink> et sois le
-      premier à le publier&nbsp;!
+      Aucun tirage publié pour l'instant. <NuxtLink to="/" class="text-link">Révèle ton Pokémon</NuxtLink> et publie le
+      premier tirage&nbsp;!
     </p>
     <ol v-else class="draws">
       <li v-for="draw in draws" :key="draw.id" class="draws__item">
