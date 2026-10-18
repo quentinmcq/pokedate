@@ -17,9 +17,15 @@ export function setStatsOptOut(isOptedOut: boolean) {
   } catch {}
 }
 
+// Crawlers and audit tools run the page's scripts too: they must neither be counted nor add draws.
+const AUTOMATED_BROWSER = /bot|crawl|spider|slurp|lighthouse|headlesschrome|pagespeed/i
+
+export const isAutomatedBrowser = () => import.meta.client && AUTOMATED_BROWSER.test(navigator.userAgent)
+
 export function useIsCountedVisit() {
   const { siteUrl } = useRuntimeConfig().public
-  return () => import.meta.client && location.host === new URL(siteUrl).host && !isStatsOptedOut()
+  return () =>
+    import.meta.client && location.host === new URL(siteUrl).host && !isStatsOptedOut() && !isAutomatedBrowser()
 }
 
 export function useTrackEvent() {

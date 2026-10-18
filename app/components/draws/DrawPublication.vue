@@ -67,7 +67,7 @@ async function publishNow() {
 }
 
 function startPublication() {
-  if (status.value !== 'waiting' || !props.ready) return
+  if (status.value !== 'waiting' || !props.ready || isAutomatedBrowser()) return
   if (!isAutoPublishEnabled.value) status.value = 'disabled'
   else if (hasReachedDailyLimit()) status.value = 'limit'
   else publishNow()
