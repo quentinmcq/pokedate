@@ -84,6 +84,15 @@ describe('usePokedex', () => {
     expect(shinyCount.value).toBe(1)
   })
 
+  it('retient un shiny vu au hasard, sans en faire un shiny attrapé', () => {
+    const { recordDiscovery, discoveries, shinyCount } = usePokedex()
+    recordDiscovery(25, { shiny: true })
+    expect(discoveries.value[25]).toEqual({ caught: false, shiny: false, seenShiny: true })
+    expect(shinyCount.value).toBe(0)
+    recordDiscovery(25, { caught: true })
+    expect(discoveries.value[25]).toEqual({ caught: true, shiny: false })
+  })
+
   it('recharge le Pokédex sauvegardé', () => {
     localStorage.setItem('pokedate.dex', JSON.stringify({ 1: { shiny: false }, 4: { s: 1 }, 7: { caught: false } }))
     const { loadDiscoveries, seenCount, caughtCount, shinyCount } = usePokedex()

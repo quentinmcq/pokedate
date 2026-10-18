@@ -21,6 +21,17 @@ describe('transfert du Pokédex', () => {
     expect(Object.keys(decodeDiscoveries(encodeDiscoveries(complete))!)).toHaveLength(POKEMON_COUNT)
   })
 
+  it('transfère aussi les shiny vus au hasard', () => {
+    const discoveries = {
+      25: { caught: false, shiny: false, seenShiny: true as const },
+      1007: { caught: false, shiny: false, seenShiny: true as const },
+      4: { caught: true, shiny: false },
+    }
+    const code = encodeDiscoveries(discoveries)
+    expect(code).toMatch(/^1\.[\w-]+\.[0-9a-z-]+$/)
+    expect(decodeDiscoveries(code)).toEqual(discoveries)
+  })
+
   it('encode un Pokédex vide', () => {
     expect(decodeDiscoveries(encodeDiscoveries({}))).toEqual({})
   })

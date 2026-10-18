@@ -1,4 +1,5 @@
 import type { Discoveries, Discovery } from '~/composables/usePokedex'
+import { toDiscovery } from '~/composables/usePokedex'
 
 export const TRANSFER_HASH_KEY = 'transfert'
 
@@ -7,6 +8,7 @@ const BITS_PER_POKEMON = 2
 const POKEMON_PER_BYTE = 8 / BITS_PER_POKEMON
 const STATE_MASK = 0b11
 const BASE64URL_PATTERN = /^[\w-]*$/
+const SEEN_SHINY_PATTERN = /^[0-9a-z-]*$/
 
 const TransferState = { Unknown: 0, Seen: 1, Caught: 2, CaughtShiny: 3 } as const
 
@@ -34,12 +36,17 @@ export function encodeDiscoveries(discoveries: Discoveries) {
   }
   let usedLength = bytes.length
   while (usedLength > 0 && bytes[usedLength - 1] === 0) usedLength--
-  return `${FORMAT_VERSION}.${toBase64Url(bytes.subarray(0, usedLength))}`
+  const seenShinyIds = Object.entries(discoveries)
+    .filter(([, discovery]) => discovery.seenShiny)
+    .map(([key]) => Number(key).toString(36))
+  const code = `${FORMAT_VERSION}.${toBase64Url(bytes.subarray(0, usedLength))}`
+  return seenShinyIds.length ? `${code}.${seenShinyIds.join('-')}` : code
 }
 
 export function decodeDiscoveries(code: string): Discoveries | null {
-  const [version, payload = ''] = code.split('.')
-  if (version !== FORMAT_VERSION || !BASE64URL_PATTERN.test(payload)) return null
+  const [version, payload = '', seenShinyPart = ''] = code.split('.')
+  if (version !== FORMAT_VERSION || !BASE64URL_PATTERN.test(payload) || !SEEN_SHINY_PATTERN.test(seenShinyPart))
+    return null
   let bytes: Uint8Array
   try {
     bytes = fromBase64Url(payload)
@@ -52,6 +59,12 @@ export function decodeDiscoveries(code: string): Discoveries | null {
       (bytes[Math.floor(index / POKEMON_PER_BYTE)]! >> ((index % POKEMON_PER_BYTE) * BITS_PER_POKEMON)) & STATE_MASK
     if (state === TransferState.Unknown) continue
     discoveries[index + 1] = { caught: state !== TransferState.Seen, shiny: state === TransferState.CaughtShiny }
+  }
+  for (const id of seenShinyPart
+    .split('-')
+    .filter(Boolean)
+    .map((part) => Number.parseInt(part, 36))) {
+    if (discoveries[id] && !discoveries[id].caught) discoveries[id] = toDiscovery({ seenShiny: true })
   }
   return discoveries
 }

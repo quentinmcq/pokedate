@@ -87,7 +87,12 @@ usePageSeo({
 
     <ul v-else class="dex-grid">
       <li v-for="entry in visibleEntries" :key="entry.id">
-        <PokemonTile :pokemon="entry" :state="discoveryStateOf(entry.id)" :shiny="discoveries[entry.id]?.shiny" />
+        <PokemonTile
+          :pokemon="entry"
+          :state="discoveryStateOf(entry.id)"
+          :shiny="discoveries[entry.id]?.shiny"
+          :seen-shiny="discoveries[entry.id]?.seenShiny"
+        />
       </li>
     </ul>
 

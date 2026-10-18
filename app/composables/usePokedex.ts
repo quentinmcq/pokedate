@@ -3,6 +3,7 @@ const STORAGE_KEY = 'pokedate.dex'
 export interface Discovery {
   caught: boolean
   shiny: boolean
+  seenShiny?: true
 }
 
 export type Discoveries = Record<number, Discovery>
@@ -18,6 +19,13 @@ const isShinyFlag = (value: unknown) => {
 const isCaughtFlag = (value: unknown) =>
   !value || typeof value !== 'object' || (value as { caught?: unknown }).caught !== false
 
+const isSeenShinyFlag = (value: unknown) =>
+  !!value && typeof value === 'object' && (value as { seenShiny?: unknown }).seenShiny === true
+
+// A shiny glimpsed on a random draw is only shown as a star on the shadow, never as a caught shiny.
+export const toDiscovery = ({ caught = false, shiny = false, seenShiny = false }): Discovery =>
+  caught ? { caught, shiny } : { caught, shiny: false, ...(seenShiny ? { seenShiny: true as const } : {}) }
+
 export function sanitizeDiscoveries(stored: unknown): Discoveries {
   const discoveries: Discoveries = {}
   if (!stored || typeof stored !== 'object' || Array.isArray(stored)) return discoveries
@@ -25,7 +33,7 @@ export function sanitizeDiscoveries(stored: unknown): Discoveries {
     const id = Number(key)
     if (!Number.isInteger(id) || id < 1 || id > POKEMON_COUNT) continue
     const caught = isCaughtFlag(value)
-    discoveries[id] = { caught, shiny: caught && isShinyFlag(value) }
+    discoveries[id] = toDiscovery({ caught, shiny: isShinyFlag(value), seenShiny: isSeenShinyFlag(value) })
   }
   return discoveries
 }
@@ -70,7 +78,11 @@ export function usePokedex() {
     const isCaught = caught || (previous?.caught ?? false)
     discoveries.value = {
       ...discoveries.value,
-      [id]: { caught: isCaught, shiny: (previous?.shiny ?? false) || (caught && shiny) },
+      [id]: toDiscovery({
+        caught: isCaught,
+        shiny: (previous?.shiny ?? false) || (caught && shiny),
+        seenShiny: (previous?.seenShiny ?? false) || (!caught && shiny),
+      }),
     }
     writeStoredDiscoveries(discoveries.value)
     return isNew
@@ -84,10 +96,11 @@ export function usePokedex() {
       const id = Number(key)
       const previous = merged[id]
       if (discovery.caught && !previous?.caught) newlyCaught++
-      merged[id] = {
+      merged[id] = toDiscovery({
         caught: discovery.caught || (previous?.caught ?? false),
         shiny: discovery.shiny || (previous?.shiny ?? false),
-      }
+        seenShiny: (discovery.seenShiny ?? false) || (previous?.seenShiny ?? false),
+      })
     }
     discoveries.value = merged
     writeStoredDiscoveries(merged)

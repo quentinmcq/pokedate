@@ -40,6 +40,19 @@
     border-color: color('highlight');
   }
 
+  &--seen {
+    position: relative;
+  }
+
+  &__seen-shiny {
+    position: absolute;
+    top: space(1);
+    right: space(1);
+    font-size: font-size('md');
+    color: color('highlight');
+    filter: drop-shadow(0 0 6px color-mix(in srgb, var(--color-highlight) 60%, transparent));
+  }
+
   &--seen img {
     filter: brightness(0) opacity(0.55);
   }
