@@ -21,12 +21,23 @@ const EVENT_LABELS: Record<TrackedEvent, string> = {
   install: 'Installations de l’appli',
 }
 
+const QUERY_ATTEMPTS = 3
+
+// Wrangler sometimes fails once while it refreshes its login: the query is simply sent again.
 function queryDatabase<Row>(sql: string): Row[] {
-  const command = spawnSync('bunx', ['wrangler', 'd1', 'execute', 'pokedate', '--remote', '--json', '--command', sql], {
-    encoding: 'utf8',
-  })
-  if (command.status !== 0) throw new Error(command.stderr)
-  return JSON.parse(command.stdout)[0].results as Row[]
+  let lastError = ''
+  for (let attempt = 1; attempt <= QUERY_ATTEMPTS; attempt++) {
+    const command = spawnSync(
+      'bunx',
+      ['wrangler', 'd1', 'execute', 'pokedate', '--remote', '--json', '--command', sql],
+      {
+        encoding: 'utf8',
+      },
+    )
+    if (command.status === 0) return JSON.parse(command.stdout)[0].results as Row[]
+    lastError = command.stderr || command.stdout
+  }
+  throw new Error(lastError)
 }
 
 const since = `date('now', '-${days - 1} days')`
