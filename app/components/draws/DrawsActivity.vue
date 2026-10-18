@@ -29,7 +29,7 @@ const revealsLabel = computed(() =>
     <p v-if="activity.weekFavourite" class="activity__favourite">
       {{ t('activity.favourite') }}
       <span class="activity__pokemon">
-        <img :src="spriteUrl(activity.weekFavourite.id)" alt="" width="40" height="40" loading="lazy" />
+        <img :src="spriteUrl(activity.weekFavourite.id)" alt="" width="48" height="48" loading="lazy" />
         <NuxtLinkLocale :to="pokemonPath(activity.weekFavourite)">{{ activity.weekFavourite.name }}</NuxtLinkLocale>
         <span class="activity__count">×{{ activity.weekFavourite.count }}</span>
       </span>

@@ -377,14 +377,15 @@
     "drawnAt": "{day} at {time}",
     "title": "Latest draws",
     "seoDescription": "Today's activity on PokéDate and the latest Pokémon revealed by players.",
-    "lead": "Today's activity and the latest Pokémon revealed by players.",
     "listTitle": "Revealed Pokémon",
     "listHint": "Newest first, 7 days at most.",
     "unavailable": "The latest draws are unavailable right now.",
     "empty": "No draw yet. {reveal}: it'll show up here.",
     "revealYours": "Reveal your Pokémon",
     "drew": "{nickname} got {pokemon}",
-    "drewWithBonus": "{nickname} got {pokemon}, with {bonus} as a bonus"
+    "drewWithBonus": "{nickname} got {pokemon}, with {bonus} as a bonus",
+    "drawnToday": "Today at {time}",
+    "drawnYesterday": "Yesterday at {time}"
   },
   "activity": {
     "reveals": "{count} Pokémon revealed | {count} Pokémon revealed | {count} Pokémon revealed",

@@ -28,9 +28,16 @@ const hourFormat = computed(
       minute: '2-digit',
     }),
 )
-const drawnAt = (draw: PublicDraw) => {
+const ONE_DAY_MS = 24 * 60 * 60 * 1000
+const parisDay = (date: Date) => toIsoDate(todayInTimeZone('Europe/Paris', date))
+
+function drawnAt(draw: PublicDraw) {
   const createdAt = new Date(draw.createdAt)
-  return t('draws.drawnAt', { day: dayFormat.value.format(createdAt), time: hourFormat.value.format(createdAt) })
+  const time = hourFormat.value.format(createdAt)
+  const day = parisDay(createdAt)
+  if (day === parisDay(new Date())) return t('draws.drawnToday', { time })
+  if (day === parisDay(new Date(Date.now() - ONE_DAY_MS))) return t('draws.drawnYesterday', { time })
+  return t('draws.drawnAt', { day: dayFormat.value.format(createdAt), time })
 }
 const drawLink = (draw: PublicDraw) => ({
   path: pokemonPath({ id: draw.pokemonId, name: draw.pokemonName }),
@@ -55,7 +62,6 @@ usePageSeo({
   <div>
     <div class="hero">
       <h1>{{ t('draws.title') }}</h1>
-      <p class="lead">{{ t('draws.lead') }}</p>
     </div>
 
     <DrawsActivity v-if="activity" :activity="activity" />

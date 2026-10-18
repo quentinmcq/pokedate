@@ -377,14 +377,15 @@
     "drawnAt": "{day} à {time}",
     "title": "Derniers tirages",
     "seoDescription": "L'activité du jour sur PokéDate et les derniers Pokémon révélés par les joueurs.",
-    "lead": "L'activité du jour et les derniers Pokémon révélés par les joueurs.",
     "listTitle": "Pokémon révélés",
     "listHint": "Du plus récent au plus ancien, 7 jours au plus.",
     "unavailable": "Les derniers tirages sont indisponibles pour le moment.",
     "empty": "Aucun tirage pour l'instant. {reveal} : il apparaîtra ici.",
     "revealYours": "Révèle ton Pokémon",
     "drew": "{nickname} a tiré {pokemon}",
-    "drewWithBonus": "{nickname} a tiré {pokemon}, avec {bonus} en bonus"
+    "drewWithBonus": "{nickname} a tiré {pokemon}, avec {bonus} en bonus",
+    "drawnToday": "Aujourd'hui à {time}",
+    "drawnYesterday": "Hier à {time}"
   },
   "activity": {
     "reveals": "{count} Pokémon révélé | {count} Pokémon révélé | {count} Pokémon révélés",
