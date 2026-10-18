@@ -81,6 +81,8 @@ test.describe('Mon Pokémon', () => {
     await page.getByRole('button', { name: "Aujourd'hui" }).click()
     await expect(page).toHaveURL(/\?date=\d{4}-\d{2}-\d{2}$/)
     await expect(page.locator('.mon-card')).toBeVisible()
+    await expect(page.locator('.mon-card__stage--hidden')).toHaveCount(0, { timeout: 5000 })
+    await expect(page.locator('.draw-publication')).toHaveCount(0)
   })
 
   test('« Au hasard » montre un Pokémon sans l’attraper', async ({ page }) => {

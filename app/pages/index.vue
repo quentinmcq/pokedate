@@ -37,6 +37,10 @@ if (submittedWithoutJavaScript.ok)
 
 const selectedDate = computed(() => parseIsoDate(route.query.date))
 const isRandomDraw = computed(() => route.query.hasard === '1')
+// Today's Pokémon is the same for everyone: it would only fill the shared draws with duplicates.
+const isTodaysDate = computed(
+  () => !!selectedDate.value && toIsoDate(selectedDate.value) === toIsoDate(todayInParis.value),
+)
 watch(selectedDate, (date) => date && (dateInput.value = toDateFieldValue(date)), { immediate: true })
 
 const pokemonId = computed(() => (selectedDate.value ? pokemonIdFromDate(selectedDate.value) : null))
@@ -215,7 +219,7 @@ usePageSeo({
         :new-discovery="isNewDiscovery"
         animate
       >
-        <template v-if="!isRandomDraw" #after-actions="{ revealed }">
+        <template v-if="!isRandomDraw && !isTodaysDate" #after-actions="{ revealed }">
           <DrawPublication
             :ready="revealed"
             :pokemon-id="pokemon.id"
