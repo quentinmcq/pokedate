@@ -203,22 +203,15 @@
   }
 }
 
-.player-row-enter-active,
-.player-row-leave-active {
+.player-row-enter-active {
   transition:
     opacity duration('medium') ease('standard'),
     transform duration('medium') ease('standard');
 }
 
-.player-row-enter-from,
-.player-row-leave-to {
+.player-row-enter-from {
   opacity: 0;
   transform: translateY(-8px);
-}
-
-.player-row-leave-active {
-  position: absolute;
-  width: 100%;
 }
 
 .player-row-move {

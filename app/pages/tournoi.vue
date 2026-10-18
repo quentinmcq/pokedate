@@ -84,6 +84,30 @@ const scrollToResult = useScrollToResult(resultSection)
 
 const canAddPlayer = computed(() => drafts.value.length < TOURNAMENT_PLAYER_LIMITS.max)
 const canRemovePlayer = computed(() => drafts.value.length > TOURNAMENT_PLAYER_LIMITS.min)
+const PLAYER_ROW_GAP_PX = 12
+
+function collapsePlayerRow(element: Element, done: () => void) {
+  const row = element as HTMLElement
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return done()
+  row.style.overflow = 'hidden'
+  row
+    .animate(
+      [
+        { height: `${row.offsetHeight}px`, opacity: 1, transform: 'scale(1)' },
+        {
+          height: '0px',
+          paddingTop: '0px',
+          paddingBottom: '0px',
+          marginBottom: `-${PLAYER_ROW_GAP_PX}px`,
+          opacity: 0,
+          transform: 'scale(0.96)',
+        },
+      ],
+      { duration: 450, easing: 'cubic-bezier(0.2, 0, 0, 1)' },
+    )
+    .finished.then(done, done)
+}
+
 const addPlayer = () => canAddPlayer.value && drafts.value.push(createDraft())
 const removePlayer = (key: number) => (drafts.value = drafts.value.filter((draft) => draft.key !== key))
 
@@ -204,7 +228,7 @@ usePageSeo({
       <h2 id="tournament-form-title" class="tournament-form__title">
         {{ ranking.length ? 'Un nouveau tournoi ?' : 'Les joueurs' }}
       </h2>
-      <TransitionGroup tag="ol" name="player-row" class="players">
+      <TransitionGroup tag="ol" name="player-row" class="players" @leave="collapsePlayerRow">
         <li v-for="(draft, index) in drafts" :key="draft.key" class="players__row">
           <span class="players__number" aria-hidden="true">{{ index + 1 }}</span>
           <label class="visually-hidden" :for="`player-name-${draft.key}`">Prénom du joueur {{ index + 1 }}</label>
