@@ -162,7 +162,8 @@
     "faqTitle": "Frequently asked questions",
     "dailyTitle": "Pokémon of the day: {name}",
     "dailyText": "{date} gives no. {number}. Come back tomorrow to discover the next one.",
-    "dailyTextShiny": "{date} gives no. {number}, in its shiny version! Come back tomorrow to discover the next one."
+    "dailyTextShiny": "{date} gives no. {number}, in its shiny version! Come back tomorrow to discover the next one.",
+    "datesLink": "Every date that gives {name}"
   },
   "faq": {
     "rule": {

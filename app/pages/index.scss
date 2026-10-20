@@ -5,6 +5,29 @@
   outline: none;
 }
 
+.result__dates-link {
+  display: block;
+  margin: space(4) auto 0;
+  padding: space(2) 0;
+  text-align: center;
+  color: color('text-muted');
+  font-size: font-size('sm');
+  font-weight: weight('semibold');
+  text-decoration: underline;
+  text-decoration-color: color('line');
+  text-underline-offset: 4px;
+
+  &:hover {
+    color: color('text');
+    text-decoration-color: currentColor;
+  }
+
+  .iconify {
+    margin: 0 space(1);
+    color: color('highlight');
+  }
+}
+
 .result__random-note {
   display: flex;
   align-items: flex-start;

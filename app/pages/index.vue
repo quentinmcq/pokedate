@@ -228,6 +228,11 @@ usePageSeo({
           />
         </template>
       </PokemonCard>
+      <NuxtLinkLocale class="result__dates-link" :to="{ path: pokemonPath(pokemon), hash: '#pokemon-dates-title' }">
+        <Icon name="lucide:calendar-search" aria-hidden="true" />
+        {{ t('home.datesLink', { name: pokemon.name }) }}
+        <Icon name="lucide:arrow-right" aria-hidden="true" />
+      </NuxtLinkLocale>
       <HighlightBanner
         v-if="mirrorPokemon"
         :to="pokemonPath(mirrorPokemon)"
