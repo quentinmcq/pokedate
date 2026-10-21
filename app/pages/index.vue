@@ -6,12 +6,11 @@ import type { Message } from '#shared/utils/messages'
 const route = useRoute()
 const router = useRouter()
 const { resetAccent } = usePageAccent()
-const absoluteUrl = useAbsoluteUrl()
-const { portfolioUrl } = useRuntimeConfig().public
 const { recordDiscovery } = usePokedex()
 const trackEvent = useTrackEvent()
 const { t, locale } = useLocaleTools()
 const localePath = useLocalePath()
+const homeStructuredData = useHomeStructuredData()
 rememberCurrentPath('home')
 
 const RANDOM_DATE_START = new Date(1950, 0, 1).getTime()
@@ -126,35 +125,7 @@ usePageSeo({
   shareImagePath: () => (revealedPokemon.value ? shareImagePath(revealedPokemon.value.id, locale.value) : undefined),
   shareImageAlt: () => revealedPokemon.value?.name,
   noindex: () => !!route.query.date,
-  structuredData: () => [
-    {
-      '@context': 'https://schema.org',
-      '@type': 'WebSite',
-      name: 'PokéDate',
-      url: absoluteUrl(localePath('/')),
-      inLanguage: LOCALE_TAGS[locale.value],
-    },
-    {
-      '@context': 'https://schema.org',
-      '@type': 'WebApplication',
-      name: 'PokéDate',
-      url: absoluteUrl(localePath('/')),
-      applicationCategory: 'EntertainmentApplication',
-      operatingSystem: t('home.anyOperatingSystem'),
-      inLanguage: LOCALE_TAGS[locale.value],
-      offers: { '@type': 'Offer', price: '0', priceCurrency: 'EUR' },
-      author: { '@type': 'Person', name: 'Quentin Macq', url: portfolioUrl },
-    },
-    {
-      '@context': 'https://schema.org',
-      '@type': 'FAQPage',
-      mainEntity: HOME_FAQ_KEYS.map((key) => ({
-        '@type': 'Question',
-        name: t(`faq.${key}.question`),
-        acceptedAnswer: { '@type': 'Answer', text: t(`faq.${key}.answer`) },
-      })),
-    },
-  ],
+  structuredData: homeStructuredData,
 })
 </script>
 
@@ -279,37 +250,7 @@ usePageSeo({
       }}
     </HighlightBanner>
 
-    <section class="section" aria-labelledby="how-it-works">
-      <h2 id="how-it-works" class="section__title">{{ t('home.howTitle') }}</h2>
-      <ol class="steps">
-        <li>
-          <strong>{{ t('home.stepDateTitle') }}</strong
-          >{{ t('home.stepDateText') }}
-        </li>
-        <li>
-          <strong>{{ t('home.stepDigitsTitle') }}</strong
-          >{{ t('home.stepDigitsText') }}
-        </li>
-        <li>
-          <strong>{{ t('home.stepChallengeTitle') }}</strong
-          ><i18n-t keypath="home.stepChallengeText" tag="span" scope="global">
-            <template #duel
-              ><NuxtLinkLocale to="/duel" class="text-link">{{ t('home.stepChallengeDuel') }}</NuxtLinkLocale></template
-            >
-            <template #pokedex><NuxtLinkLocale to="/pokedex" class="text-link">Pokédex</NuxtLinkLocale></template>
-          </i18n-t>
-        </li>
-      </ol>
-    </section>
-
-    <section class="section" aria-labelledby="faq">
-      <h2 id="faq" class="section__title">{{ t('home.faqTitle') }}</h2>
-      <div class="faq">
-        <AccordionItem v-for="key in HOME_FAQ_KEYS" :key="key" :question="t(`faq.${key}.question`)" group="faq">
-          <p>{{ t(`faq.${key}.answer`) }}</p>
-        </AccordionItem>
-      </div>
-    </section>
+    <HomeGuide />
   </div>
 </template>
 
