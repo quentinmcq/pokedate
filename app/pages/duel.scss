@@ -27,14 +27,6 @@
   &__role {
     @include eyebrow;
   }
-
-  // A smaller, lighter name field reads as something to fill in rather than as a heading.
-  &__name {
-    max-width: 260px;
-    font-size: font-size('md');
-    font-weight: weight('semibold');
-    border-bottom-style: solid;
-  }
 }
 
 .vs-badge {

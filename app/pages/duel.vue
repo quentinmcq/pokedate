@@ -2,7 +2,6 @@
 import type { DateFieldValue } from '#shared/types/pokemon'
 import type { DateFieldKey } from '#shared/utils/date'
 import type { DuelSide } from '#shared/utils/duel'
-import type { Message } from '#shared/utils/messages'
 
 const route = useRoute()
 const router = useRouter()
@@ -12,6 +11,7 @@ const absoluteUrl = useAbsoluteUrl()
 const { recordDiscovery } = usePokedex()
 const trackEvent = useTrackEvent()
 const { t, locale, translate } = useLocaleTools()
+const { playerLabel, describePlayerError } = useChallengePlayers()
 const localePath = useLocalePath()
 rememberCurrentPath('challenges')
 
@@ -22,11 +22,11 @@ const dateA = ref<DateFieldValue>(emptyDateFieldValue())
 const dateB = ref<DateFieldValue>(emptyDateFieldValue())
 const playerNameInputA = ref(duelQuery.value.playerNameA)
 const playerNameInputB = ref(duelQuery.value.playerNameB)
-const formError = ref<{ player: string; error: Message } | null>(null)
+const formError = ref<PlayerFormError | null>(null)
 const invalidDatePartA = ref<DateFieldKey | null>(null)
 const invalidDatePartB = ref<DateFieldKey | null>(null)
-const dateFieldA = useTemplateRef('dateFieldA')
-const dateFieldB = useTemplateRef('dateFieldB')
+const playerFieldsA = useTemplateRef('playerFieldsA')
+const playerFieldsB = useTemplateRef('playerFieldsB')
 const resultSection = useTemplateRef<HTMLElement>('resultSection')
 const scrollToResult = useScrollToResult(resultSection)
 
@@ -38,8 +38,8 @@ const [{ data: pokemonA }, { data: pokemonB }] = await Promise.all([
   usePokemonDetail(() => (hasBothPokemon.value ? duelQuery.value.pokemonIdB : null)),
 ])
 
-const playerLabelA = computed(() => duelQuery.value.playerNameA || t('challenge.player', { number: 1 }))
-const playerLabelB = computed(() => duelQuery.value.playerNameB || t('challenge.player', { number: 2 }))
+const playerLabelA = computed(() => playerLabel(duelQuery.value.playerNameA, 1))
+const playerLabelB = computed(() => playerLabel(duelQuery.value.playerNameB, 2))
 
 const outcome = computed(() =>
   hasBothPokemon.value && pokemonA.value && pokemonB.value ? resolveDuel(pokemonA.value, pokemonB.value) : null,
@@ -85,7 +85,7 @@ watchEffect(() => {
 function celebrate() {
   if (!outcome.value || !pokemonA.value || !pokemonB.value) return
   const winner = winnerPokemon.value
-  if (winner) setTimeout(() => launchConfetti(['#ffd23f', typeColor(winner.types[0]), '#fff']), 900)
+  if (winner) setTimeout(() => launchTypeConfetti(winner.types[0]), 900)
 }
 watch(outcome, celebrate)
 onMounted(celebrate)
@@ -104,18 +104,12 @@ async function startDuel() {
   invalidDatePartA.value = parsedA.ok ? null : parsedA.invalidPart
   invalidDatePartB.value = parsedA.ok && !parsedB.ok ? parsedB.invalidPart : null
   if (!parsedA.ok) {
-    formError.value = {
-      player: cleanPlayerName(playerNameInputA.value) || t('challenge.player', { number: 1 }),
-      error: parsedA.error,
-    }
-    return dateFieldA.value?.focusInvalidPart(parsedA.invalidPart)
+    formError.value = { player: playerLabel(playerNameInputA.value, 1), error: parsedA.error }
+    return playerFieldsA.value?.focusInvalidPart(parsedA.invalidPart)
   }
   if (!parsedB.ok) {
-    formError.value = {
-      player: cleanPlayerName(playerNameInputB.value) || t('challenge.player', { number: 2 }),
-      error: parsedB.error,
-    }
-    return dateFieldB.value?.focusInvalidPart(parsedB.invalidPart)
+    formError.value = { player: playerLabel(playerNameInputB.value, 2), error: parsedB.error }
+    return playerFieldsB.value?.focusInvalidPart(parsedB.invalidPart)
   }
   formError.value = null
   trackEvent('duel')
@@ -232,19 +226,12 @@ usePageSeo({
       <div class="duel-form">
         <div class="duel-form__side">
           <span class="duel-form__role" aria-hidden="true">{{ t('duel.you') }}</span>
-          <label class="visually-hidden" for="player-name-a">{{ t('challenge.playerName', { number: 1 }) }}</label>
-          <input
-            id="player-name-a"
-            v-model="playerNameInputA"
-            class="text-input duel-form__name"
+          <PlayerFields
+            ref="playerFieldsA"
+            v-model:name="playerNameInputA"
+            v-model:date="dateA"
+            :number="1"
             :placeholder="t('duel.yourName')"
-            :maxlength="PLAYER_NAME_MAX_LENGTH"
-          />
-          <DateField
-            ref="dateFieldA"
-            v-model="dateA"
-            compact
-            :legend="t('challenge.playerDate', { number: 1 })"
             error-id="duel-error"
             :invalid-part="invalidDatePartA"
           />
@@ -252,34 +239,18 @@ usePageSeo({
         <span class="vs-badge" aria-hidden="true">VS</span>
         <div class="duel-form__side">
           <span class="duel-form__role" aria-hidden="true">{{ t('duel.opponent') }}</span>
-          <label class="visually-hidden" for="player-name-b">{{ t('challenge.playerName', { number: 2 }) }}</label>
-          <input
-            id="player-name-b"
-            v-model="playerNameInputB"
-            class="text-input duel-form__name"
+          <PlayerFields
+            ref="playerFieldsB"
+            v-model:name="playerNameInputB"
+            v-model:date="dateB"
+            :number="2"
             :placeholder="t('duel.opponentName')"
-            :maxlength="PLAYER_NAME_MAX_LENGTH"
-          />
-          <DateField
-            ref="dateFieldB"
-            v-model="dateB"
-            compact
-            :legend="t('challenge.playerDate', { number: 2 })"
             error-id="duel-error"
             :invalid-part="invalidDatePartB"
           />
         </div>
       </div>
-      <p id="duel-error" class="field-error" role="alert">
-        {{
-          formError
-            ? t('challenge.playerError', {
-                player: formError.player,
-                error: t(formError.error.key, formError.error.params ?? {}),
-              })
-            : ''
-        }}
-      </p>
+      <p id="duel-error" class="field-error" role="alert">{{ describePlayerError(formError) }}</p>
       <div class="actions">
         <button class="btn btn--primary" type="submit">
           <Icon name="lucide:swords" aria-hidden="true" /> {{ t('duel.start') }}

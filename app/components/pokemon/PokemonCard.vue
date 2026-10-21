@@ -17,7 +17,6 @@ const props = withDefaults(
 const REVEAL_DELAY_MS = 1300
 const SPARKLE_COUNT = 8
 const SPARKLE_DURATION_MS = 2400
-const SHINY_CONFETTI = ['#ffd23f', '#fff3b0', '#ffffff']
 
 const sectionHeadingTag = computed(() => (props.headingLevel === 'h1' ? 'h2' : 'h3'))
 
@@ -61,8 +60,8 @@ function preloadOtherArtwork() {
 }
 
 function celebrateReveal() {
-  if (isShinyShown.value) launchConfetti(SHINY_CONFETTI)
-  else if (props.pokemon.rarity) launchConfetti([typeColor(primaryType.value), '#ffd23f', '#ffffff'])
+  if (isShinyShown.value) launchGoldConfetti()
+  else if (props.pokemon.rarity) launchTypeConfetti(primaryType.value)
 }
 
 function reveal() {

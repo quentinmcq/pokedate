@@ -73,7 +73,7 @@ export function useGoalCelebrations() {
           ? t('goals.reachedOne', { title: goalTitle(firstGoal) })
           : t('goals.reachedMany', { count: reachedGoals.length }),
       )
-      launchConfetti(['#ffd23f', '#fff3b0', '#ffffff'])
+      launchGoldConfetti()
     }, CELEBRATION_DELAY_MS)
   }
 

@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import type { DateFieldValue } from '#shared/types/pokemon'
 import type { DateFieldKey } from '#shared/utils/date'
-import type { Message } from '#shared/utils/messages'
 
 interface PlayerDraft {
   key: number
@@ -17,6 +16,7 @@ const absoluteUrl = useAbsoluteUrl()
 const { recordDiscovery } = usePokedex()
 const trackEvent = useTrackEvent()
 const { t, locale } = useLocaleTools()
+const { playerLabel, describePlayerError } = useChallengePlayers()
 const localePath = useLocalePath()
 rememberCurrentPath('challenges')
 
@@ -37,7 +37,7 @@ const contenders = computed(() => {
   if (!players || !pokemon || pokemon.length !== players.length) return null
   return players.map((player, index) => ({
     ...player,
-    label: player.name || t('challenge.player', { number: index + 1 }),
+    label: playerLabel(player.name, index + 1),
     pokemon: pokemon[index]!,
   }))
 })
@@ -67,7 +67,7 @@ watchEffect(() => {
 function celebrate() {
   if (!contenders.value || !champion.value) return
   const championType = champion.value.pokemon.types[0]
-  setTimeout(() => launchConfetti(['#ffd23f', typeColor(championType), '#fff']), 600)
+  setTimeout(() => launchTypeConfetti(championType), 600)
 }
 watch(champion, celebrate)
 onMounted(celebrate)
@@ -79,9 +79,9 @@ onMounted(() => watch(tournamentPlayers, recordTournamentPokemon, { immediate: t
 let nextDraftKey = 0
 const createDraft = (): PlayerDraft => ({ key: nextDraftKey++, name: '', date: emptyDateFieldValue() })
 const drafts = ref<PlayerDraft[]>(Array.from({ length: TOURNAMENT_PLAYER_LIMITS.min }, createDraft))
-const formError = ref<{ player: string; error: Message } | null>(null)
+const formError = ref<PlayerFormError | null>(null)
 const invalidPart = ref<{ draftKey: number; part: DateFieldKey } | null>(null)
-const dateFields = useTemplateRef<{ focusInvalidPart: (part: DateFieldKey) => void }[]>('dateFields')
+const playerFields = useTemplateRef<{ focusInvalidPart: (part: DateFieldKey) => void }[]>('playerFields')
 const resultSection = useTemplateRef<HTMLElement>('resultSection')
 const scrollToResult = useScrollToResult(resultSection)
 
@@ -128,12 +128,9 @@ async function startTournament() {
   for (const [index, draft] of drafts.value.entries()) {
     const parsed = parseDateFieldValue(draft.date)
     if (!parsed.ok) {
-      formError.value = {
-        player: cleanPlayerName(draft.name) || t('challenge.player', { number: index + 1 }),
-        error: parsed.error,
-      }
+      formError.value = { player: playerLabel(draft.name, index + 1), error: parsed.error }
       invalidPart.value = { draftKey: draft.key, part: parsed.invalidPart }
-      dateFields.value?.[index]?.focusInvalidPart(parsed.invalidPart)
+      playerFields.value?.[index]?.focusInvalidPart(parsed.invalidPart)
       return
     }
     players.push({ pokemonId: pokemonIdFromDate(parsed.date), shiny: isShinyDate(parsed.date), name: draft.name })
@@ -265,21 +262,12 @@ usePageSeo({
       <TransitionGroup tag="ol" name="player-row" class="players" @leave="collapsePlayerRow">
         <li v-for="(draft, index) in drafts" :key="draft.key" class="players__row">
           <span class="players__number" aria-hidden="true">{{ t('challenge.player', { number: index + 1 }) }}</span>
-          <label class="visually-hidden" :for="`player-name-${draft.key}`">{{
-            t('challenge.playerName', { number: index + 1 })
-          }}</label>
-          <input
-            :id="`player-name-${draft.key}`"
-            v-model="draft.name"
-            class="text-input players__name"
+          <PlayerFields
+            ref="playerFields"
+            v-model:name="draft.name"
+            v-model:date="draft.date"
+            :number="index + 1"
             :placeholder="t('tournament.namePlaceholder')"
-            :maxlength="PLAYER_NAME_MAX_LENGTH"
-          />
-          <DateField
-            ref="dateFields"
-            v-model="draft.date"
-            compact
-            :legend="t('challenge.playerDate', { number: index + 1 })"
             error-id="tournament-error"
             :invalid-part="invalidPart?.draftKey === draft.key ? invalidPart.part : null"
           />
@@ -301,16 +289,7 @@ usePageSeo({
           canAddPlayer ? t('tournament.addPlayer') : t('tournament.maxPlayers', { max: TOURNAMENT_PLAYER_LIMITS.max })
         }}
       </button>
-      <p id="tournament-error" class="field-error" role="alert">
-        {{
-          formError
-            ? t('challenge.playerError', {
-                player: formError.player,
-                error: t(formError.error.key, formError.error.params ?? {}),
-              })
-            : ''
-        }}
-      </p>
+      <p id="tournament-error" class="field-error" role="alert">{{ describePlayerError(formError) }}</p>
       <div class="actions">
         <button class="btn btn--primary" type="submit">
           <Icon name="lucide:trophy" aria-hidden="true" /> {{ t('tournament.start') }}

@@ -1,3 +1,5 @@
+import type { TypeKey } from '#shared/types/pokemon'
+
 const PARTICLE_COUNT = 160
 const ANIMATION_DURATION_MS = 3000
 const GRAVITY = 0.35
@@ -91,3 +93,9 @@ export function launchConfetti(colors: string[]) {
   particles.push(...Array.from({ length: PARTICLE_COUNT }, () => createParticle(colors, endTime)))
   if (!isAnimating) animate(canvas, context)
 }
+
+const GOLD = '#ffd23f'
+
+export const launchGoldConfetti = () => launchConfetti([GOLD, '#fff3b0', '#ffffff'])
+
+export const launchTypeConfetti = (type: TypeKey) => launchConfetti([GOLD, typeColor(type), '#ffffff'])

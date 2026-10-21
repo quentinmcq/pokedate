@@ -173,6 +173,7 @@
     padding: space(3) space(4);
     border-radius: radius('lg');
     @include surface(2);
+    --player-name-max-width: 180px;
   }
 
   &__number {
@@ -181,28 +182,17 @@
     min-width: 5em;
   }
 
-  // Lighter than a heading, so it reads as a field to fill in.
-  &__name {
-    max-width: 180px;
-    font-size: font-size('md');
-    font-weight: weight('semibold');
-    border-bottom-style: solid;
-  }
-
   // On phones each player is a small card, like the duel: the label on top, then the name and the date.
   @include bp(small) {
     &__row {
       flex-direction: column;
       gap: space(2);
       padding: space(3) space(4) space(4);
+      --player-name-max-width: 260px;
     }
 
     &__number {
       min-width: 0;
-    }
-
-    &__name {
-      max-width: 260px;
     }
   }
 

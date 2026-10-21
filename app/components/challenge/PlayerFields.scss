@@ -1,0 +1,9 @@
+@use '../../assets/scss/abstracts/functions' as *;
+
+// Lighter than a heading, so it reads as a field to fill in. Each form sets its own width.
+.player-name {
+  max-width: var(--player-name-max-width, 260px);
+  font-size: font-size('md');
+  font-weight: weight('semibold');
+  border-bottom-style: solid;
+}
