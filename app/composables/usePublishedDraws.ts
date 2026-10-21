@@ -23,6 +23,9 @@ export interface PublishedPokemon {
 
 const todayIso = () => toIsoDate(todayAsCalendarDate())
 
+export const publicationErrorKey = (error: unknown, fallbackKey: string) =>
+  (error as { statusCode?: number })?.statusCode === 429 ? 'publication.tooFast' : fallbackKey
+
 function readStorage(key: string) {
   try {
     return localStorage.getItem(key)

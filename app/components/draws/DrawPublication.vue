@@ -10,16 +10,8 @@ const props = defineProps<{
 
 type Status = 'waiting' | 'publishing' | 'published' | 'removed' | 'failed' | 'limit' | 'disabled'
 
-const {
-  nickname,
-  isAutoPublishEnabled,
-  load,
-  todaysPublicationOf,
-  hasReachedDailyLimit,
-  publish,
-  remove,
-  savePreferences,
-} = usePublishedDraws()
+const { nickname, isAutoPublishEnabled, load, todaysPublicationOf, hasReachedDailyLimit, publish, remove } =
+  usePublishedDraws()
 const trackEvent = useTrackEvent()
 const { t } = useLocaleTools()
 
@@ -27,13 +19,9 @@ const status = ref<Status>('waiting')
 const publication = ref<Publication | null>(null)
 const isBusy = ref(false)
 const actionError = ref('')
-
-const dialog = useTemplateRef<HTMLDialogElement>('dialog')
-const nicknameInput = ref('')
-const autoPublishInput = ref(true)
-const dialogError = ref('')
 const shownNickname = computed(() => (nickname.value === ANONYMOUS_NICKNAME ? t('common.anonymous') : nickname.value))
-const isSaving = ref(false)
+const nicknamePrompt = useTemplateRef('nicknamePrompt')
+const settingsDialog = useTemplateRef('settingsDialog')
 
 const STATUS_ICONS: Record<Status, string> = {
   waiting: 'lucide:users-round',
@@ -45,57 +33,11 @@ const STATUS_ICONS: Record<Status, string> = {
   disabled: 'lucide:eye-off',
 }
 
-const NICKNAME_PROMPT_STORAGE_KEY = 'pokedate.nickname-prompt-seen'
-const NICKNAME_PROMPT_DURATION_MS = 9000
-// Lets the revealed Pokémon have the stage before the prompt asks for anything.
-const NICKNAME_PROMPT_DELAY_MS = 1500
-
-// On phones the line under the card sits behind the bottom bar: the first publication says it once at the top.
-const isNicknamePromptShown = ref(false)
-let nicknamePromptTimer: ReturnType<typeof setTimeout> | undefined
-
-function hasSeenNicknamePrompt() {
-  try {
-    return localStorage.getItem(NICKNAME_PROMPT_STORAGE_KEY) === '1'
-  } catch {
-    return true
-  }
-}
-
-function markNicknamePromptSeen() {
-  try {
-    localStorage.setItem(NICKNAME_PROMPT_STORAGE_KEY, '1')
-  } catch {}
-}
-
-const shouldPromptForNickname = () => nickname.value === ANONYMOUS_NICKNAME && !hasSeenNicknamePrompt()
-
-function showNicknamePrompt() {
-  if (!shouldPromptForNickname()) return
-  // Checked again after the delay: another card may have shown it, or a nickname may have been chosen meanwhile.
-  nicknamePromptTimer = setTimeout(() => {
-    if (!shouldPromptForNickname()) return
-    markNicknamePromptSeen()
-    isNicknamePromptShown.value = true
-    nicknamePromptTimer = setTimeout(hideNicknamePrompt, NICKNAME_PROMPT_DURATION_MS)
-  }, NICKNAME_PROMPT_DELAY_MS)
-}
-
-function hideNicknamePrompt() {
-  clearTimeout(nicknamePromptTimer)
-  isNicknamePromptShown.value = false
-}
-
-onBeforeUnmount(hideNicknamePrompt)
-
 const publishedPokemon = () => ({
   pokemonId: props.pokemonId,
   shiny: props.shiny,
   bonusPokemonId: props.bonusPokemonId,
 })
-
-const readErrorMessage = (error: unknown, fallbackKey: string) =>
-  t((error as { statusCode?: number })?.statusCode === 429 ? 'publication.tooFast' : fallbackKey)
 
 async function publishNow() {
   status.value = 'publishing'
@@ -104,7 +46,7 @@ async function publishNow() {
     publication.value = await publish(publishedPokemon())
     trackEvent('publish')
     status.value = 'published'
-    showNicknamePrompt()
+    nicknamePrompt.value?.show()
   } catch {
     status.value = 'failed'
   }
@@ -132,7 +74,7 @@ async function removePublication() {
     publication.value = await remove(publication.value)
     status.value = 'removed'
   } catch (error) {
-    actionError.value = readErrorMessage(error, 'publication.removeFailed')
+    actionError.value = t(publicationErrorKey(error, 'publication.removeFailed'))
   } finally {
     isBusy.value = false
   }
@@ -144,38 +86,14 @@ async function republish() {
   isBusy.value = false
 }
 
-function openSettingsFromPrompt() {
-  hideNicknamePrompt()
-  openSettings()
-}
+const openSettings = () => settingsDialog.value?.open()
 
-function openSettings() {
-  nicknameInput.value = nickname.value === ANONYMOUS_NICKNAME ? '' : nickname.value
-  autoPublishInput.value = isAutoPublishEnabled.value
-  dialogError.value = ''
-  dialog.value?.showModal()
-}
-
-const closeSettings = () => dialog.value?.close()
-
-async function saveSettings() {
-  const check = checkNickname(nicknameInput.value)
-  if (!check.ok) return (dialogError.value = t(check.error.key))
-  isSaving.value = true
-  dialogError.value = ''
-  try {
-    await savePreferences({ nickname: check.nickname, autoPublish: autoPublishInput.value }, publication.value)
-    // Whoever saved these settings chose their name on purpose, even when it stays anonymous.
-    markNicknamePromptSeen()
-    closeSettings()
-    if (status.value === 'disabled' && autoPublishInput.value) {
-      status.value = 'waiting'
-      startPublication()
-    }
-  } catch (error) {
-    dialogError.value = readErrorMessage(error, 'publication.renameFailed')
-  } finally {
-    isSaving.value = false
+function onSettingsSaved({ autoPublish }: { autoPublish: boolean }) {
+  // Whoever saved these settings chose their name on purpose, even when it stays anonymous.
+  nicknamePrompt.value?.markSeen()
+  if (status.value === 'disabled' && autoPublish) {
+    status.value = 'waiting'
+    startPublication()
   }
 }
 </script>
@@ -232,63 +150,8 @@ async function saveSettings() {
     </div>
   </div>
 
-  <Teleport to="body">
-    <Transition name="nickname-prompt">
-      <aside v-if="isNicknamePromptShown" class="nickname-prompt" :aria-label="t('publication.promptLabel')">
-        <Icon name="lucide:users-round" class="nickname-prompt__icon" aria-hidden="true" />
-        <p class="nickname-prompt__text">{{ t('publication.promptText') }}</p>
-        <button class="btn btn--primary btn--sm" type="button" aria-haspopup="dialog" @click="openSettingsFromPrompt">
-          {{ t('publication.promptAction') }}
-        </button>
-        <button
-          class="icon-btn nickname-prompt__close"
-          type="button"
-          :aria-label="t('common.close')"
-          @click="hideNicknamePrompt"
-        >
-          <Icon name="lucide:x" aria-hidden="true" />
-        </button>
-      </aside>
-    </Transition>
-  </Teleport>
-
-  <dialog ref="dialog" class="publish-dialog" aria-labelledby="publish-dialog-title" @click.self="closeSettings">
-    <form class="publish-dialog__content" novalidate @submit.prevent="saveSettings">
-      <h2 id="publish-dialog-title" class="publish-dialog__title">{{ t('publication.dialogTitle') }}</h2>
-      <p class="publish-dialog__public">
-        <Icon name="lucide:globe" aria-hidden="true" />
-        <i18n-t keypath="publication.notice" scope="global">
-          <template #page
-            ><NuxtLinkLocale to="/tirages" class="text-link" target="_blank">{{
-              t('publication.noticePage')
-            }}</NuxtLinkLocale></template
-          >
-          <template #limit>{{ DAILY_AUTO_PUBLISH_LIMIT }}</template>
-        </i18n-t>
-      </p>
-      <label class="publish-dialog__label" for="publish-nickname">{{ t('publication.nicknameLabel') }}</label>
-      <input
-        id="publish-nickname"
-        v-model="nicknameInput"
-        class="publish-dialog__input"
-        :placeholder="t('common.anonymous')"
-        autocomplete="nickname"
-        :maxlength="NICKNAME_LENGTH.max"
-        :aria-invalid="!!dialogError || undefined"
-        aria-describedby="publish-error publish-note"
-      />
-      <p id="publish-error" class="field-error" role="alert">{{ dialogError }}</p>
-      <p id="publish-note" class="publish-dialog__note">{{ t('publication.nicknameNote') }}</p>
-      <label class="toggle publish-dialog__toggle">
-        <input v-model="autoPublishInput" type="checkbox" />
-        {{ t('publication.autoPublish') }}
-      </label>
-      <div class="publish-dialog__actions">
-        <button class="btn btn--primary btn--sm" type="submit" :disabled="isSaving">{{ t('publication.save') }}</button>
-        <button class="btn btn--ghost btn--sm" type="button" @click="closeSettings">{{ t('common.cancel') }}</button>
-      </div>
-    </form>
-  </dialog>
+  <NicknamePrompt ref="nicknamePrompt" @choose="openSettings" />
+  <PublicationSettingsDialog ref="settingsDialog" :publication="publication" @saved="onSettingsSaved" />
 </template>
 
 <style scoped lang="scss" src="./DrawPublication.scss" />
