@@ -12,6 +12,8 @@ const currentIndex = computed(() => props.options.findIndex((option) => option.t
 // The indicator moves on tap: the next page can take a moment to render on a phone.
 const requestedIndex = ref<number | null>(null)
 const activeIndex = computed(() => requestedIndex.value ?? currentIndex.value)
+// The page route only changes once the next page has rendered, after the router navigation has resolved.
+watch(currentIndex, () => (requestedIndex.value = null))
 
 const afterNextPaint = () => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)))
 
@@ -22,8 +24,8 @@ async function switchTo(index: number, event: MouseEvent, navigate: () => Promis
   if (index === currentIndex.value) return
   requestedIndex.value = index
   await afterNextPaint()
-  await navigate()
-  requestedIndex.value = null
+  const navigationFailure = await navigate()
+  if (navigationFailure) requestedIndex.value = null
 }
 </script>
 

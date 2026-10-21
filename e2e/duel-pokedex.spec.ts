@@ -156,6 +156,28 @@ test.describe('Navigation', () => {
     await mainNav.getByRole('link', { name: 'Défis' }).click()
     await expect(page).toHaveURL('/tournoi')
   })
+
+  test('le curseur de section va droit vers la page choisie', async ({ page }) => {
+    await gotoHydrated(page, '/pokedex')
+    await page.evaluate(() => {
+      const sectionSwitch = document.querySelector<HTMLElement>('.section-switch')!
+      const positions: string[] = []
+      Object.assign(window, { indicatorPositions: positions })
+      new MutationObserver(() => positions.push(sectionSwitch.style.getPropertyValue('--active-index'))).observe(
+        sectionSwitch,
+        { attributeFilter: ['style'] },
+      )
+    })
+    await page
+      .getByRole('navigation', { name: 'Vue du Pokédex' })
+      .getByRole('link', { name: 'Tous les Pokémon' })
+      .click()
+    await expect(page).toHaveURL('/pokemon')
+    await expect(page.locator('.gen-block')).toHaveCount(9)
+    expect(
+      await page.evaluate(() => (window as unknown as { indicatorPositions: string[] }).indicatorPositions),
+    ).toEqual(['1'])
+  })
 })
 
 test.describe('Tournoi', () => {
