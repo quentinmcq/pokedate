@@ -45,19 +45,13 @@ const contenders = computed(() => {
 const tournament = computed(() =>
   contenders.value ? resolveTournament(contenders.value.map(({ pokemon }) => pokemon)) : null,
 )
-const ranking = computed(() =>
+const PODIUM_SIZE = 3
+const podium = computed(() =>
   tournament.value && contenders.value
-    ? tournament.value.standings.map((standing) => ({ ...standing, contender: contenders.value![standing.player]! }))
+    ? tournament.value.standings.slice(0, PODIUM_SIZE).map(({ player }) => contenders.value![player]!)
     : [],
 )
-const champion = computed(() => ranking.value[0]?.contender ?? null)
-
-const describeMatch = ({ first, second, winner }: { first: number; second: number; winner: number | null }) => {
-  const players = contenders.value!
-  const named = (index: number) => `${players[index]!.label} (${players[index]!.pokemon.name})`
-  if (winner === null) return t('tournament.matchDraw', { first: named(first), second: named(second) })
-  return t('tournament.matchWin', { winner: named(winner), loser: named(winner === first ? second : first) })
-}
+const champion = computed(() => podium.value[0] ?? null)
 
 watchEffect(() => {
   if (champion.value) applyTypes(champion.value.pokemon.types)
@@ -87,39 +81,6 @@ const scrollToResult = useScrollToResult(resultSection)
 
 const canAddPlayer = computed(() => drafts.value.length < TOURNAMENT_PLAYER_LIMITS.max)
 const canRemovePlayer = computed(() => drafts.value.length > TOURNAMENT_PLAYER_LIMITS.min)
-function collapsePlayerRow(element: Element, done: () => void) {
-  const row = element as HTMLElement
-  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return done()
-  const style = getComputedStyle(row)
-  const FOLDED_BOX_PROPERTIES = [
-    'height',
-    'paddingTop',
-    'paddingBottom',
-    'marginBottom',
-    'borderTopWidth',
-    'borderBottomWidth',
-  ] as const
-  row.style.overflow = 'hidden'
-  row
-    .animate(
-      [
-        {
-          ...Object.fromEntries(FOLDED_BOX_PROPERTIES.map((property) => [property, style[property]])),
-          height: `${row.offsetHeight}px`,
-          opacity: 1,
-          transform: 'scale(1)',
-        },
-        {
-          ...Object.fromEntries(FOLDED_BOX_PROPERTIES.map((property) => [property, '0px'])),
-          opacity: 0,
-          transform: 'scale(0.96)',
-        },
-      ],
-      { duration: 450, easing: 'cubic-bezier(0.2, 0, 0, 1)', fill: 'forwards' },
-    )
-    .finished.then(done, done)
-}
-
 const addPlayer = () => canAddPlayer.value && drafts.value.push(createDraft())
 const removePlayer = (key: number) => (drafts.value = drafts.value.filter((draft) => draft.key !== key))
 
@@ -158,21 +119,10 @@ usePageSeo({
   title: () =>
     champion.value ? t('tournament.championTitle', { pokemon: champion.value.pokemon.name }) : t('tournament.title'),
   description: () => t('tournament.seoDescription'),
-  shareImagePath: () =>
-    champion.value
-      ? tournamentShareImagePath(
-          ranking.value.slice(0, 3).map(({ contender }) => contender),
-          locale.value,
-        )
-      : undefined,
+  shareImagePath: () => (champion.value ? tournamentShareImagePath(podium.value, locale.value) : undefined),
   shareImageAlt: () =>
     champion.value
-      ? t('tournament.podiumAlt', {
-          pokemon: ranking.value
-            .slice(0, 3)
-            .map(({ contender }) => contender.pokemon.name)
-            .join(', '),
-        })
+      ? t('tournament.podiumAlt', { pokemon: podium.value.map((contender) => contender.pokemon.name).join(', ') })
       : undefined,
   noindex: () => !!tournamentPlayers.value,
 })
@@ -180,13 +130,13 @@ usePageSeo({
 
 <template>
   <div>
-    <div class="hero" :class="{ 'tournament-heading': ranking.length }">
+    <div class="hero" :class="{ 'tournament-heading': champion }">
       <h1>{{ t('tournament.title') }}</h1>
-      <p v-if="!ranking.length" class="lead">{{ t('tournament.lead') }}</p>
+      <p v-if="!champion" class="lead">{{ t('tournament.lead') }}</p>
     </div>
 
     <section
-      v-if="ranking.length && tournament"
+      v-if="champion && contenders && tournament"
       ref="resultSection"
       class="tournament-result"
       tabindex="-1"
@@ -194,50 +144,9 @@ usePageSeo({
     >
       <h2 id="ranking-title" class="tournament-result__title">
         <Icon name="lucide:trophy" aria-hidden="true" />
-        {{ t('tournament.winner', { player: champion!.label, pokemon: champion!.pokemon.name }) }}
+        {{ t('tournament.winner', { player: champion.label, pokemon: champion.pokemon.name }) }}
       </h2>
-      <ol class="ranking">
-        <li
-          v-for="(entry, position) in ranking"
-          :key="entry.player"
-          class="ranking__row"
-          :class="{ 'ranking__row--champion': position === 0 }"
-          :style="{ '--accent': typeColor(entry.contender.pokemon.types[0]) }"
-        >
-          <span class="ranking__position" aria-hidden="true">{{ position + 1 }}</span>
-          <img
-            class="ranking__sprite"
-            :src="spriteUrl(entry.contender.pokemon.id, entry.contender.shiny)"
-            alt=""
-            width="56"
-            height="56"
-          />
-          <span class="ranking__who">
-            <span class="ranking__player"
-              ><span class="visually-hidden">{{ t('tournament.rank', { rank: position + 1 }) }}</span
-              >{{ entry.contender.label }}</span
-            >
-            <NuxtLinkLocale class="ranking__pokemon" :to="pokemonPath(entry.contender.pokemon)">{{
-              entry.contender.pokemon.name
-            }}</NuxtLinkLocale>
-          </span>
-          <span class="ranking__record">{{
-            t('tournament.record', { wins: entry.wins, draws: entry.draws, losses: entry.losses })
-          }}</span>
-          <span class="ranking__points">{{ t('tournament.points', { points: entry.points }) }}</span>
-        </li>
-      </ol>
-      <p class="tournament-result__hint">{{ t('tournament.scoring') }}</p>
-      <AccordionItem
-        :question="t('tournament.showMatches', { count: tournament.matches.length })"
-        group="tournament-matches"
-      >
-        <ul class="matches">
-          <li v-for="match in tournament.matches" :key="`${match.first}-${match.second}`">
-            {{ describeMatch(match) }}
-          </li>
-        </ul>
-      </AccordionItem>
+      <TournamentStandings :contenders="contenders" :standings="tournament.standings" :matches="tournament.matches" />
       <div class="actions">
         <button class="btn btn--primary btn--sm" type="button" @click="shareTournament">
           <Icon name="lucide:share-2" aria-hidden="true" /> {{ t('tournament.share') }}
@@ -250,16 +159,16 @@ usePageSeo({
 
     <form
       class="tournament-form"
-      :class="{ 'tournament-form--rematch': ranking.length }"
+      :class="{ 'tournament-form--rematch': champion }"
       autocomplete="off"
       novalidate
       aria-labelledby="tournament-form-title"
       @submit.prevent="startTournament"
     >
       <h2 id="tournament-form-title" class="tournament-form__title">
-        {{ ranking.length ? t('tournament.again') : t('tournament.players') }}
+        {{ champion ? t('tournament.again') : t('tournament.players') }}
       </h2>
-      <TransitionGroup tag="ol" name="player-row" class="players" @leave="collapsePlayerRow">
+      <TransitionGroup tag="ol" name="player-row" class="players" @leave="collapseElement">
         <li v-for="(draft, index) in drafts" :key="draft.key" class="players__row">
           <span class="players__number" aria-hidden="true">{{ t('challenge.player', { number: index + 1 }) }}</span>
           <PlayerFields
