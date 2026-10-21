@@ -76,6 +76,20 @@ test.describe('Mon Pokémon', () => {
     await expect(page.getByLabel('Année')).toHaveValue('2026')
   })
 
+  test('ne rejoue pas la révélation en revenant depuis un autre onglet', async ({ page }) => {
+    await revealDate(page, '17', '10', '2026')
+    const mainNav = page.getByRole('navigation', { name: 'Navigation principale' })
+    await mainNav.getByRole('link', { name: /Pokédex/ }).click()
+    await expect(page).toHaveURL('/pokedex')
+    await mainNav.getByRole('link', { name: /Mon Pokémon/ }).click()
+    await expect(page).toHaveURL(/\?date=2026-10-17$/)
+    await expect(page.locator('.mon-card')).toBeVisible()
+    await expect(page.locator('.mon-card__stage--hidden')).toHaveCount(0, { timeout: 200 })
+
+    await page.reload()
+    await expect(page.locator('.mon-card__stage--hidden')).toHaveCount(1)
+  })
+
   test('le bouton « Aujourd’hui » révèle le Pokémon du jour', async ({ page }) => {
     await gotoHydrated(page, '/')
     await page.getByRole('button', { name: "Aujourd'hui" }).click()
@@ -100,7 +114,7 @@ test.describe('Mon Pokémon', () => {
     await expect(page).toHaveURL('/duel')
     await page
       .getByRole('navigation', { name: 'Navigation principale' })
-      .getByRole('link', { name: 'Mon Pokémon' })
+      .getByRole('link', { name: /Mon Pokémon/ })
       .click()
     await expect(page).toHaveURL(/\?date=2026-10-17$/)
     await expect(page.getByRole('heading', { level: 2, name: /Muplodocus/ })).toBeVisible()

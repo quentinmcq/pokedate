@@ -7,10 +7,11 @@ const props = withDefaults(
     date?: CalendarDate | null
     shiny?: boolean
     animate?: boolean
+    celebrate?: boolean
     headingLevel?: 'h1' | 'h2'
     newDiscovery?: boolean | null
   }>(),
-  { date: null, shiny: false, animate: false, headingLevel: 'h2', newDiscovery: null },
+  { date: null, shiny: false, animate: false, celebrate: true, headingLevel: 'h2', newDiscovery: null },
 )
 
 const REVEAL_DELAY_MS = 1300
@@ -59,12 +60,16 @@ function preloadOtherArtwork() {
   otherArtwork.src = artworkUrl(props.pokemon.id, !isShinyShown.value)
 }
 
+function celebrateReveal() {
+  if (isShinyShown.value) launchConfetti(SHINY_CONFETTI)
+  else if (props.pokemon.rarity) launchConfetti([typeColor(primaryType.value), '#ffd23f', '#ffffff'])
+}
+
 function reveal() {
   if (areStatBarsFilled.value) return
   isRevealed.value = true
   areStatBarsFilled.value = true
-  if (isShinyShown.value) launchConfetti(SHINY_CONFETTI)
-  else if (props.pokemon.rarity) launchConfetti([typeColor(primaryType.value), '#ffd23f', '#ffffff'])
+  if (props.celebrate) celebrateReveal()
   preloadOtherArtwork()
 }
 

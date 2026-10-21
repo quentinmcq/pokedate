@@ -72,6 +72,11 @@ const formattedToday = computed(() => {
 
 const isNewDiscovery = ref(false)
 
+// Only a reveal made on this page, or a date link just opened, plays the animation: coming back from another tab
+// shows the card as it was left.
+const isOpeningPage = import.meta.server || useNuxtApp().isHydrating
+const playsRevealAnimation = computed(() => isOpeningPage || revealCount.value > 0)
+
 // Recorded from the date itself, so leaving before the Pokémon details arrive still fills the Pokédex.
 function recordRevealedDate() {
   const date = selectedDate.value
@@ -217,7 +222,8 @@ usePageSeo({
         :date="selectedDate"
         :shiny="isShiny"
         :new-discovery="isNewDiscovery"
-        animate
+        :animate="playsRevealAnimation"
+        :celebrate="playsRevealAnimation"
       >
         <template v-if="!isRandomDraw && !isTodaysDate" #after-actions="{ revealed }">
           <DrawPublication
