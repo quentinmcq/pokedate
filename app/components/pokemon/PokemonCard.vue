@@ -53,12 +53,19 @@ const primaryType = computed(() => props.pokemon.types[0])
 const generation = computed(() => generationOf(props.pokemon.generation))
 const hasEvolutions = computed(() => props.pokemon.evolutionStages.flat().length > 1)
 
+// Fetched once the card shows, after its own artwork, so the shiny button swaps the image at once.
+function preloadOtherArtwork() {
+  const otherArtwork = new Image()
+  otherArtwork.src = artworkUrl(props.pokemon.id, !isShinyShown.value)
+}
+
 function reveal() {
   if (areStatBarsFilled.value) return
   isRevealed.value = true
   areStatBarsFilled.value = true
   if (isShinyShown.value) launchConfetti(SHINY_CONFETTI)
   else if (props.pokemon.rarity) launchConfetti([typeColor(primaryType.value), '#ffd23f', '#ffffff'])
+  preloadOtherArtwork()
 }
 
 let revealTimer: ReturnType<typeof setTimeout> | undefined
