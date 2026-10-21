@@ -30,8 +30,10 @@
     padding: 0;
     list-style: none;
 
+    // Padding rather than margin: the accordion measures its content height to animate the opening.
     &--all {
       margin: space(2) 0 0;
+      padding-bottom: space(5);
     }
   }
 }
