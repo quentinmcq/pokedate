@@ -67,7 +67,7 @@ test.describe('Fiches Pokémon', () => {
 test.describe('Référencement', { tag: '@server' }, () => {
   test('chaque fiche a un titre, une description et une image d’aperçu', async ({ page }) => {
     await gotoHydrated(page, '/pokemon/706-muplodocus')
-    await expect(page).toHaveTitle('Muplodocus (n° 706) : types, stats, faiblesses et évolutions · PokéDate')
+    await expect(page).toHaveTitle('Muplodocus (n° 706) : dates de naissance, types et stats · PokéDate')
     await expect(page.locator(meta('description'))).toHaveAttribute('content', /Muplodocus \(n°\s706\)/)
     await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', /\/pokemon\/706-muplodocus$/)
     await expect(page.locator(meta('og:image'))).toHaveAttribute('content', /\/sprites\/og\/706\.jpg$/)
@@ -79,7 +79,7 @@ test.describe('Référencement', { tag: '@server' }, () => {
   test('la fiche anglaise a son adresse, son titre et ses liens de langue', async ({ page }) => {
     await gotoHydrated(page, '/en/pokemon/706-goodra')
     await expect(page.locator('html')).toHaveAttribute('lang', 'en-GB')
-    await expect(page).toHaveTitle('Goodra (no. 706): types, stats, weaknesses and evolutions · PokéDate')
+    await expect(page).toHaveTitle('Goodra (no. 706): birth dates, types and stats · PokéDate')
     await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', /\/en\/pokemon\/706-goodra$/)
     await expect(page.locator('link[hreflang="fr"]')).toHaveAttribute('href', /\/pokemon\/706-muplodocus$/)
     await expect(page.locator(meta('og:image'))).toHaveAttribute('content', /\/sprites\/og-en\/706\.jpg$/)

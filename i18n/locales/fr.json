@@ -120,7 +120,7 @@
     "allPokemon": "Voir les 1025 Pokémon"
   },
   "seo": {
-    "defaultTitle": "PokéDate · Quel Pokémon se cache dans ta date ?"
+    "defaultTitle": "Quel Pokémon es-tu selon ta date de naissance ? · PokéDate"
   },
   "common": {
     "retry": "Réessayer",
@@ -352,7 +352,8 @@
     "metaIntro": "{name} (n° {id}), {genusLowercase} de type {types}.",
     "metaIntroWithGeneration": "{name} (n° {id}), {genusLowercase} de type {types}, génération {generation}.",
     "notFound": "Ce Pokémon n'existe pas (encore ?)",
-    "seoTitle": "{name} (n° {id}) : types, stats, faiblesses et évolutions",
+    "seoTitle": "{name} (n° {id}) : dates de naissance, types et stats",
+    "metaDates": "Découvre les dates de naissance qui donnent {name}.",
     "sharedTitle": "Quelqu'un est tombé sur {name} avec sa date ! Et toi ?",
     "shareTitle": "{name}, n° {id}",
     "home": "Accueil",
