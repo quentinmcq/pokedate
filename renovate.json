@@ -2,22 +2,14 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": ["config:recommended", "helpers:pinGitHubActionDigests", ":dependencyDashboard"],
   "timezone": "Europe/Paris",
-  "schedule": ["before 7am on monday"],
   "minimumReleaseAge": "1 day",
   "rangeStrategy": "bump",
-  "prConcurrentLimit": 5,
   "labels": ["dependencies"],
   "semanticCommits": "enabled",
   "semanticCommitType": "chore",
   "semanticCommitScope": "deps",
   "lockFileMaintenance": {
-    "enabled": true,
-    "schedule": ["before 7am on the first day of the month"]
-  },
-  "vulnerabilityAlerts": {
-    "labels": ["dependencies", "security"],
-    "schedule": ["at any time"],
-    "minimumReleaseAge": null
+    "enabled": true
   },
   "packageRules": [
     {
