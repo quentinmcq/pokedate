@@ -123,7 +123,8 @@ test.describe('Mon Pokémon', () => {
   })
 
   test('ajoute le tirage aux derniers tirages et permet de choisir un pseudo', async ({ page }, testInfo) => {
-    const nickname = `Test ${testInfo.project.name}-${Date.now() % 10000}`
+    // A fixed-length suffix, so that no nickname from an earlier run can contain this one.
+    const nickname = `Test ${testInfo.project.name}-${String(Date.now() % 10000).padStart(4, '0')}`
     // Cloudflare always overwrites this header in production; here it gives each run its own rate-limit bucket.
     await page.setExtraHTTPHeaders({ 'cf-connecting-ip': `e2e-${testInfo.project.name}-${Date.now()}` })
     await revealDate(page, '17', '10', '2026')
