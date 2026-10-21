@@ -47,6 +47,8 @@ const STATUS_ICONS: Record<Status, string> = {
 
 const NICKNAME_PROMPT_STORAGE_KEY = 'pokedate.nickname-prompt-seen'
 const NICKNAME_PROMPT_DURATION_MS = 9000
+// Lets the revealed Pokémon have the stage before the prompt asks for anything.
+const NICKNAME_PROMPT_DELAY_MS = 1500
 
 // On phones the line under the card sits behind the bottom bar: the first publication says it once at the top.
 const isNicknamePromptShown = ref(false)
@@ -66,11 +68,17 @@ function markNicknamePromptSeen() {
   } catch {}
 }
 
+const shouldPromptForNickname = () => nickname.value === ANONYMOUS_NICKNAME && !hasSeenNicknamePrompt()
+
 function showNicknamePrompt() {
-  if (nickname.value !== ANONYMOUS_NICKNAME || hasSeenNicknamePrompt()) return
-  markNicknamePromptSeen()
-  isNicknamePromptShown.value = true
-  nicknamePromptTimer = setTimeout(hideNicknamePrompt, NICKNAME_PROMPT_DURATION_MS)
+  if (!shouldPromptForNickname()) return
+  // Checked again after the delay: another card may have shown it, or a nickname may have been chosen meanwhile.
+  nicknamePromptTimer = setTimeout(() => {
+    if (!shouldPromptForNickname()) return
+    markNicknamePromptSeen()
+    isNicknamePromptShown.value = true
+    nicknamePromptTimer = setTimeout(hideNicknamePrompt, NICKNAME_PROMPT_DURATION_MS)
+  }, NICKNAME_PROMPT_DELAY_MS)
 }
 
 function hideNicknamePrompt() {
