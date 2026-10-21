@@ -1,6 +1,10 @@
 @use '../assets/scss/abstracts/functions' as *;
 @use '../assets/scss/abstracts/mixins' as *;
 
+.hero--compact {
+  padding-top: space(6);
+}
+
 .result:focus {
   outline: none;
 }

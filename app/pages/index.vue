@@ -36,6 +36,8 @@ if (submittedWithoutJavaScript.ok)
   await navigateTo({ query: { date: toIsoDate(submittedWithoutJavaScript.date) } }, { replace: true })
 
 const selectedDate = computed(() => parseIsoDate(route.query.date))
+// Once a date is shown, the explanation gives way so the result fits on the first screen of a phone.
+const isHeroCompact = computed(() => !!selectedDate.value)
 const isRandomDraw = computed(() => route.query.hasard === '1')
 // Today's Pokémon is the same for everyone: it would only fill the shared draws with duplicates.
 const isTodaysDate = computed(
@@ -160,14 +162,15 @@ usePageSeo({
   <div>
     <form
       class="hero"
+      :class="{ 'hero--compact': isHeroCompact }"
       :action="localePath('/')"
       method="get"
       autocomplete="off"
       novalidate
       @submit.prevent="submitDate"
     >
-      <h1>{{ t('home.titleStart') }}<br />{{ t('home.titleEnd') }}</h1>
-      <i18n-t keypath="home.lead" tag="p" class="lead" scope="global">
+      <h1 :class="{ 'visually-hidden': isHeroCompact }">{{ t('home.titleStart') }}<br />{{ t('home.titleEnd') }}</h1>
+      <i18n-t v-if="!isHeroCompact" keypath="home.lead" tag="p" class="lead" scope="global">
         <template #day
           ><b>{{ t('home.leadDay') }}</b></template
         >
