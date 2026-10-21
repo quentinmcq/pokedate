@@ -349,8 +349,8 @@
   },
   "pokemonPage": {
     "typesSeparator": "/",
-    "metaIntro": "{name} (no. {id}), the {genus}, a {types}-type Pokémon.",
-    "metaIntroWithGeneration": "{name} (no. {id}), the {genus}, a {types}-type Pokémon from generation {generation}.",
+    "metaIntro": "{name} (no. {id}), the {genus}. {types} type.",
+    "metaIntroWithGeneration": "{name} (no. {id}), the {genus}. {types} type, generation {generation}.",
     "notFound": "This Pokémon doesn't exist (yet?)",
     "seoTitle": "{name} (no. {id}): birth dates, types and stats",
     "metaDates": "See which birth dates give {name}.",
