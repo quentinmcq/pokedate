@@ -22,6 +22,23 @@ const generationsWithPokemon = computed(() =>
   })).filter((generation) => generation.pokemon.length > 0),
 )
 
+// The 1025 tiles block a phone for a few hundred milliseconds when rendered at once: after a client-side navigation
+// the generations appear one frame after another. Server rendering, hydration and back navigation (which restores
+// the scroll position) still get the whole list at once.
+const nuxtApp = useNuxtApp()
+const isRestoringScrollPosition = () => (window.history.state?.scroll?.top ?? 0) > 0
+const rendersProgressively = import.meta.client && !nuxtApp.isHydrating && !isRestoringScrollPosition()
+const renderedGenerationCount = ref(rendersProgressively ? 1 : GENERATIONS.length)
+const renderedGenerations = computed(() => generationsWithPokemon.value.slice(0, renderedGenerationCount.value))
+
+function renderNextGeneration() {
+  if (renderedGenerationCount.value >= GENERATIONS.length) return
+  renderedGenerationCount.value++
+  requestAnimationFrame(renderNextGeneration)
+}
+
+onMounted(() => requestAnimationFrame(renderNextGeneration))
+
 function resetFilters() {
   searchQuery.value = ''
   selectedType.value = null
@@ -77,7 +94,7 @@ usePageSeo({
     </div>
 
     <section
-      v-for="generation in generationsWithPokemon"
+      v-for="generation in renderedGenerations"
       :key="generation.roman"
       class="gen-block"
       :aria-labelledby="`generation-${generation.roman}`"
