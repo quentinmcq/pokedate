@@ -15,8 +15,6 @@ const props = withDefaults(
 )
 
 const REVEAL_DELAY_MS = 1300
-const SPARKLE_COUNT = 8
-const SPARKLE_DURATION_MS = 2400
 
 const sectionHeadingTag = computed(() => (props.headingLevel === 'h1' ? 'h2' : 'h3'))
 
@@ -26,7 +24,6 @@ applyTypes(props.pokemon.types)
 const { recordDiscovery } = usePokedex()
 const shareLink = useShareLink()
 const absoluteUrl = useAbsoluteUrl()
-const { showToast } = useToast()
 const { t, formatLocalNumber } = useLocaleTools()
 const localePath = useLocalePath()
 
@@ -47,17 +44,10 @@ watch(
 const isRevealed = ref(!props.animate)
 const areStatBarsFilled = ref(false)
 const isNewDiscovery = ref(false)
-const sparkles = ref<{ id: number; left: number; top: number; delay: number }[]>([])
 
 const primaryType = computed(() => props.pokemon.types[0])
 const generation = computed(() => generationOf(props.pokemon.generation))
 const hasEvolutions = computed(() => props.pokemon.evolutionStages.flat().length > 1)
-
-// Fetched once the card shows, after its own artwork, so the shiny button swaps the image at once.
-function preloadOtherArtwork() {
-  const otherArtwork = new Image()
-  otherArtwork.src = artworkUrl(props.pokemon.id, !isShinyShown.value)
-}
 
 function celebrateReveal() {
   if (isShinyShown.value) launchGoldConfetti()
@@ -69,7 +59,6 @@ function reveal() {
   isRevealed.value = true
   areStatBarsFilled.value = true
   if (props.celebrate) celebrateReveal()
-  preloadOtherArtwork()
 }
 
 let revealTimer: ReturnType<typeof setTimeout> | undefined
@@ -84,23 +73,6 @@ onBeforeUnmount(() => clearTimeout(revealTimer))
 function revealNow() {
   clearTimeout(revealTimer)
   reveal()
-}
-
-function playCry(event: MouseEvent) {
-  new Audio(cryUrl(props.pokemon.id)).play().catch(() => showToast(t('card.cryUnavailable')))
-  ;(event.currentTarget as HTMLElement).animate([{ transform: 'scale(1.3)' }, { transform: 'scale(1)' }], 300)
-}
-
-function toggleShiny() {
-  isShinyShown.value = !isShinyShown.value
-  if (!isShinyShown.value) return
-  sparkles.value = Array.from({ length: SPARKLE_COUNT }, (_, index) => ({
-    id: Date.now() + index,
-    left: 15 + Math.random() * 70,
-    top: 15 + Math.random() * 60,
-    delay: Math.random() * 0.6,
-  }))
-  setTimeout(() => (sparkles.value = []), SPARKLE_DURATION_MS)
 }
 
 function sharePokemon() {
@@ -122,60 +94,14 @@ function sharePokemon() {
     :aria-labelledby="`pokemon-${pokemon.id}-name`"
   >
     <div class="mon-card__grid" :class="{ 'mon-card__grid--no-evolutions': !hasEvolutions }">
-      <div class="mon-card__stage" :class="{ 'mon-card__stage--hidden': !isRevealed }">
-        <span class="mon-card__bignum" aria-hidden="true">{{ padNumber(pokemon.id, 4) }}</span>
-        <div class="mon-card__halo" aria-hidden="true" />
-        <img
-          class="mon-card__art"
-          :src="artworkUrl(pokemon.id, isShinyShown)"
-          :alt="isShinyShown ? t('card.shinyAlt', { name: pokemon.name }) : pokemon.name"
-          width="320"
-          height="320"
-          fetchpriority="high"
-          decoding="async"
-        />
-        <span class="mon-card__who" aria-hidden="true">{{ t('card.whoIsIt') }}</span>
-        <PokeBall class="mon-card__reveal-ball" :size="46" />
-        <button
-          v-if="!isRevealed"
-          class="mon-card__skip"
-          type="button"
-          :aria-label="t('card.revealNow')"
-          @click="revealNow"
-        />
-        <span
-          v-for="sparkle in sparkles"
-          :key="sparkle.id"
-          class="mon-card__sparkle"
-          aria-hidden="true"
-          :style="{ left: `${sparkle.left}%`, top: `${sparkle.top}%`, animationDelay: `${sparkle.delay}s` }"
-          ><Icon name="lucide:sparkle"
-        /></span>
-        <div class="mon-card__tools">
-          <button
-            class="icon-btn"
-            type="button"
-            :title="t('card.playCry')"
-            :aria-label="t('card.playCry')"
-            @click="playCry"
-          >
-            <Icon name="lucide:volume-2" aria-hidden="true" />
-          </button>
-          <button
-            class="icon-btn"
-            type="button"
-            :aria-pressed="isShinyShown"
-            :title="t('card.shinyTitle')"
-            :aria-label="t('card.showShiny')"
-            @click="toggleShiny"
-          >
-            <Icon name="lucide:sparkles" aria-hidden="true" />
-          </button>
-        </div>
-        <span v-if="date && shiny" class="mon-card__shiny-badge"
-          ><Icon name="lucide:sparkles" aria-hidden="true" /> {{ t('card.shinyBadge') }}</span
-        >
-      </div>
+      <PokemonArtwork
+        v-model:shiny="isShinyShown"
+        class="mon-card__artwork"
+        :pokemon="pokemon"
+        :revealed="isRevealed"
+        :shows-shiny-badge="!!date && shiny"
+        @reveal-now="revealNow"
+      />
 
       <header class="mon-card__header">
         <div class="mon-card__id">

@@ -10,7 +10,7 @@ test.describe('Mon Pokémon', () => {
     await expect(page.locator('.formula__num')).toHaveText('N° 706')
     await expect(page.getByRole('heading', { level: 2, name: /Muplodocus/ })).toBeVisible()
     await expect(page.getByText('Dragon').first()).toBeVisible()
-    await expect(page.locator('.mon-card__art')).toHaveAttribute('src', '/sprites/art/706.webp')
+    await expect(page.locator('.pokemon-artwork__image')).toHaveAttribute('src', '/sprites/art/706.webp')
     await expect(page.locator('.site-nav .pill')).toContainText('1')
     expect(errors).toEqual([])
   })
@@ -84,10 +84,10 @@ test.describe('Mon Pokémon', () => {
     await mainNav.getByRole('link', { name: /Mon Pokémon/ }).click()
     await expect(page).toHaveURL(/\?date=2026-10-17$/)
     await expect(page.locator('.mon-card')).toBeVisible()
-    await expect(page.locator('.mon-card__stage--hidden')).toHaveCount(0, { timeout: 200 })
+    await expect(page.locator('.pokemon-artwork--hidden')).toHaveCount(0, { timeout: 200 })
 
     await page.reload()
-    await expect(page.locator('.mon-card__stage--hidden')).toHaveCount(1)
+    await expect(page.locator('.pokemon-artwork--hidden')).toHaveCount(1)
   })
 
   test('le bouton « Aujourd’hui » révèle le Pokémon du jour', async ({ page }) => {
@@ -95,7 +95,7 @@ test.describe('Mon Pokémon', () => {
     await page.getByRole('button', { name: "Aujourd'hui" }).click()
     await expect(page).toHaveURL(/\?date=\d{4}-\d{2}-\d{2}$/)
     await expect(page.locator('.mon-card')).toBeVisible()
-    await expect(page.locator('.mon-card__stage--hidden')).toHaveCount(0, { timeout: 5000 })
+    await expect(page.locator('.pokemon-artwork--hidden')).toHaveCount(0, { timeout: 5000 })
     await expect(page.locator('.draw-publication')).toHaveCount(0)
   })
 
@@ -161,7 +161,7 @@ test.describe('Mon Pokémon', () => {
     await gotoHydrated(page, '/')
     await page.getByRole('button', { name: /Au hasard/ }).click()
     await expect(page.locator('.mon-card')).toBeVisible()
-    await expect(page.locator('.mon-card__stage--hidden')).toHaveCount(0, { timeout: 5000 })
+    await expect(page.locator('.pokemon-artwork--hidden')).toHaveCount(0, { timeout: 5000 })
     await expect(page.locator('.draw-publication')).toHaveCount(0)
   })
 
@@ -183,8 +183,8 @@ test.describe('Mon Pokémon', () => {
 
   test('une date shiny affiche la version chromatique', async ({ page }) => {
     await gotoHydrated(page, '/?date=1990-04-06')
-    await expect(page.locator('.mon-card__shiny-badge')).toBeVisible()
-    await expect(page.locator('.mon-card__art')).toHaveAttribute('src', /art-shiny/)
+    await expect(page.locator('.pokemon-artwork__shiny-badge')).toBeVisible()
+    await expect(page.locator('.pokemon-artwork__image')).toHaveAttribute('src', /art-shiny/)
   })
 
   test('le lien partagé ne contient pas la date de naissance', async ({ page }) => {

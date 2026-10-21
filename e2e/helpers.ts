@@ -23,7 +23,7 @@ export async function revealDate(page: Page, d: string, m: string, y: string) {
   await fillDate(page, '.hero', d, m, y)
   await page.getByRole('button', { name: 'Révéler mon Pokémon' }).click()
   await expect(page.locator('.mon-card')).toBeVisible()
-  await expect(page.locator('.mon-card__stage--hidden')).toHaveCount(0, { timeout: 5000 })
+  await expect(page.locator('.pokemon-artwork--hidden')).toHaveCount(0, { timeout: 5000 })
 }
 
 export async function readSharedLink(page: Page) {
