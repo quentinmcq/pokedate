@@ -17,6 +17,6 @@ export function pokemonMetaDescription(t: Translate, pokemon: PokemonDetail) {
   })
   const text = `${intro} ${t('pokemonPage.metaDates', { name: pokemon.name })} ${pokemon.description}`
   return text.length > META_DESCRIPTION_MAX_LENGTH
-    ? `${text.slice(0, META_DESCRIPTION_MAX_LENGTH - 3).trimEnd()}…`
+    ? `${text.slice(0, META_DESCRIPTION_MAX_LENGTH - 3).replace(/[\s.,;:!?…]+$/u, '')}…`
     : text.trimEnd()
 }
