@@ -107,7 +107,8 @@
     "author": "Fait avec {heart} par {name}",
     "love": "amour",
     "credits": "Données : {pokeapi} et {pokepedia}. Pokémon © Nintendo / Game Freak / The Pokémon Company. Projet de fan, non officiel et sans but commercial.",
-    "install": "Installer l'appli"
+    "install": "Installer l'appli",
+    "installApple": "Touche {share} Partager, puis « Sur l'écran d'accueil »."
   },
   "error": {
     "notFoundTitle": "Page introuvable",
