@@ -7,12 +7,27 @@ const { resetAccent } = usePageAccent()
 const { t, locale } = useLocaleTools()
 resetAccent()
 
-const [{ data: draws, error, refresh: refreshDraws }, { data: activity, refresh: refreshActivity }] = await Promise.all(
-  [
-    useFetch<PublicDraw[]>('/api/draws', { key: () => `public-draws-${locale.value}`, query: { lang: locale } }),
-    useFetch<DrawsActivity>('/api/activity', { key: () => `draws-activity-${locale.value}`, query: { lang: locale } }),
-  ],
-)
+const PLACEHOLDER_ROWS = 6
+
+// Lazy: a tap on the tab shows the page at once and the feed fills in, instead of waiting for both answers first.
+// The server still renders the page with its data.
+const [
+  { data: draws, error, status: drawsStatus, refresh: refreshDraws },
+  { data: activity, status: activityStatus, refresh: refreshActivity },
+] = await Promise.all([
+  useFetch<PublicDraw[]>('/api/draws', {
+    key: () => `public-draws-${locale.value}`,
+    query: { lang: locale },
+    lazy: true,
+  }),
+  useFetch<DrawsActivity>('/api/activity', {
+    key: () => `draws-activity-${locale.value}`,
+    query: { lang: locale },
+    lazy: true,
+  }),
+])
+const isLoadingDraws = computed(() => !draws.value && drawsStatus.value === 'pending')
+const isLoadingActivity = computed(() => !activity.value && activityStatus.value === 'pending')
 
 const refreshPage = () => Promise.all([refreshDraws(), refreshActivity()])
 
@@ -65,11 +80,19 @@ usePageSeo({
     </div>
 
     <DrawsActivity v-if="activity" :activity="activity" />
+    <div v-else-if="isLoadingActivity" class="activity-placeholder placeholder" aria-hidden="true" />
 
     <h2 class="draws-title">{{ t('draws.listTitle') }}</h2>
     <p class="draws-hint">{{ t('draws.listHint') }}</p>
 
-    <p v-if="error" class="draws-empty">{{ t('draws.unavailable') }}</p>
+    <p v-if="isLoadingDraws" class="visually-hidden" role="status">{{ t('draws.loading') }}</p>
+    <ol v-if="isLoadingDraws" class="draws" aria-hidden="true">
+      <li v-for="row in PLACEHOLDER_ROWS" :key="row" class="draws__item draws__item--placeholder">
+        <span class="draws__sprite placeholder" />
+        <span class="draws__line placeholder" />
+      </li>
+    </ol>
+    <p v-else-if="error" class="draws-empty">{{ t('draws.unavailable') }}</p>
     <i18n-t v-else-if="!draws?.length" keypath="draws.empty" tag="p" class="draws-empty" scope="global">
       <template #reveal
         ><NuxtLinkLocale to="/" class="text-link">{{ t('draws.revealYours') }}</NuxtLinkLocale></template

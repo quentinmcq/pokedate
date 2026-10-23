@@ -391,6 +391,7 @@
     "seoDescription": "Today's activity on PokéDate and the latest Pokémon revealed by players.",
     "listTitle": "Revealed Pokémon",
     "listHint": "Newest first, 7 days at most.",
+    "loading": "Loading the latest draws…",
     "unavailable": "The latest draws are unavailable right now.",
     "empty": "No draw yet. {reveal}: it'll show up here.",
     "revealYours": "Reveal your Pokémon",

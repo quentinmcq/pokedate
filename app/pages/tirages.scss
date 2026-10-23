@@ -85,3 +85,44 @@
     white-space: nowrap;
   }
 }
+
+// Grey blocks shaped like the activity box and the draw rows, so nothing jumps when the feed arrives.
+.placeholder {
+  border-radius: radius('md');
+  background: color('surface-1');
+  animation: placeholder-pulse 1.2s ease-in-out infinite alternate;
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+}
+
+.activity-placeholder {
+  max-width: 720px;
+  height: 173px;
+  margin: space(6) auto 0;
+  border-radius: radius('xl');
+}
+
+.draws__item--placeholder {
+  height: 74px;
+
+  @include bp(phone) {
+    height: 62px;
+  }
+}
+
+.draws__line {
+  width: 70%;
+  height: 1em;
+
+  @include bp(phone) {
+    grid-row: span 2;
+  }
+}
+
+@keyframes placeholder-pulse {
+  to {
+    opacity: 0.45;
+  }
+}

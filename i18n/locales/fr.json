@@ -391,6 +391,7 @@
     "seoDescription": "L'activité du jour sur PokéDate et les derniers Pokémon révélés par les joueurs.",
     "listTitle": "Pokémon révélés",
     "listHint": "Du plus récent au plus ancien, 7 jours au plus.",
+    "loading": "Chargement des derniers tirages…",
     "unavailable": "Les derniers tirages sont indisponibles pour le moment.",
     "empty": "Aucun tirage pour l'instant. {reveal} : il apparaîtra ici.",
     "revealYours": "Révèle ton Pokémon",
