@@ -20,7 +20,7 @@ const LIGHT_TEXT = '#ffffff'
 export const POKEMON_TYPES: Record<TypeKey, PokemonTypeStyle> = {
   normal: { color: '#9FA19F', icon: 'lucide:circle-dot', textColor: DARK_TEXT },
   fire: { color: '#D92B23', icon: 'lucide:flame', textColor: LIGHT_TEXT },
-  water: { color: '#2980EF', icon: 'lucide:droplet', textColor: DARK_TEXT },
+  water: { color: '#1D6FE0', icon: 'lucide:droplet', textColor: LIGHT_TEXT },
   electric: { color: '#E0AE00', icon: 'lucide:zap', textColor: DARK_TEXT },
   grass: { color: '#3FA129', icon: 'lucide:leaf', textColor: DARK_TEXT },
   ice: { color: '#3DCEF3', icon: 'lucide:snowflake', textColor: DARK_TEXT },
