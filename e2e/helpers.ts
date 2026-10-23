@@ -19,6 +19,9 @@ export async function fillDate(page: Page, scope: string, d: string, m: string, 
 }
 
 export async function revealDate(page: Page, d: string, m: string, y: string) {
+  // A reveal publishes a draw: Cloudflare always overwrites this header in production, here it gives each reveal its
+  // own rate-limit bucket so that parallel tests never hit the publication limit together.
+  await page.setExtraHTTPHeaders({ 'cf-connecting-ip': `e2e-${crypto.randomUUID()}` })
   await gotoHydrated(page, '/')
   await fillDate(page, '.hero', d, m, y)
   await page.getByRole('button', { name: 'Révéler mon Pokémon' }).click()

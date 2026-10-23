@@ -125,8 +125,6 @@ test.describe('Mon Pokémon', () => {
   test('ajoute le tirage aux derniers tirages et permet de choisir un pseudo', async ({ page }, testInfo) => {
     // A fixed-length suffix, so that no nickname from an earlier run can contain this one.
     const nickname = `Test ${testInfo.project.name}-${String(Date.now() % 10000).padStart(4, '0')}`
-    // Cloudflare always overwrites this header in production; here it gives each run its own rate-limit bucket.
-    await page.setExtraHTTPHeaders({ 'cf-connecting-ip': `e2e-${testInfo.project.name}-${Date.now()}` })
     await revealDate(page, '17', '10', '2026')
     const publication = page.locator('.mon-card').getByRole('status')
     await expect(publication).toContainText('Ajouté aux derniers tirages en tant que Anonyme')
@@ -145,8 +143,7 @@ test.describe('Mon Pokémon', () => {
     await expect(page.locator('.draws__item', { hasText: nickname })).toContainText(`${nickname} a tiré Muplodocus`)
   })
 
-  test('retire un tirage des derniers tirages', async ({ page }, testInfo) => {
-    await page.setExtraHTTPHeaders({ 'cf-connecting-ip': `e2e-remove-${testInfo.project.name}-${Date.now()}` })
+  test('retire un tirage des derniers tirages', async ({ page }) => {
     await revealDate(page, '25', '12', '1995')
     const publication = page.locator('.mon-card').getByRole('status')
     await expect(publication).toContainText('Ajouté aux derniers tirages')
