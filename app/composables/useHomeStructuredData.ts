@@ -10,6 +10,8 @@ export function useHomeStructuredData() {
       '@context': 'https://schema.org',
       '@type': 'WebSite',
       name: 'PokéDate',
+      // Spellings people type without the accent, so that search engines tie them to this site.
+      alternateName: ['PokeDate', 'Pokedate', 'Poke Date'],
       url: absoluteUrl(localePath('/')),
       inLanguage: LOCALE_TAGS[locale.value],
     },

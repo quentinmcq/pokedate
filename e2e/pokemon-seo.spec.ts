@@ -96,8 +96,9 @@ test.describe('Référencement', { tag: '@server' }, () => {
   test('l’accueil publie des données structurées valides', async ({ page }) => {
     await gotoHydrated(page, '/')
     const blocks = await page.locator('script[type="application/ld+json"]').allTextContents()
-    const types = blocks.flatMap((b) => [JSON.parse(b)].flat().map((x: { '@type': string }) => x['@type']))
-    expect(types).toEqual(expect.arrayContaining(['WebSite', 'WebApplication', 'FAQPage']))
+    const items = blocks.flatMap((b) => [JSON.parse(b)].flat()) as { '@type': string; alternateName?: string[] }[]
+    expect(items.map((item) => item['@type'])).toEqual(expect.arrayContaining(['WebSite', 'WebApplication', 'FAQPage']))
+    expect(items.find((item) => item['@type'] === 'WebSite')?.alternateName).toContain('Pokedate')
   })
 
   test('le site est installable comme une appli', async ({ page, request }) => {
