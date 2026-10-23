@@ -184,6 +184,18 @@ test.describe('Mon Pokémon', () => {
     await expect(page.locator('.pokemon-artwork__image')).toHaveAttribute('src', /art-shiny/)
   })
 
+  test('les étoiles accompagnent la version shiny et partent avec elle', async ({ page }) => {
+    await gotoHydrated(page, '/pokemon/25-pikachu')
+    const shinyButton = page.getByRole('button', { name: 'Afficher la version shiny' })
+    const sparkles = page.locator('.pokemon-artwork__sparkle')
+    await shinyButton.click()
+    await expect(page.locator('.pokemon-artwork__image')).toHaveAttribute('src', /art-shiny/)
+    await expect(sparkles).toHaveCount(8)
+    await shinyButton.click()
+    await expect(page.locator('.pokemon-artwork__image')).toHaveAttribute('src', /\/art\//)
+    await expect(sparkles).toHaveCount(0)
+  })
+
   test('le lien partagé ne contient pas la date de naissance', async ({ page }) => {
     await revealDate(page, '17', '10', '2026')
     const copied = await readSharedLink(page)

@@ -36,16 +36,28 @@ function playCry(event: MouseEvent) {
   ;(event.currentTarget as HTMLElement).animate([{ transform: 'scale(1.3)' }, { transform: 'scale(1)' }], 300)
 }
 
+let sparklesTimer: ReturnType<typeof setTimeout> | undefined
+
+function clearSparkles() {
+  clearTimeout(sparklesTimer)
+  sparkles.value = []
+}
+
+onBeforeUnmount(clearSparkles)
+
 function toggleShiny() {
-  isShinyShown.value = !isShinyShown.value
-  if (!isShinyShown.value) return
+  // The model only reflects the new value once the parent has updated it, so the next state is kept here.
+  const showsShiny = !isShinyShown.value
+  isShinyShown.value = showsShiny
+  clearSparkles()
+  if (!showsShiny) return
   sparkles.value = Array.from({ length: SPARKLE_COUNT }, (_, index) => ({
     id: Date.now() + index,
     left: 15 + Math.random() * 70,
     top: 15 + Math.random() * 60,
     delay: Math.random() * 0.6,
   }))
-  setTimeout(() => (sparkles.value = []), SPARKLE_DURATION_MS)
+  sparklesTimer = setTimeout(clearSparkles, SPARKLE_DURATION_MS)
 }
 </script>
 
