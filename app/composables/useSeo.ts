@@ -1,4 +1,5 @@
 const SITE_NAME = 'PokéDate'
+const AUTHOR_X_HANDLE = '@leaf_kakashi'
 const DEFAULT_SHARE_IMAGES = { fr: '/og-default.jpg', en: '/og-default-en.jpg' } as const
 
 export function useAbsoluteUrl() {
@@ -23,6 +24,8 @@ export function useSiteSeo() {
     ogSiteName: SITE_NAME,
     ogType: 'website',
     ogUrl: () => absoluteUrl(route.path),
+    twitterSite: AUTHOR_X_HANDLE,
+    twitterCreator: AUTHOR_X_HANDLE,
   })
 }
 
