@@ -142,8 +142,9 @@ usePageSeo({
   title: () =>
     pokemonA.value && pokemonB.value && outcome.value
       ? `${pokemonA.value.name} VS ${pokemonB.value.name}`
-      : t('duel.title'),
+      : t('duel.seoTitle'),
   description: () => t('duel.seoDescription'),
+  shareDescription: () => (hasResult.value ? t('duel.resultDescription') : undefined),
   shareImagePath: () => {
     const { pokemonIdA, pokemonIdB, shinyA, shinyB } = duelQuery.value
     if (!hasResult.value || !pokemonIdA || !pokemonIdB) return undefined

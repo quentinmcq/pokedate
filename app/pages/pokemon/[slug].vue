@@ -32,8 +32,9 @@ const isSharedLink = route.query.partage === '1'
 usePageSeo({
   title: t('pokemonPage.seoTitle', { name: pokemon.name, id: pokemon.id }),
   shareTitle: isSharedLink
-    ? t('pokemonPage.sharedTitle', { name: pokemon.name })
+    ? t(isShinyRequested ? 'pokemonPage.sharedShinyTitle' : 'pokemonPage.sharedTitle', { name: pokemon.name })
     : t('pokemonPage.shareTitle', { name: pokemon.name, id: pokemon.id }),
+  shareDescription: isSharedLink ? t('pokemonPage.sharedDescription') : undefined,
   description: pokemonMetaDescription(translate, pokemon),
   shareImagePath: shareImagePath(pokemon.id, locale.value),
   shareImageAlt: pokemon.name,

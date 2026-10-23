@@ -117,8 +117,14 @@ function shareTournament() {
 
 usePageSeo({
   title: () =>
-    champion.value ? t('tournament.championTitle', { pokemon: champion.value.pokemon.name }) : t('tournament.title'),
+    champion.value ? t('tournament.championTitle', { pokemon: champion.value.pokemon.name }) : t('tournament.seoTitle'),
   description: () => t('tournament.seoDescription'),
+  shareDescription: () =>
+    champion.value
+      ? t('tournament.resultDescription', {
+          podium: podium.value.map((contender) => `${contender.label} (${contender.pokemon.name})`).join(', '),
+        })
+      : undefined,
   shareImagePath: () => (champion.value ? tournamentShareImagePath(podium.value, locale.value) : undefined),
   shareImageAlt: () =>
     champion.value

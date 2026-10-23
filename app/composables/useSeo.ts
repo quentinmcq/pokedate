@@ -32,6 +32,7 @@ interface PageSeo {
   title: MaybeRefOrGetter<string | undefined>
   shareTitle?: MaybeRefOrGetter<string | undefined>
   description: MaybeRefOrGetter<string>
+  shareDescription?: MaybeRefOrGetter<string | undefined>
   shareImagePath?: MaybeRefOrGetter<string | undefined>
   shareImageAlt?: MaybeRefOrGetter<string | undefined>
   noindex?: MaybeRefOrGetter<boolean>
@@ -44,17 +45,21 @@ export function usePageSeo(seo: PageSeo) {
   const absoluteUrl = useAbsoluteUrl()
   const { t, locale } = useLocaleTools()
   const shareImageUrl = computed(() => absoluteUrl(toValue(seo.shareImagePath) ?? DEFAULT_SHARE_IMAGES[locale.value]))
+  const shareImageAlt = () => toValue(seo.shareImageAlt) ?? t('seo.defaultImageAlt')
 
   useSeoMeta({
     title: () => toValue(seo.title),
     ogTitle: () => toValue(seo.shareTitle) ?? toValue(seo.title) ?? t('seo.defaultTitle'),
     description: () => toValue(seo.description),
-    ogDescription: () => toValue(seo.description),
+    ogDescription: () => toValue(seo.shareDescription) ?? toValue(seo.description),
     ogImage: shareImageUrl,
     ogImageWidth: 1200,
     ogImageHeight: 630,
     ogImageType: 'image/jpeg',
-    ogImageAlt: () => toValue(seo.shareImageAlt) ?? SITE_NAME,
+    ogImageAlt: shareImageAlt,
+    // X reads the Open Graph title, description and image, but only shows a large preview when asked to.
+    twitterCard: 'summary_large_image',
+    twitterImageAlt: shareImageAlt,
     robots: () => (toValue(seo.noindex) ? 'noindex, follow' : 'index, follow, max-image-preview:large'),
   })
 

@@ -121,7 +121,8 @@
     "allPokemon": "Voir les 1025 Pokémon"
   },
   "seo": {
-    "defaultTitle": "Quel Pokémon es-tu selon ta date de naissance ? · PokéDate"
+    "defaultTitle": "Quel Pokémon es-tu selon ta date de naissance ? · PokéDate",
+    "defaultImageAlt": "PokéDate : quel Pokémon se cache dans ta date ?"
   },
   "common": {
     "retry": "Réessayer",
@@ -133,7 +134,7 @@
     "linkCopied": "Lien copié, envoie-le à tes potes"
   },
   "home": {
-    "seoDescription": "Quel Pokémon se cache dans ta date de naissance ? Les derniers chiffres du jour, du mois et de l'année donnent ton Pokémon parmi les 1025 : types, stats, faiblesses, évolutions, duels et tournois entre potes.",
+    "seoDescription": "Les derniers chiffres de ta date de naissance donnent ton Pokémon parmi les 1025. Découvre le tien, puis défie tes potes en duel ou en tournoi.",
     "anyOperatingSystem": "Tous",
     "titleStart": "Quel Pokémon",
     "titleEnd": "se cache dans ta date ?",
@@ -197,6 +198,8 @@
   },
   "duel": {
     "title": "Duel d'anniversaires",
+    "seoTitle": "Duel Pokémon d'anniversaires",
+    "resultDescription": "Et toi, quel Pokémon se cache dans ta date ? Lance ton propre duel d'anniversaires sur PokéDate.",
     "seoDescription": "Ta date contre celle de ton adversaire : quel Pokémon gagne le combat ? Un duel de dates d'anniversaire façon Pokémon.",
     "lead": "Ta date contre celle de ton adversaire : quel Pokémon l'emporte ?",
     "winner": "{player} gagne avec {pokemon} !",
@@ -218,6 +221,8 @@
   },
   "tournament": {
     "title": "Tournoi d'anniversaires",
+    "seoTitle": "Tournoi Pokémon d'anniversaires",
+    "resultDescription": "Podium : {podium}. Et toi, quel Pokémon remporterait le tournoi ? Lance le tien avec tes potes sur PokéDate.",
     "championTitle": "{pokemon} remporte le tournoi",
     "seoDescription": "De 3 à 8 personnes, une date chacune : quel Pokémon remporte le tournoi ? Chaque Pokémon affronte tous les autres.",
     "lead": "De 3 à 8 personnes, une date chacune : chaque Pokémon affronte tous les autres. Qui finira en tête ?",
@@ -356,6 +361,8 @@
     "seoTitle": "{name} (n° {id}) : dates de naissance, types et stats",
     "metaDates": "Découvre les dates de naissance qui donnent {name}.",
     "sharedTitle": "Quelqu'un est tombé sur {name} avec sa date ! Et toi ?",
+    "sharedShinyTitle": "Quelqu'un est tombé sur {name} shiny avec sa date ! Et toi ?",
+    "sharedDescription": "Entre ta date de naissance pour découvrir ton Pokémon parmi les 1025. Gratuit et sans inscription.",
     "shareTitle": "{name}, n° {id}",
     "home": "Accueil",
     "breadcrumb": "Fil d'Ariane",

@@ -121,7 +121,8 @@
     "allPokemon": "See all 1025 Pokémon"
   },
   "seo": {
-    "defaultTitle": "Which Pokémon are you based on your birthday? · PokéDate"
+    "defaultTitle": "Which Pokémon are you based on your birthday? · PokéDate",
+    "defaultImageAlt": "PokéDate: which Pokémon hides in your date?"
   },
   "common": {
     "retry": "Try again",
@@ -133,7 +134,7 @@
     "linkCopied": "Link copied, send it to your friends"
   },
   "home": {
-    "seoDescription": "Which Pokémon hides in your birth date? The last digits of the day, month and year give your Pokémon among all 1025: types, stats, weaknesses, evolutions, duels and tournaments with friends.",
+    "seoDescription": "The last digits of your birth date give your Pokémon among all 1025. Find yours, then challenge your friends to a duel or a tournament.",
     "anyOperatingSystem": "Any",
     "titleStart": "Which Pokémon",
     "titleEnd": "hides in your date?",
@@ -197,6 +198,8 @@
   },
   "duel": {
     "title": "Birthday duel",
+    "seoTitle": "Pokémon birthday duel",
+    "resultDescription": "Which Pokémon hides in your date? Start your own birthday duel on PokéDate.",
     "seoDescription": "Your date against your opponent's: which Pokémon wins the fight? A Pokémon-style birthday duel.",
     "lead": "Your date against your opponent's: which Pokémon wins?",
     "winner": "{player} wins with {pokemon}!",
@@ -218,6 +221,8 @@
   },
   "tournament": {
     "title": "Birthday tournament",
+    "seoTitle": "Pokémon birthday tournament",
+    "resultDescription": "Podium: {podium}. Which Pokémon would win your tournament? Start one with your friends on PokéDate.",
     "championTitle": "{pokemon} wins the tournament",
     "seoDescription": "From 3 to 8 people, one date each: which Pokémon wins the tournament? Every Pokémon faces all the others.",
     "lead": "From 3 to 8 people, one date each: every Pokémon faces all the others. Who will come out on top?",
@@ -356,6 +361,8 @@
     "seoTitle": "{name} (no. {id}): birth dates, types and stats",
     "metaDates": "See which birth dates give {name}.",
     "sharedTitle": "Someone got {name} with their date! What about you?",
+    "sharedShinyTitle": "Someone got a shiny {name} with their date! What about you?",
+    "sharedDescription": "Enter your birth date to find your Pokémon among all 1025. Free, no sign-up.",
     "shareTitle": "{name}, no. {id}",
     "home": "Home",
     "breadcrumb": "Breadcrumb",
