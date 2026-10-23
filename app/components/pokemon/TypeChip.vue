@@ -7,11 +7,7 @@ const { t } = useLocaleTools()
 </script>
 
 <template>
-  <span
-    class="type-chip"
-    :class="{ 'type-chip--sm': small }"
-    :style="{ '--c': typeStyle.color, '--ink': typeStyle.textColor }"
-  >
+  <span class="type-chip" :class="{ 'type-chip--sm': small }" :style="{ '--c': typeStyle.badgeColor }">
     <Icon :name="typeStyle.icon" class="type-chip__icon" aria-hidden="true" /> {{ t(`types.${type}`)
     }}<span v-if="multiplier !== undefined" class="type-chip__mult">{{ formatMultiplier(multiplier) }}</span>
   </span>

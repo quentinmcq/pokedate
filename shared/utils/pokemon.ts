@@ -10,32 +10,30 @@ export const cryUrl = (id: number) => `/cries/${id}.ogg`
 
 export interface PokemonTypeStyle {
   color: string
+  badgeColor: string
   icon: string
-  textColor: string
 }
 
-const DARK_TEXT = '#14162b'
-const LIGHT_TEXT = '#ffffff'
-
+// `color` tints the pages; `badgeColor` is deep enough for white text to stay readable (contrast of at least 4.5:1).
 export const POKEMON_TYPES: Record<TypeKey, PokemonTypeStyle> = {
-  normal: { color: '#9FA19F', icon: 'lucide:circle-dot', textColor: DARK_TEXT },
-  fire: { color: '#D92B23', icon: 'lucide:flame', textColor: LIGHT_TEXT },
-  water: { color: '#1D6FE0', icon: 'lucide:droplet', textColor: LIGHT_TEXT },
-  electric: { color: '#E0AE00', icon: 'lucide:zap', textColor: DARK_TEXT },
-  grass: { color: '#3FA129', icon: 'lucide:leaf', textColor: DARK_TEXT },
-  ice: { color: '#3DCEF3', icon: 'lucide:snowflake', textColor: DARK_TEXT },
-  fighting: { color: '#FF8000', icon: 'lucide:hand-fist', textColor: DARK_TEXT },
-  poison: { color: '#9141CB', icon: 'lucide:flask-conical', textColor: LIGHT_TEXT },
-  ground: { color: '#915121', icon: 'lucide:mountain', textColor: LIGHT_TEXT },
-  flying: { color: '#81B9EF', icon: 'lucide:feather', textColor: DARK_TEXT },
-  psychic: { color: '#EF4179', icon: 'lucide:eye', textColor: DARK_TEXT },
-  bug: { color: '#91A119', icon: 'lucide:bug', textColor: DARK_TEXT },
-  rock: { color: '#AFA981', icon: 'lucide:mountain-snow', textColor: DARK_TEXT },
-  ghost: { color: '#704170', icon: 'lucide:ghost', textColor: LIGHT_TEXT },
-  dragon: { color: '#5060E1', icon: 'lucide:gem', textColor: LIGHT_TEXT },
-  dark: { color: '#624D4E', icon: 'lucide:moon', textColor: LIGHT_TEXT },
-  steel: { color: '#60A1B8', icon: 'lucide:shield', textColor: DARK_TEXT },
-  fairy: { color: '#EF70EF', icon: 'lucide:wand-sparkles', textColor: DARK_TEXT },
+  normal: { color: '#9FA19F', badgeColor: '#6F716F', icon: 'lucide:circle-dot' },
+  fire: { color: '#D92B23', badgeColor: '#D92B23', icon: 'lucide:flame' },
+  water: { color: '#2980EF', badgeColor: '#1D6FE0', icon: 'lucide:droplet' },
+  electric: { color: '#E0AE00', badgeColor: '#966E00', icon: 'lucide:zap' },
+  grass: { color: '#3FA129', badgeColor: '#2D7F1C', icon: 'lucide:leaf' },
+  ice: { color: '#3DCEF3', badgeColor: '#0E7FA0', icon: 'lucide:snowflake' },
+  fighting: { color: '#FF8000', badgeColor: '#B85A00', icon: 'lucide:hand-fist' },
+  poison: { color: '#9141CB', badgeColor: '#9141CB', icon: 'lucide:flask-conical' },
+  ground: { color: '#915121', badgeColor: '#915121', icon: 'lucide:mountain' },
+  flying: { color: '#81B9EF', badgeColor: '#7166D0', icon: 'lucide:feather' },
+  psychic: { color: '#EF4179', badgeColor: '#D81E5B', icon: 'lucide:eye' },
+  bug: { color: '#91A119', badgeColor: '#6A7512', icon: 'lucide:bug' },
+  rock: { color: '#AFA981', badgeColor: '#7E6E45', icon: 'lucide:mountain-snow' },
+  ghost: { color: '#704170', badgeColor: '#704170', icon: 'lucide:ghost' },
+  dragon: { color: '#5060E1', badgeColor: '#5060E1', icon: 'lucide:gem' },
+  dark: { color: '#624D4E', badgeColor: '#624D4E', icon: 'lucide:moon' },
+  steel: { color: '#60A1B8', badgeColor: '#3F7B90', icon: 'lucide:shield' },
+  fairy: { color: '#EF70EF', badgeColor: '#C21EC2', icon: 'lucide:wand-sparkles' },
 }
 
 export const TYPE_KEYS = Object.keys(POKEMON_TYPES) as TypeKey[]

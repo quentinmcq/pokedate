@@ -2,9 +2,8 @@
 
 .type-chip {
   --c: #888;
-  --ink: #fff;
   background: var(--c);
-  color: var(--ink);
+  color: #fff;
   padding: 5px 14px 5px 10px;
   border-radius: radius('pill');
   font-weight: weight('bold');

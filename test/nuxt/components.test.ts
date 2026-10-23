@@ -9,8 +9,7 @@ describe('TypeChip', () => {
     const wrapper = await mountSuspended(TypeChip, { props: { type: 'electric' } })
     expect(wrapper.text()).toContain('Électrik')
     const style = wrapper.attributes('style')
-    expect(style).toContain('--c: #E0AE00')
-    expect(style).toContain('--ink: #14162b')
+    expect(style).toContain('--c: #966E00')
   })
 
   it('affiche le multiplicateur quand il est fourni', async () => {

@@ -59,9 +59,8 @@ function contrastRatio(colorA: string, colorB: string) {
 }
 
 describe('accessibilité des badges de type', () => {
-  it.each(TYPE_KEYS)('%s : texte lisible (≥ 4,5:1)', (type) => {
-    const { color, textColor } = POKEMON_TYPES[type]
-    expect(contrastRatio(color, textColor)).toBeGreaterThanOrEqual(4.5)
+  it.each(TYPE_KEYS)('%s : texte blanc lisible (≥ 4,5:1)', (type) => {
+    expect(contrastRatio(POKEMON_TYPES[type].badgeColor, '#ffffff')).toBeGreaterThanOrEqual(4.5)
   })
 })
 
