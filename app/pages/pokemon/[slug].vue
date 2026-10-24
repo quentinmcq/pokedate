@@ -75,6 +75,7 @@ usePageSeo({
 
     <PokemonCard :pokemon="pokemon" :shiny="isShinyRequested" heading-level="h1" />
     <PokemonDates :pokemon-id="pokemon.id" :pokemon-name="pokemon.name" :today="todayInParis" />
+    <PokeBrawlBanner :pokemon="pokemon" />
 
     <nav class="pager" :aria-label="t('pokemonPage.neighbours')">
       <NuxtLinkLocale v-if="pokemon.previous" :to="pokemonPath(pokemon.previous)" rel="prev">

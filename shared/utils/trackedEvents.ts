@@ -8,6 +8,7 @@ export const TRACKED_EVENTS = [
   'import',
   'publish',
   'install',
+  'pokebrawl',
 ] as const
 
 export type TrackedEvent = (typeof TRACKED_EVENTS)[number]

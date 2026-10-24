@@ -213,6 +213,7 @@ usePageSeo({
         {{ t('home.datesLink', { name: pokemon.name }) }}
         <Icon name="lucide:arrow-right" aria-hidden="true" />
       </NuxtLinkLocale>
+      <PokeBrawlBanner :pokemon="pokemon" />
       <HighlightBanner
         v-if="mirrorPokemon"
         :to="pokemonPath(mirrorPokemon)"

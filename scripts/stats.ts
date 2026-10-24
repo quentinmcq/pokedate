@@ -19,6 +19,7 @@ const EVENT_LABELS: Record<TrackedEvent, string> = {
   import: 'Pokédex importés',
   publish: 'Tirages publiés',
   install: 'Installations de l’appli',
+  pokebrawl: 'Clics vers PokéBrawl',
 }
 
 const QUERY_ATTEMPTS = 3

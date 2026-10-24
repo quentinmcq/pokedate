@@ -108,7 +108,8 @@
     "love": "amour",
     "credits": "Données : {pokeapi} et {pokepedia}. Pokémon © Nintendo / Game Freak / The Pokémon Company. Projet de fan, non officiel et sans but commercial.",
     "install": "Installer l'appli",
-    "installApple": "Touche {share} Partager, puis « Sur l'écran d'accueil »."
+    "installApple": "Touche {share} Partager, puis « Sur l'écran d'accueil ».",
+    "pokebrawl": "PokéBrawl"
   },
   "error": {
     "notFoundTitle": "Page introuvable",
@@ -516,5 +517,9 @@
       "title": "Génération {roman} complète",
       "description": "Attrape les {target} Pokémon de {region}."
     }
+  },
+  "pokebrawl": {
+    "bannerTitle": "Fais combattre {name} sur PokéBrawl",
+    "bannerText": "Compose une équipe avec 1 000 points et bats la horde du jour : notre nouveau jeu de combats de Pokémon."
   }
 }
