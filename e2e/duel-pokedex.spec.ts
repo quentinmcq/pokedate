@@ -20,7 +20,7 @@ test.describe('Duel', () => {
     await gotoHydrated(page, '/duel?pa=235&pb=578&na=Quentin&nb=L%C3%A9a')
     await expect(page.locator('#verdict')).toBeVisible()
     const copied = await readSharedLink(page)
-    await page.getByRole('button', { name: /Partager le duel/ }).click()
+    await page.getByRole('button', { name: /Envoyer le défi/ }).click()
     const text = await copied()
     expect(text).toContain('/duel?pa=235&pb=578')
     expect(text).not.toMatch(/\d{4}-\d{2}-\d{2}/)

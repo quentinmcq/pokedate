@@ -201,14 +201,18 @@ usePageSeo({
           <li>{{ tempoText }}</li>
         </ul>
       </div>
-      <div class="actions">
-        <button class="btn btn--primary btn--sm" type="button" @click="shareDuel">
+      <aside class="duel-share" aria-labelledby="duel-share-title">
+        <h3 id="duel-share-title" class="duel-share__title">
+          <Icon name="lucide:send" aria-hidden="true" /> {{ t('duel.challengeTitle') }}
+        </h3>
+        <p class="duel-share__text">{{ t('duel.challengeText') }}</p>
+        <button class="btn btn--primary" type="button" @click="shareDuel">
           <Icon name="lucide:share-2" aria-hidden="true" /> {{ t('duel.share') }}
         </button>
-      </div>
-      <p class="field-hint field-hint--privacy">
-        <Icon name="lucide:lock" aria-hidden="true" /> {{ t('challenge.linkPrivacy') }}
-      </p>
+        <p class="field-hint field-hint--privacy">
+          <Icon name="lucide:lock" aria-hidden="true" /> {{ t('challenge.linkPrivacy') }}
+        </p>
+      </aside>
     </section>
 
     <form

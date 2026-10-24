@@ -86,6 +86,42 @@
   }
 }
 
+// The share invitation sits right under the result, where the urge to show it to someone is the strongest.
+.duel-share {
+  margin-top: space(4);
+  padding: space(5);
+  border: 1px solid color-mix(in srgb, var(--color-highlight) 45%, var(--color-line));
+  border-radius: radius('xl');
+  background: color-mix(in srgb, var(--color-highlight) 8%, var(--color-surface-2));
+  text-align: center;
+
+  &__title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: space(2);
+    margin: 0 0 space(2);
+    font-size: font-size('lg');
+
+    .iconify {
+      color: color('highlight');
+    }
+  }
+
+  &__text {
+    max-width: 440px;
+    margin: 0 auto space(4);
+    color: color('text-muted');
+    line-height: 1.5;
+  }
+
+  // The tinted background needs the lighter muted text to keep its contrast.
+  .field-hint--privacy {
+    margin: space(3) 0 0;
+    color: color('text-muted');
+  }
+}
+
 .verdict {
   margin-top: 18px;
   padding: 18px space(5);
