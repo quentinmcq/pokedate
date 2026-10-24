@@ -1,0 +1,27 @@
+@use '../../assets/scss/abstracts/functions' as *;
+@use '../../assets/scss/abstracts/mixins' as *;
+
+.pokebrawl {
+  @include surface(2);
+  max-width: 720px;
+  margin: space(10) auto 0;
+  padding: space(5) space(6);
+  border-radius: radius('xl');
+  border: 1px solid #3d9bff;
+  text-align: center;
+
+  @include bp(phone) {
+    padding: space(5);
+  }
+
+  &__title {
+    margin: 0 0 space(2);
+    font-size: font-size('xl');
+  }
+
+  p {
+    margin: 0 0 space(4);
+    color: color('text-muted');
+    line-height: 1.55;
+  }
+}

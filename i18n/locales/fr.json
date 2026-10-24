@@ -520,6 +520,9 @@
   },
   "pokebrawl": {
     "bannerTitle": "Fais combattre {name} sur PokéBrawl",
-    "bannerText": "Compose une équipe avec 1 000 points et bats la horde du jour : notre nouveau jeu de combats de Pokémon."
+    "bannerText": "Compose une équipe avec 1 000 points et bats la horde du jour : notre nouveau jeu de combats de Pokémon.",
+    "pokedexTitle": "Tes Pokémon sur PokéBrawl",
+    "pokedexText": "Retrouve tes {count} Pokémon attrapés, marqués d'une étoile, pour composer ton équipe de combat.",
+    "pokedexAction": "Jouer avec mes Pokémon"
   }
 }

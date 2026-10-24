@@ -96,6 +96,7 @@ usePageSeo({
         </li>
       </ul>
       <PokedexGoals v-if="isLoaded" :entries="entries" />
+      <PokedexToPokeBrawl v-if="isLoaded" />
       <PokedexTransfer v-if="isLoaded" />
     </template>
   </div>
