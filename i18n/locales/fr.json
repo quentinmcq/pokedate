@@ -399,6 +399,8 @@
     "revealYours": "Révèle ton Pokémon",
     "drew": "{nickname} a tiré {pokemon}",
     "drewWithBonus": "{nickname} a tiré {pokemon}, avec {bonus} en bonus",
+    "someoneDrew": "Quelqu'un a tiré {pokemon}",
+    "someoneDrewWithBonus": "Quelqu'un a tiré {pokemon}, avec {bonus} en bonus",
     "drawnToday": "Aujourd'hui à {time}",
     "drawnYesterday": "Hier à {time}"
   },

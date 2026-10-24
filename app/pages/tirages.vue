@@ -58,7 +58,12 @@ const drawLink = (draw: PublicDraw) => ({
   path: pokemonPath({ id: draw.pokemonId, name: draw.pokemonName }),
   query: draw.shiny ? { shiny: '1' } : {},
 })
-const nicknameOf = (draw: PublicDraw) => (draw.nickname === ANONYMOUS_NICKNAME ? t('common.anonymous') : draw.nickname)
+// A draw without a nickname reads as "Someone got…" rather than showing a placeholder name.
+function drawSentenceKey(draw: PublicDraw) {
+  const isAnonymous = draw.nickname === ANONYMOUS_NICKNAME
+  if (draw.bonusPokemon) return isAnonymous ? 'draws.someoneDrewWithBonus' : 'draws.drewWithBonus'
+  return isAnonymous ? 'draws.someoneDrew' : 'draws.drew'
+}
 
 let refreshTimer: ReturnType<typeof setInterval> | undefined
 onMounted(() => {
@@ -108,14 +113,9 @@ usePageSeo({
           height="56"
           loading="lazy"
         />
-        <i18n-t
-          :keypath="draw.bonusPokemon ? 'draws.drewWithBonus' : 'draws.drew'"
-          tag="p"
-          class="draws__text"
-          scope="global"
-        >
+        <i18n-t :keypath="drawSentenceKey(draw)" tag="p" class="draws__text" scope="global">
           <template #nickname
-            ><b>{{ nicknameOf(draw) }}</b></template
+            ><b>{{ draw.nickname }}</b></template
           >
           <template #pokemon
             ><span class="draws__pokemon"
