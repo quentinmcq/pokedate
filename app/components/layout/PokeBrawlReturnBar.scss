@@ -1,0 +1,47 @@
+@use '../../assets/scss/abstracts/functions' as *;
+@use '../../assets/scss/abstracts/mixins' as *;
+
+// Always in sight while the player fetches their Pokémon, in PokéBrawl's blue and red.
+.pokebrawl-return {
+  position: fixed;
+  left: 50%;
+  bottom: calc(#{space(4)} + var(--bottom-nav-space));
+  transform: translateX(-50%);
+  z-index: z('overlay');
+  display: flex;
+  align-items: center;
+  gap: space(3);
+  width: min(640px, calc(100% - #{space(6)}));
+  padding: space(3) space(3) space(3) space(4);
+  border-radius: radius('xl');
+  color: color('text');
+  background: linear-gradient(110deg, #173a6b, #1f2236 50%, #5b1d2c);
+  border: 1px solid #3d9bff;
+  box-shadow: 0 10px 40px -10px rgb(0 0 0 / 0.7);
+
+  &__icon {
+    flex: none;
+    font-size: font-size('lg');
+    color: #3d9bff;
+  }
+
+  &__text {
+    flex: 1;
+    margin: 0;
+    font-size: font-size('sm');
+    line-height: 1.4;
+  }
+
+  .btn {
+    flex: none;
+  }
+
+  &__close {
+    @include reset-button;
+    @include tap-target;
+    flex: none;
+    display: grid;
+    place-items: center;
+    color: color('text-muted');
+  }
+}

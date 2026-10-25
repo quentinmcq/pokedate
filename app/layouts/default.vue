@@ -33,6 +33,7 @@ const pokedexOptions = computed<SectionSwitchOption[]>(() => [
     <slot />
   </main>
   <AppFooter />
+  <PokeBrawlReturnBar />
 </template>
 
 <style scoped lang="scss" src="./default.scss" />

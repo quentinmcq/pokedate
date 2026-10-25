@@ -1,6 +1,7 @@
 <script setup lang="ts">
-const { portfolioUrl, pokebrawlUrl } = useRuntimeConfig().public
-const { t, locale } = useLocaleTools()
+const { portfolioUrl } = useRuntimeConfig().public
+const pokebrawlHome = usePokeBrawlHome()
+const { t } = useLocaleTools()
 const trackEvent = useTrackEvent()
 </script>
 
@@ -14,7 +15,7 @@ const trackEvent = useTrackEvent()
         <NuxtLinkLocale to="/tirages">{{ t('footer.draws') }}</NuxtLinkLocale>
         <NuxtLinkLocale to="/mentions-legales">{{ t('footer.legal') }}</NuxtLinkLocale>
         <!-- PokéBrawl only exists in French so far. -->
-        <a v-if="locale === 'fr'" :href="pokebrawlUrl" target="_blank" rel="noopener" @click="trackEvent('pokebrawl')">
+        <a :href="pokebrawlHome" target="_blank" rel="noopener" @click="trackEvent('pokebrawl')">
           {{ t('footer.pokebrawl') }} <Icon name="lucide:external-link" aria-hidden="true" />
         </a>
       </nav>

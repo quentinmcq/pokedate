@@ -520,9 +520,14 @@
   },
   "pokebrawl": {
     "bannerTitle": "Send {name} into battle on PokéBrawl",
-    "bannerText": "Build a team with 1,000 points and beat the daily horde: our new Pokémon battle game (in French).",
+    "bannerText": "Build a team with 1,000 points and beat the daily horde: our new Pokémon battle game.",
     "pokedexTitle": "Your Pokémon on PokéBrawl",
     "pokedexText": "Find your {count} caught Pokémon, marked with a star, to build your battle team.",
-    "pokedexAction": "Play with my Pokémon"
+    "pokedexAction": "Play with my Pokémon",
+    "returnLabel": "Back to PokéBrawl",
+    "returnReady": "Your caught Pokémon is ready for PokéBrawl. | Your caught Pokémon is ready for PokéBrawl. | Your {count} caught Pokémon are ready for PokéBrawl.",
+    "returnEmpty": "Enter a date to catch your first Pokémon, then come back to PokéBrawl.",
+    "returnAction": "Back to PokéBrawl",
+    "catchAction": "Catch a Pokémon"
   }
 }

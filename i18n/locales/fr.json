@@ -523,6 +523,11 @@
     "bannerText": "Compose une équipe avec 1 000 points et bats la horde du jour : notre nouveau jeu de combats de Pokémon.",
     "pokedexTitle": "Tes Pokémon sur PokéBrawl",
     "pokedexText": "Retrouve tes {count} Pokémon attrapés, marqués d'une étoile, pour composer ton équipe de combat.",
-    "pokedexAction": "Jouer avec mes Pokémon"
+    "pokedexAction": "Jouer avec mes Pokémon",
+    "returnLabel": "Retour vers PokéBrawl",
+    "returnReady": "Ton Pokémon attrapé est prêt pour PokéBrawl. | Ton Pokémon attrapé est prêt pour PokéBrawl. | Tes {count} Pokémon attrapés sont prêts pour PokéBrawl.",
+    "returnEmpty": "Entre une date pour attraper ton premier Pokémon, puis reviens sur PokéBrawl.",
+    "returnAction": "Retourner sur PokéBrawl",
+    "catchAction": "Attraper un Pokémon"
   }
 }
