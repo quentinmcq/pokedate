@@ -39,7 +39,7 @@ export default defineNuxtConfig({
     public: {
       siteUrl: SITE_URL,
       portfolioUrl: 'https://quentin-macq.dev',
-      pokebrawlUrl: 'https://pokebrawl.quentin-macq.workers.dev',
+      pokebrawlUrl: 'https://pokebrawl.fr',
       cloudflareAnalyticsToken: '',
     },
   },
