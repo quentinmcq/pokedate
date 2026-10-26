@@ -25,8 +25,8 @@
     "test:e2e": "nuxt build && playwright test"
   },
   "dependencies": {
-    "@nuxt/fonts": "^1.1.0",
-    "@nuxt/icon": "^2.6.0",
+    "@nuxt/fonts": "^1.2.0",
+    "@nuxt/icon": "^2.6.1",
     "@nuxtjs/i18n": "^10.6.0",
     "nuxt": "^4.6.2",
     "nuxt-security": "^2.7.0",
