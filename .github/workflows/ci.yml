@@ -28,17 +28,13 @@ jobs:
       - run: bun run test:unit
 
   e2e:
-    name: Tests fonctionnels (${{ matrix.project }} ${{ matrix.shard }})
+    name: Tests fonctionnels
     runs-on: ubuntu-latest
+    # A single job builds once for both devices: each job is billed by the started minute,
+    # and installing Chromium and building took longer than the tests of a shard.
     concurrency:
-      group: e2e-${{ github.ref }}-${{ matrix.project }}-${{ matrix.shard }}
+      group: e2e-${{ github.ref }}
       cancel-in-progress: true
-    strategy:
-      fail-fast: false
-      # Two shards per device run each suite on twice as many 2-core runners.
-      matrix:
-        project: [desktop, mobile]
-        shard: [1/2, 2/2]
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
@@ -56,11 +52,11 @@ jobs:
       - run: bun run sprites
       - run: bunx playwright install --with-deps --only-shell chromium
       - run: bun run build
-      - run: bunx playwright test --project=${{ matrix.project }} --shard=${{ matrix.shard }}
+      - run: bunx playwright test
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: failure()
         with:
-          name: playwright-report-${{ matrix.project }}-${{ strategy.job-index }}
+          name: playwright-report
           path: playwright-report
           retention-days: 7
 

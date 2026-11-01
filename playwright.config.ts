@@ -9,7 +9,7 @@ export default defineConfig({
   fullyParallel: true,
   forbidOnly: isCI,
   retries: isCI ? 1 : 0,
-  // CI runs two shards of each device in parallel jobs on 2-core runners.
+  // CI runs both devices in a single job on a 2-core runner.
   workers: isCI ? 2 : undefined,
   reporter: isCI ? [['github'], ['html', { open: 'never' }]] : [['list']],
   use: {
