@@ -36,6 +36,21 @@
     flex: none;
   }
 
+  // On a phone the button leaves the text the whole width, on a full-width line of its own below it.
+  @include bp(phone) {
+    flex-wrap: wrap;
+
+    &__text {
+      flex-basis: 60%;
+    }
+
+    .btn {
+      order: 1;
+      flex-basis: 100%;
+      justify-content: center;
+    }
+  }
+
   &__close {
     @include reset-button;
     @include tap-target;
