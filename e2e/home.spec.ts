@@ -99,6 +99,22 @@ test.describe('Mon Pokémon', () => {
     await expect(page.locator('.draw-publication')).toHaveCount(0)
   })
 
+  test.describe('quand le visiteur n’est pas au même jour que Paris', () => {
+    const parisHour = Number(
+      new Intl.DateTimeFormat('en-GB', { timeZone: 'Europe/Paris', hour: 'numeric', hourCycle: 'h23' }).format(),
+    )
+    // Kiritimati (UTC+14) is already on tomorrow from midday in Paris, Pago Pago (UTC-11) still on yesterday before.
+    test.use({ timezoneId: parisHour >= 12 ? 'Pacific/Kiritimati' : 'Pacific/Pago_Pago' })
+
+    test('le bouton « Aujourd’hui » ne publie pas non plus le tirage', async ({ page }) => {
+      await gotoHydrated(page, '/')
+      await page.getByRole('button', { name: "Aujourd'hui" }).click()
+      await expect(page.locator('.mon-card')).toBeVisible()
+      await expect(page.locator('.pokemon-artwork--hidden')).toHaveCount(0, { timeout: 5000 })
+      await expect(page.locator('.draw-publication')).toHaveCount(0)
+    })
+  })
+
   test('« Au hasard » montre un Pokémon sans l’attraper', async ({ page }) => {
     await gotoHydrated(page, '/')
     await page.getByRole('button', { name: /Au hasard/ }).click()

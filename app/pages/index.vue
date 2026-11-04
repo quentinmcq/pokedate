@@ -38,10 +38,12 @@ const selectedDate = computed(() => parseIsoDate(route.query.date))
 // Once a date is shown, the explanation gives way so the result fits on the first screen of a phone.
 const isHeroCompact = computed(() => !!selectedDate.value)
 const isRandomDraw = computed(() => route.query.hasard === '1')
-// Today's Pokémon is the same for everyone: it would only fill the shared draws with duplicates.
-const isTodaysDate = computed(
-  () => !!selectedDate.value && toIsoDate(selectedDate.value) === toIsoDate(todayInParis.value),
-)
+// Today's Pokémon is the same for everyone: it would only fill the shared draws with duplicates. The "Today" button
+// uses the visitor's own date, which may not be Paris's and which only the browser knows.
+const isTodaysDate = computed(() => {
+  const selectedIsoDate = selectedDate.value && toIsoDate(selectedDate.value)
+  return [todayInParis.value, visitorToday.value].some((today) => !!today && toIsoDate(today) === selectedIsoDate)
+})
 watch(selectedDate, (date) => date && (dateInput.value = toDateFieldValue(date)), { immediate: true })
 
 const pokemonId = computed(() => (selectedDate.value ? pokemonIdFromDate(selectedDate.value) : null))
@@ -77,6 +79,8 @@ const isNewDiscovery = ref(false)
 // shows the card as it was left.
 const isOpeningPage = import.meta.server || useNuxtApp().isHydrating
 const playsRevealAnimation = computed(() => isOpeningPage || revealCount.value > 0)
+const visitorToday = ref(isOpeningPage ? null : todayAsCalendarDate())
+onMounted(() => (visitorToday.value = todayAsCalendarDate()))
 
 // Recorded from the date itself, so leaving before the Pokémon details arrive still fills the Pokédex.
 function recordRevealedDate() {
