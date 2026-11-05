@@ -47,7 +47,7 @@
     "oxlint": "^1.91.0",
     "sass-embedded": "^1.107.1",
     "sharp": "^0.35.5",
-    "typescript": "^6.0.3",
+    "typescript": "^7.0.2",
     "vitest": "^5.1.0",
     "vue-tsc": "^3.3.14",
     "wrangler": "^4.157.0"
