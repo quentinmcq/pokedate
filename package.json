@@ -38,7 +38,7 @@
     "@axe-core/playwright": "^4.14.0",
     "@iconify-json/lucide": "^1.2.151",
     "@nuxt/test-utils": "^4.3.4",
-    "@playwright/test": "^1.64.1",
+    "@playwright/test": "^1.65.0",
     "@types/node": "^26.6.6",
     "@vue/test-utils": "^2.5.1",
     "happy-dom": "^21.0.4",
