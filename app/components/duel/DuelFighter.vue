@@ -32,12 +32,8 @@ const { t } = useLocaleTools()
     </h2>
     <div class="chip-list"><TypeChip v-for="type in pokemon.types" :key="type" :type="type" small /></div>
     <div class="fighter__power">
-      <span
-        >{{ t('duel.totalStats') }} <b>{{ statTotal(pokemon.stats) }}</b></span
-      >
-      <span
-        >{{ t('duel.speed') }} <b>{{ pokemon.stats.speed }}</b></span
-      >
+      <span>{{ t('duel.totalStats') }} <b>{{ statTotal(pokemon.stats) }}</b></span>
+      <span>{{ t('duel.speed') }} <b>{{ pokemon.stats.speed }}</b></span>
     </div>
   </div>
 </template>

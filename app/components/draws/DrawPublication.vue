@@ -107,9 +107,7 @@ function onSettingsSaved({ autoPublish }: { autoPublish: boolean }) {
         <template #draws
           ><NuxtLinkLocale to="/tirages" class="text-link">{{ t('publication.drawsLink') }}</NuxtLinkLocale></template
         >
-        <template #nickname
-          ><b>{{ shownNickname }}</b></template
-        >
+        <template #nickname><b>{{ shownNickname }}</b></template>
       </i18n-t>
       <template v-else-if="status === 'removed'">{{ t('publication.removed') }}</template>
       <template v-else-if="status === 'failed'">{{ t('publication.failed') }}</template>

@@ -13,10 +13,7 @@ const link = computed(() => ({ path: pokemonPath(props.pokemon), query: props.sh
 <template>
   <div v-if="state === 'unknown'" class="dex-cell dex-cell--unknown">
     <span class="dex-cell__unknown" aria-hidden="true">?</span>
-    <span
-      ><span class="visually-hidden">{{ t('tile.unknown') }}</span
-      >#{{ padNumber(pokemon.id, 4) }}</span
-    >
+    <span><span class="visually-hidden">{{ t('tile.unknown') }}</span>#{{ padNumber(pokemon.id, 4) }}</span>
   </div>
   <NuxtLinkLocale
     v-else

@@ -49,35 +49,25 @@ const examples = computed(() => exampleDatesForPokemon(props.pokemonId).map(shor
       <p>{{ t('dates.intro', { name: pokemonName }) }}</p>
       <ul class="pokemon-dates__rules">
         <i18n-t keypath="dates.dayRule" tag="li" scope="global">
-          <template #digit
-            ><b>{{ digits.day }}</b></template
-          >
+          <template #digit><b>{{ digits.day }}</b></template>
           <template #choices>{{ dayChoices }}</template>
         </i18n-t>
         <i18n-t v-if="monthsAllowed.length > 1" keypath="dates.monthRule" tag="li" scope="global">
-          <template #digit
-            ><b>{{ digits.month }}</b></template
-          >
+          <template #digit><b>{{ digits.month }}</b></template>
           <template #choices>{{ monthChoices }}</template>
         </i18n-t>
         <i18n-t v-else keypath="dates.singleMonthRule" tag="li" scope="global">
-          <template #month
-            ><b>{{ monthChoices }}</b></template
-          >
+          <template #month><b>{{ monthChoices }}</b></template>
         </i18n-t>
         <i18n-t keypath="dates.yearRule" tag="li" scope="global">
-          <template #digit
-            ><b>{{ digits.year }}</b></template
-          >
+          <template #digit><b>{{ digits.year }}</b></template>
           <template #choices>{{ yearChoices }}</template>
         </i18n-t>
       </ul>
     </template>
     <i18n-t v-else keypath="dates.bonus" tag="p" scope="global">
       <template #name>{{ pokemonName }}</template>
-      <template #mirrorDate
-        ><b>{{ t('dates.mirrorDate') }}</b></template
-      >
+      <template #mirrorDate><b>{{ t('dates.mirrorDate') }}</b></template>
     </i18n-t>
     <dl class="pokemon-dates__facts">
       <div v-if="nextDate" class="pokemon-dates__fact">

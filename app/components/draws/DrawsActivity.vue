@@ -22,9 +22,7 @@ const revealsLabel = computed(() =>
       /></template>
     </p>
     <i18n-t v-else keypath="activity.none" tag="p" class="activity__numbers" scope="global">
-      <template #start
-        ><NuxtLinkLocale to="/" class="text-link">{{ t('activity.start') }}</NuxtLinkLocale></template
-      >
+      <template #start><NuxtLinkLocale to="/" class="text-link">{{ t('activity.start') }}</NuxtLinkLocale></template>
     </i18n-t>
     <p v-if="activity.weekFavourite" class="activity__favourite">
       {{ t('activity.favourite') }}

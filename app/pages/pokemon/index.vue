@@ -55,9 +55,7 @@ usePageSeo({
     <div class="hero">
       <h1>{{ t('pokemonList.title') }}</h1>
       <i18n-t keypath="pokemonList.lead" tag="p" class="lead" scope="global">
-        <template #test
-          ><NuxtLinkLocale to="/" class="text-link">{{ t('pokemonList.test') }}</NuxtLinkLocale></template
-        >
+        <template #test><NuxtLinkLocale to="/" class="text-link">{{ t('pokemonList.test') }}</NuxtLinkLocale></template>
       </i18n-t>
 
       <div class="dex-search" role="search">

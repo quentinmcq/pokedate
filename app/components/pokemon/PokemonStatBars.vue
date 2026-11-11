@@ -27,10 +27,7 @@ const fillWidth = (value: number) => (props.filled ? `${Math.min(100, (value / M
       </dd>
     </template>
   </dl>
-  <p class="stat-bars__total">
-    <span>{{ t('stats.total') }}</span
-    ><span>{{ total }}</span>
-  </p>
+  <p class="stat-bars__total"><span>{{ t('stats.total') }}</span><span>{{ total }}</span></p>
 </template>
 
 <style scoped lang="scss" src="./PokemonStatBars.scss" />

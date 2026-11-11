@@ -114,9 +114,7 @@ usePageSeo({
           loading="lazy"
         />
         <i18n-t :keypath="drawSentenceKey(draw)" tag="p" class="draws__text" scope="global">
-          <template #nickname
-            ><b>{{ draw.nickname }}</b></template
-          >
+          <template #nickname><b>{{ draw.nickname }}</b></template>
           <template #pokemon
             ><span class="draws__pokemon"
               ><NuxtLinkLocale :to="drawLink(draw)">{{ draw.pokemonName }}</NuxtLinkLocale

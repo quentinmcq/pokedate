@@ -146,15 +146,9 @@ usePageSeo({
     >
       <h1 :class="{ 'visually-hidden': isHeroCompact }">{{ t('home.titleStart') }}<br />{{ t('home.titleEnd') }}</h1>
       <i18n-t v-if="!isHeroCompact" keypath="home.lead" tag="p" class="lead" scope="global">
-        <template #day
-          ><b>{{ t('home.leadDay') }}</b></template
-        >
-        <template #month
-          ><b>{{ t('home.leadMonth') }}</b></template
-        >
-        <template #year
-          ><b>{{ t('home.leadYear') }}</b></template
-        >
+        <template #day><b>{{ t('home.leadDay') }}</b></template>
+        <template #month><b>{{ t('home.leadMonth') }}</b></template>
+        <template #year><b>{{ t('home.leadYear') }}</b></template>
       </i18n-t>
       <DateField
         ref="dateField"
@@ -189,9 +183,7 @@ usePageSeo({
         <Icon name="lucide:dices" aria-hidden="true" />
         <i18n-t :keypath="isShiny ? 'home.randomNoteShiny' : 'home.randomNote'" tag="span" scope="global">
           <template #name>{{ pokemon.name }}</template>
-          <template #seen
-            ><b>{{ t('home.randomNoteSeen') }}</b></template
-          >
+          <template #seen><b>{{ t('home.randomNoteSeen') }}</b></template>
         </i18n-t>
       </p>
       <PokemonCard
@@ -226,9 +218,7 @@ usePageSeo({
         :title="t('home.mirrorTitle', { date: `${padNumber(selectedDate.day)}/${padNumber(selectedDate.month)}` })"
       >
         <i18n-t keypath="home.mirrorText" scope="global">
-          <template #name
-            ><strong>{{ mirrorPokemon.name }}</strong></template
-          >
+          <template #name><strong>{{ mirrorPokemon.name }}</strong></template>
         </i18n-t>
       </HighlightBanner>
     </section>
