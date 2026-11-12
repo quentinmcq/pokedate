@@ -36,7 +36,7 @@
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.14.0",
-    "@iconify-json/lucide": "^1.2.152",
+    "@iconify-json/lucide": "^1.2.153",
     "@nuxt/test-utils": "^4.4.0",
     "@playwright/test": "^1.65.0",
     "@types/node": "^26.6.6",
@@ -45,7 +45,7 @@
     "lefthook": "^2.2.2",
     "oxfmt": "^0.78.0",
     "oxlint": "^1.93.0",
-    "sass-embedded": "^1.108.1",
+    "sass-embedded": "^1.108.2",
     "sharp": "^0.35.5",
     "typescript": "^6.0.3",
     "vitest": "^5.1.0",
