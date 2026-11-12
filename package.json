@@ -50,7 +50,7 @@
     "typescript": "^6.0.3",
     "vitest": "^5.1.0",
     "vue-tsc": "^3.3.14",
-    "wrangler": "^4.159.0"
+    "wrangler": "^4.160.1"
   },
   "packageManager": "bun@1.4.4"
 }
