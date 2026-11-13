@@ -36,7 +36,7 @@
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.14.0",
-    "@iconify-json/lucide": "^1.2.153",
+    "@iconify-json/lucide": "^1.2.154",
     "@nuxt/test-utils": "^4.4.0",
     "@playwright/test": "^1.65.0",
     "@types/node": "^26.6.6",
