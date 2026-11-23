@@ -52,5 +52,5 @@
     "vue-tsc": "^3.3.14",
     "wrangler": "^4.166.0"
   },
-  "packageManager": "bun@1.4.4"
+  "packageManager": "bun@1.4.5"
 }
