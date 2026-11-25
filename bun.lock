@@ -16,7 +16,7 @@
       },
       "devDependencies": {
         "@axe-core/playwright": "^4.14.0",
-        "@iconify-json/lucide": "^1.2.158",
+        "@iconify-json/lucide": "^1.2.159",
         "@nuxt/test-utils": "^4.4.0",
         "@playwright/test": "^1.65.1",
         "@types/node": "^26.6.6",
@@ -183,7 +183,7 @@
 
     "@esbuild/win32-x64": ["@esbuild/win32-x64@0.28.2", "", { "os": "win32", "cpu": "x64" }, "sha512-5ebpxr3nWMzrL/rnUI755Jkuee0bHL/Gq0WTF9lvcpv73wAp5eu8MfBUgWK9bhWvZjj7yX8etf/8tI8Ney695g=="],
 
-    "@iconify-json/lucide": ["@iconify-json/lucide@1.2.158", "", { "dependencies": { "@iconify/types": "*" } }, "sha512-odd13G5/Jv4W+yomId3BjCQ/a1k7QemC0mi+CBvvpl18JBO+sQajKl4F3WtPvFHMnkOQ4d3/BFKShTmBlbG0dg=="],
+    "@iconify-json/lucide": ["@iconify-json/lucide@1.2.159", "", { "dependencies": { "@iconify/types": "*" } }, "sha512-rE8dHb2LRSR2Vl6L6LspAJ83uPNKOIbEE8BLLo/ObQT8xHIEE3zmwIpO9LcZPjTsEnICSxWPFJcJ0Q38nxuZPw=="],
 
     "@iconify/collections": ["@iconify/collections@1.0.766", "", { "dependencies": { "@iconify/types": "*" } }, "sha512-oB5ag6fYcOlayKbZI1oiL7J3oNnzJehs/vhRngjAA7mtxWckrAYmjQ2v9BFUL867X3vSwu/QEGwEL5kiakzqNA=="],
 
