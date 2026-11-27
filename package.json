@@ -39,7 +39,7 @@
     "@iconify-json/lucide": "^1.2.159",
     "@nuxt/test-utils": "^4.4.0",
     "@playwright/test": "^1.65.1",
-    "@types/node": "^26.6.6",
+    "@types/node": "^26.6.11",
     "@vue/test-utils": "^2.6.0",
     "happy-dom": "^21.0.4",
     "lefthook": "^2.2.3",
