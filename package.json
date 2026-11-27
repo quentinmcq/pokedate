@@ -42,7 +42,7 @@
     "@types/node": "^26.6.11",
     "@vue/test-utils": "^2.6.0",
     "happy-dom": "^21.0.4",
-    "lefthook": "^2.2.3",
+    "lefthook": "^2.2.4",
     "oxfmt": "^0.80.0",
     "oxlint": "^1.95.0",
     "sass-embedded": "^1.108.2",
